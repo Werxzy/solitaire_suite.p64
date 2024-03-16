@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 13:24:34",revision=1594]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 13:58:05",revision=1760]]
 
 include"card_api.lua"
 
@@ -91,7 +91,7 @@ function _init()
 	
 	stacks = {}
 
-	for i = 0,6 do
+	for i = 1,7 do
 		local s = add(stacks, {
 			x_to = i*(card_width + card_gap*2) + card_gap,
 			y_to = card_gap,
@@ -113,7 +113,7 @@ function _init()
 	
 	for i = 0,34 do
 		local s = add(stacks, {
-			x_to = 7*(card_width + card_gap*2) + card_gap,
+			x_to = 8*(card_width + card_gap*2) + card_gap,
 			y_to = i*(card_height + card_gap*2) + card_gap,
 			cards = {},
 			perm = true,
@@ -181,7 +181,7 @@ function _draw()
 			
 	foreach(cards, draw_card)
 	
-	printh(stat(1))
+	?stat(1), 0, 0
 end
 
 function draw_card(c)
@@ -203,7 +203,7 @@ function draw_card(c)
 		end
 	end
 	]]
-	card_draw(c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / 15)
+	card_draw(c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / 20)
 	
 --	print(all_ranks[c.rank] .. all_suits[c.suit], c.x()+3, c.y()+3, all_suit_colors[c.suit])
 end
