@@ -1,10 +1,10 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 16:56:43",revision=2467]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 17:12:02",revision=2559]]
 
 include"cards_api/cards_base.lua"
 
 
 function _init()
-
+	local card_gap = 4
 	for suit = 1,4 do
 		for rank = 1,13 do
 			local new_sprite = userdata("u8", card_width, card_height)
@@ -29,7 +29,10 @@ function _init()
 	stacks = {}
 
 	for i = 1,7 do
-		local s = stack_new(i*(card_width + card_gap*2) + card_gap, card_gap, true, stack_can_rule)
+		local s = stack_new(
+			i*(card_width + card_gap*2) + card_gap, 
+			card_gap, 
+			true, stack_on_click_unstack, stack_can_rule)
 			
 		for i = 1,8 do
 			local c = rnd(unstacked_cards)
@@ -46,7 +49,7 @@ function _init()
 		local s = stack_new(
 			8*(card_width + card_gap*2) + card_gap,
 			i*(card_height + card_gap*2-1) + card_gap,
-			true, stack_can_goal)
+			true, stack_on_click_unstack, stack_can_goal)
 			
 		s.y_delta = 0
 	end
@@ -66,16 +69,13 @@ function _update()
 	if mouse_down&1 == 1 and not held_stack then
 		for i = #cards_all, 1, -1 do
 			local c = cards_all[i]
-			local x, y = c.x(), c.y()
-			if mx >= x and my >= y and mx < x + card_width and my < y + 70 then
-				
-				held_stack = unstack_cards(c)
-				held_stack.x_to = mx - card_width/2
-				held_stack.y_to = my - card_height/2
+			if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
+				c.stack.on_click(c, mx, my)
 				break
 			end
 		end
 	end
+	
 	if mouse_up&1 == 1 and held_stack then
 		for s in all(stacks_all) do
 			local y = stack_y_pos(s)

@@ -1,13 +1,14 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 16:56:43",revision=480]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 17:12:02",revision=570]]
 
 stacks_all = {}
 
-function stack_new(x, y, perm, stack_rule)
+function stack_new(x, y, perm, on_click, stack_rule)
 	return add(stacks_all, {
 		x_to = x,
 		y_to = y,
 		cards = {},
 		perm = perm,
+		on_click = on_click,
 		can_stack = stack_rule,
 		y_delta = 12
 		})
@@ -32,14 +33,18 @@ function stack_cards(stack, stack2)
 	del(stacks_all, stack2)
 end
 
-function stack_on_click_unstack()
-	
+function stack_on_click_unstack(card, mx, my)
+	-- todo, check rule
+	-- use currying
+	held_stack = unstack_cards(card)
+	held_stack.x_to = mx - card_width/2
+	held_stack.y_to = my - card_height/2
 end
 
 function unstack_cards(card)
 	local old_stack = card.stack
 	
-	local new_stack = stack_new(0, 0, false, stack_cant)
+	local new_stack = stack_new(0, 0, false, stack_cant, stack_cant)
 	new_stack.y_delta = 10
 	new_stack.old_stack = old_stack
 
@@ -81,5 +86,4 @@ function stack_y_pos(stack)
 end
 
 function stack_cant()
-	return false
 end

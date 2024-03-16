@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 16:56:43",revision=433]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 17:12:02",revision=509]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"

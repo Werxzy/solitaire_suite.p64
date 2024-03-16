@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 16:56:43",revision=1080]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 17:12:02",revision=1167]]
 
 all_suits = {
 	--"Spades",
@@ -37,7 +37,6 @@ all_ranks = {
 
 card_width = 45
 card_height = 60
-card_gap = 4
 
 cards_all = {}
 
