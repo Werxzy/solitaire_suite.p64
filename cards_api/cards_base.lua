@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 16:44:17",revision=398]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 16:56:43",revision=433]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -63,7 +63,7 @@ function lerp(a, b, t)
 end
 
 function cards_api_draw()
-	foreach(stacks_all, draw_stack)	
+	foreach(stacks_all, stack_draw)	
 	foreach(cards_all, card_draw)
 end
 

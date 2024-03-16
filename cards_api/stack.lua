@@ -1,8 +1,19 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 16:44:17",revision=433]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 16:56:43",revision=480]]
 
 stacks_all = {}
 
-function draw_stack(s)
+function stack_new(x, y, perm, stack_rule)
+	return add(stacks_all, {
+		x_to = x,
+		y_to = y,
+		cards = {},
+		perm = perm,
+		can_stack = stack_rule,
+		y_delta = 12
+		})
+end
+
+function stack_draw(s)
 	if s.perm then
 		local x, y = s.x_to, s.y_to
 		spr(5, x-3, y-3)
@@ -21,18 +32,17 @@ function stack_cards(stack, stack2)
 	del(stacks_all, stack2)
 end
 
+function stack_on_click_unstack()
+	
+end
 
 function unstack_cards(card)
-	local new_stack = add(stacks_all, {
-		x_to = 0, 
-		y_to = 0,
-		old_stack = card.stack, 
-		cards = {},
-		can_stack = stack_cant,
-		y_delta = 10
-		})
 	local old_stack = card.stack
 	
+	local new_stack = stack_new(0, 0, false, stack_cant)
+	new_stack.y_delta = 10
+	new_stack.old_stack = old_stack
+
 	local i = has(old_stack.cards, card)
 	while #old_stack.cards >= i do
 		local c = add(new_stack.cards, deli(old_stack.cards, i))
@@ -47,8 +57,6 @@ function unstack_cards(card)
 	end
 		
 	stack_reposition(new_stack)
-	
-	
 	
 	return new_stack
 end
@@ -70,4 +78,8 @@ end
 function stack_y_pos(stack)
 	local top = stack.cards[#stack.cards]
 	return top and top.y_to or stack.y_to
+end
+
+function stack_cant()
+	return false
 end

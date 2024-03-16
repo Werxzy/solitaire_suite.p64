@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 16:44:17",revision=2421]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 16:56:43",revision=2467]]
 
 include"cards_api/cards_base.lua"
 
@@ -29,14 +29,7 @@ function _init()
 	stacks = {}
 
 	for i = 1,7 do
-		local s = add(stacks_all, {
-			x_to = i*(card_width + card_gap*2) + card_gap,
-			y_to = card_gap,
-			cards = {},
-			perm = true,
-			can_stack = stack_can_rule,
-			y_delta = 12
-			})
+		local s = stack_new(i*(card_width + card_gap*2) + card_gap, card_gap, true, stack_can_rule)
 			
 		for i = 1,8 do
 			local c = rnd(unstacked_cards)
@@ -50,14 +43,12 @@ function _init()
 	end
 	
 	for i = 0,3 do
-		local s = add(stacks_all, {
-			x_to = 8*(card_width + card_gap*2) + card_gap,
-			y_to = i*(card_height + card_gap*2-1) + card_gap,
-			cards = {},
-			perm = true,
-			can_stack = stack_can_goal,
-			y_delta = 0
-			})
+		local s = stack_new(
+			8*(card_width + card_gap*2) + card_gap,
+			i*(card_height + card_gap*2-1) + card_gap,
+			true, stack_can_goal)
+			
+		s.y_delta = 0
 	end
 	
 	mouse_last = 0
@@ -168,6 +159,6 @@ function stack_can_goal(stack, stack2)
 	end
 end
 
-function stack_cant()
-	return false
+function stack_on_click_reveal()
+	
 end
