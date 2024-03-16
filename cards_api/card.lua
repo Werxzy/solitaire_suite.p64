@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 19:09:23",revision=1445]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 21:30:12",revision=1588]]
 
 card_width = 45
 card_height = 60
@@ -50,12 +50,16 @@ function card_draw(c)
 	end
 end
 
-function card_update(c)
-	c.x(c.x_to)
-	c.y(c.y_to)
-	c.a(c.a_to)
+function card_update(card)
+	card.x(card.x_to)
+	card.y(card.y_to)
+	card.a(card.a_to)
 end
 
-function card_to_top(c)
-	add(cards_all, del(cards_all, c))
+function card_to_top(card)
+	add(cards_all, del(cards_all, card))
+end
+
+function card_is_top(stack, card)
+	return stack.cards[#stack.cards] == card
 end

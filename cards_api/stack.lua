@@ -1,16 +1,18 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 19:09:23",revision=855]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 21:30:12",revision=1008]]
 
 stacks_all = {}
 
-function stack_new(x, y, perm, on_click, stack_rule)
+function stack_new(x, y, perm, stack_rule, on_click, on_double)
 	return add(stacks_all, {
 		x_to = x,
 		y_to = y,
 		cards = {},
 		perm = perm,
-		on_click = on_click,
 		can_stack = stack_rule,
-		y_delta = 12
+		on_click = on_click,
+		on_double = on_double,
+		y_delta = 12,
+		repos_decay = 0.7
 		})
 end
 
@@ -73,7 +75,7 @@ function stack_reposition(stack)
 	local y, yd = stack.y_to, min(stack.y_delta, 220 / #stack.cards)
 	local lasty, lastx = y, stack.x_to
 	for i, c in pairs(stack.cards) do
-		local t = 0.7 / (i+1)
+		local t = stack.repos_decay / (i+1)
 		c.x_to = lerp(lastx, stack.x_to, t)
 		c.y_to = lerp(lasty, y, t)
 		y += yd

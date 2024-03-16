@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 19:09:23",revision=2859]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 21:30:12",revision=3032]]
 
 include"cards_api/cards_base.lua"
 
@@ -66,7 +66,7 @@ function _init()
 		local s = stack_new(
 			i*(card_width + card_gap*2) + card_gap, 
 			card_gap, 
-			true, stack_on_click_unstack, stack_can_rule)
+			true, stack_can_rule, stack_on_click_unstack, stack_on_double_goal)
 			
 		for i = 1,5 do
 			stack_add_card(s, rnd(unstacked_cards), unstacked_cards)
@@ -74,11 +74,12 @@ function _init()
 		end
 	end
 	
+	stack_goals = {}
 	for i = 0,3 do
-		local s = stack_new(
+		local s = add(stack_goals, stack_new(
 			8*(card_width + card_gap*2) + card_gap,
 			i*(card_height + card_gap*2-1) + card_gap,
-			true, stack_on_click_unstack, stack_can_goal)
+			true, stack_can_goal, stack_on_click_unstack))
 			
 		s.y_delta = 0
 	end
@@ -86,13 +87,15 @@ function _init()
 	
 	deck_stack = stack_new(
 		card_gap, card_gap,
-		true, stack_on_click_reveal, stack_cant)
+		true, stack_cant, stack_on_click_reveal)
 	deck_stack.y_delta = 0
+	deck_stack.repos_decay = 3
 	
 	deck_playable = stack_new(
 		card_gap, card_height + card_gap*3,
-		true, stack_on_click_unstack, stack_cant)
+		true, stack_cant, stack_on_click_unstack, stack_on_double_goal)
 	deck_playable.y_delta = 0
+	deck_playable.repos_decay = 3
 	
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -142,7 +145,8 @@ end
 
 -- expects to be stacked from ace to king with the same suit
 function stack_can_goal(stack, stack2)
-	if s == held_stack then
+	
+	if stack == held_stack then
 		return false
 	end
 	--
@@ -156,6 +160,7 @@ function stack_can_goal(stack, stack2)
 	if #stack.cards == 0 and c2.rank == 1 then
 		return true
 	end
+	
 	
 	if #stack.cards > 0 and c1.rank + 1 == c2.rank and c1.suit == c2.suit then
 		return true
@@ -178,4 +183,29 @@ function stack_on_click_reveal()
 			c.a_to = 0.5
 		end
 	end
+end
+
+function stack_on_double_goal(card)
+	-- only accept top card (though could work with multiple cards
+	local old_stack = card.stack
+	if card_is_top(old_stack, card) then 
+		
+		-- create a temporary stack
+		local temp_stack = unstack_cards(card)
+		
+		-- attempt to place on each of the goal stacks
+		for g in all(stack_goals) do
+			if g:can_stack(temp_stack) then
+				stack_cards(g, temp_stack)
+				temp_stack = nil
+				break
+			end
+		end
+		
+		-- if temp stack still exists, then return card to original stack
+		if temp_stack then
+			stack_cards(old_stack, temp_stack)
+		end
+	end
+	
 end

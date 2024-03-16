@@ -1,10 +1,11 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 19:09:23",revision=775]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 21:30:12",revision=930]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
 
 mouse_last = 0
 mouse_lx, mouse_ly = mouse()
+mouse_last_click = time() - 100
 	
 function cards_api_draw()
 	foreach(stacks_all, stack_draw)	
@@ -17,13 +18,18 @@ function cards_api_update()
 	local mouse_down = md & ~mouse_last
 	local mouse_up = ~md & mouse_last
 	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
-	
+	local double_click = time() - mouse_last_click < 0.5	
+
 	if mouse_down&1 == 1 and not held_stack then
 		local clicked = false
 		for i = #cards_all, 1, -1 do
 			local c = cards_all[i]
 			if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
-				c.stack.on_click(c)
+				if double_click and c.stack.on_double then
+					c.stack.on_double(c)
+				else
+					c.stack.on_click(c)
+				end
 				clicked = true
 				break
 			end
@@ -32,7 +38,11 @@ function cards_api_update()
 		if not clicked then
 			for s in all(stacks_all) do
 				if point_box(mx, my, s.x_to, s.y_to, card_width, card_height) then
-					s.on_click()
+					if time() - mouse_last_click < 0.5 and s.on_double then
+						s.on_double()
+					else
+						s.on_click()
+					end
 					break
 				end
 			end
@@ -66,7 +76,15 @@ function cards_api_update()
 	foreach(stacks_all, stack_reposition)
 	foreach(cards_all, card_update)
 	
+
+	if mouse_down&1 == 1 and not double_click then
+		mouse_last_click = time()
+	end
+--	if double_click then
+--		mouse_last_click = time() - 100
+--	end
 	mouse_last, mouse_lx, mouse_ly = md, mx, my
+	
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
