@@ -1,39 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 17:12:02",revision=1167]]
-
-all_suits = {
-	--"Spades",
-	--"Hearts",
-	--"Clubs",
-	--"Diamonds"
-	"\|f\^:081c3e7f7f36081c",
-	"\|g\^:00367f7f3e1c0800",
-	"\|f\^:001c1c7f7f77081c",
-	"\|g\^:081c3e7f3e1c0800"
-}
-
-all_suit_colors = {
-	16,
-	8,
-	27,
-	25
-	
-}
-
-all_ranks = {
-	"A",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"10",
-	"J",
-	"Q",
-	"K"
-}
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 19:09:23",revision=1445]]
 
 card_width = 45
 card_height = 60
@@ -47,7 +12,7 @@ function card_new(sprite, x, y, a)
 	return add(cards_all, {
 		x = smooth_val(x, 0.7, 0.1), 
 		y = smooth_val(y, 0.7, 0.1), 
-		a = smooth_angle(a, 0.9, 0.2),
+		a = smooth_angle(a, 0.6, 0.1),
 		x_to = x,
 		y_to = y,
 		a_to = a,

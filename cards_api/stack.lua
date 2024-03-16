@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 17:12:02",revision=570]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 19:09:23",revision=855]]
 
 stacks_all = {}
 
@@ -33,12 +33,15 @@ function stack_cards(stack, stack2)
 	del(stacks_all, stack2)
 end
 
-function stack_on_click_unstack(card, mx, my)
+function stack_on_click_unstack(card)
 	-- todo, check rule
 	-- use currying
-	held_stack = unstack_cards(card)
-	held_stack.x_to = mx - card_width/2
-	held_stack.y_to = my - card_height/2
+	if card then
+		local mx, my = mouse()
+		held_stack = unstack_cards(card)
+		held_stack.x_to = mx - card_width/2
+		held_stack.y_to = my - card_height/2
+	end
 end
 
 function unstack_cards(card)
@@ -86,4 +89,16 @@ function stack_y_pos(stack)
 end
 
 function stack_cant()
+end
+
+function stack_add_card(stack, card, old_stack)
+	if card then
+		card_to_top(card)
+		if old_stack then
+			del(old_stack, card)
+		elseif card.stack then
+			del(card.stack.cards, card)
+		end
+		add(stack.cards, card).stack = stack
+	end
 end

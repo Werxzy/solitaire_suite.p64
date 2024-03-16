@@ -1,7 +1,41 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 17:12:02",revision=2559]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 19:09:23",revision=2859]]
 
 include"cards_api/cards_base.lua"
 
+all_suits = {
+	--"Spades",
+	--"Hearts",
+	--"Clubs",
+	--"Diamonds"
+	"\|f\^:081c3e7f7f36081c",
+	"\|g\^:00367f7f3e1c0800",
+	"\|f\^:001c1c7f7f77081c",
+	"\|g\^:081c3e7f3e1c0800"
+}
+
+all_suit_colors = {
+	16,
+	8,
+	27,
+	25
+	
+}
+
+all_ranks = {
+	"A",
+	"2",
+	"3",
+	"4",
+	"5",
+	"6",
+	"7",
+	"8",
+	"9",
+	"10",
+	"J",
+	"Q",
+	"K"
+}
 
 function _init()
 	local card_gap = 4
@@ -34,13 +68,8 @@ function _init()
 			card_gap, 
 			true, stack_on_click_unstack, stack_can_rule)
 			
-		for i = 1,8 do
-			local c = rnd(unstacked_cards)
-			if c then
-				card_to_top(c)
-				c.stack = s
-				add(s.cards, del(unstacked_cards, c))
-			end
+		for i = 1,5 do
+			stack_add_card(s, rnd(unstacked_cards), unstacked_cards)
 			stack_reposition(s)
 		end
 	end
@@ -54,54 +83,28 @@ function _init()
 		s.y_delta = 0
 	end
 	
-	mouse_last = 0
-	mouse_lx, mouse_ly = mouse()
 	
+	deck_stack = stack_new(
+		card_gap, card_gap,
+		true, stack_on_click_reveal, stack_cant)
+	deck_stack.y_delta = 0
+	
+	deck_playable = stack_new(
+		card_gap, card_height + card_gap*3,
+		true, stack_on_click_unstack, stack_cant)
+	deck_playable.y_delta = 0
+	
+	while #unstacked_cards > 0 do
+		local c = rnd(unstacked_cards)
+		stack_add_card(deck_stack, c, unstacked_cards)
+		c.a_to = 0.5
+	end
 end
 
 function _update()
-	local mx, my, md = mouse()
 	
-	local mouse_down = md & ~mouse_last
-	local mouse_up = ~md & mouse_last
-	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
-	
-	if mouse_down&1 == 1 and not held_stack then
-		for i = #cards_all, 1, -1 do
-			local c = cards_all[i]
-			if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
-				c.stack.on_click(c, mx, my)
-				break
-			end
-		end
-	end
-	
-	if mouse_up&1 == 1 and held_stack then
-		for s in all(stacks_all) do
-			local y = stack_y_pos(s)
-			if s:can_stack(held_stack) 
-			and point_box(held_stack.x_to + card_width/2, 
-			held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
-			
-				stack_cards(s, held_stack)
-				held_stack = nil
-				break
-			end
-		end
-		if held_stack ~= nil then
-			stack_cards(held_stack.old_stack, held_stack)
-			held_stack = nil
-		end
-	end
-	
-	if held_stack then
-		held_stack.x_to += mouse_dx
-		held_stack.y_to += mouse_dy
-		--stack_reposition(held_stack)
-	end
 	cards_api_update()
 		
-	mouse_last, mouse_lx, mouse_ly = md, mx, my
 end
 
 function _draw()
@@ -109,7 +112,7 @@ function _draw()
 	
 	cards_api_draw()
 	
-	?stat(1), 0, 0, 6
+	--?stat(1), 0, 0, 6
 end
 
 
@@ -160,5 +163,19 @@ function stack_can_goal(stack, stack2)
 end
 
 function stack_on_click_reveal()
+	local s = deck_stack.cards
 	
+	if #s > 0 then
+		local c = s[#s]
+		stack_add_card(deck_playable, c)
+		c.a_to = 0
+				
+	else
+		local s = deck_playable.cards
+		while #s > 0 do
+			local c = s[#s]
+			stack_add_card(deck_stack, c)
+			c.a_to = 0.5
+		end
+	end
 end
