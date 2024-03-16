@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 13:58:05",revision=458]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 15:03:10",revision=573]]
 
 function card_draw(sprite, x, y, width, height, angle)
 	angle /= -3

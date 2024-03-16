@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 13:58:05",revision=1760]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 15:03:10",revision=1909]]
 
 include"card_api.lua"
 
@@ -111,16 +111,16 @@ function _init()
 		end
 	end
 	
-	for i = 0,34 do
+	for i = 0,3 do
 		local s = add(stacks, {
 			x_to = 8*(card_width + card_gap*2) + card_gap,
-			y_to = i*(card_height + card_gap*2) + card_gap,
+			y_to = i*(card_height + card_gap*2-1) + card_gap,
 			cards = {},
 			perm = true,
 			can_stack = stack_can_goal,
 			y_delta = 0
 			})
-				end
+	end
 	
 	mouse_last = 0
 	mouse_lx, mouse_ly = mouse()
@@ -177,35 +177,26 @@ function _update()
 end
 
 function _draw()
-	cls(1)
-			
+	cls(3)
+	
+	foreach(stacks, draw_stack)
+	
 	foreach(cards, draw_card)
 	
-	?stat(1), 0, 0
+	?stat(1), 0, 0, 6
 end
 
-function draw_card(c)
-	local x, y = c.x(), c.y()
---	rectfill(x,y,x+card_width-1,y+card_height-1,7)
---	rect(x,y,x+card_width-1,y+card_height-1,6)
---	spr(2,x,y)
---	sspr(2, 0, 0, card_width, card_height, x, y)
---[[
-	local sx, dy = 0, mid(c.x("vel")/15, -0.8,0.8)
-	if abs(dy*card_width) < 1 then
-		sspr(c.sprite, 0, 0, card_width, card_height, x, y)
-	else
-		for x2 = 0,card_width - 1 do
-			sspr(c.sprite, sx, 0, 1, card_height, x, y)
-			sx += 1
-			x += 1
-			y += dy
-		end
+function draw_stack(s)
+	if s.perm then
+		local x, y = s.x_to, s.y_to
+		spr(5, x-3, y-3)
+		--rectfill(x - 3, y - 3, x + card_width + 2, y + card_height + 2, 19)
 	end
-	]]
+end
+
+
+function draw_card(c)
 	card_draw(c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / 20)
-	
---	print(all_ranks[c.rank] .. all_suits[c.suit], c.x()+3, c.y()+3, all_suit_colors[c.suit])
 end
 
 function update_card(c)
@@ -313,7 +304,7 @@ function stack_can_goal(stack, stack2)
 		return true
 	end
 	
-	if #stack.cards > 0 and c1.rank + 1 == c2.rank then
+	if #stack.cards > 0 and c1.rank + 1 == c2.rank and c1.suit == c2.suit then
 		return true
 	end
 end
