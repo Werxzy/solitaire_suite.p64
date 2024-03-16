@@ -1,44 +1,21 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 15:46:34",revision=2108]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 16:44:17",revision=2421]]
 
 include"cards_api/cards_base.lua"
 
-function smooth_val(val, damp, acc)
-	local vel = 0
-	return function(to)
-		if to == "vel" then
-			return vel
-		end
-		if to then
-			local dif = (to - val) * acc
-			vel += dif
-			vel *= damp
-			val += vel
-			if abs(vel) < 0.1 and abs(dif) < 0.1 then
-				val, vel = to, 0
-			end
-		end
-		return val
-	end
-end
 
 function _init()
 
 	for suit = 1,4 do
 		for rank = 1,13 do
-			local c = add(cards_all, {
-				x = smooth_val(240, 0.7, 0.1), 
-				y = smooth_val(135, 0.7, 0.1), 
-				suit = suit,
-				rank = rank,
-				x_to = rnd(400)\1,
-				y_to = rnd(200)\1,
-				sprite = userdata("u8", card_width, card_height)
-				})
-				
-			set_draw_target(c.sprite)
-			spr(2)
-			print(all_ranks[c.rank] .. all_suits[c.suit], 3, 3, all_suit_colors[c.suit])
+			local new_sprite = userdata("u8", card_width, card_height)
 			
+			set_draw_target(new_sprite)
+			spr(2)
+			print(all_ranks[rank] .. all_suits[suit], 3, 3, all_suit_colors[suit])
+			
+			local c = card_new(new_sprite, 240,100)
+			c.suit = suit
+			c.rank = rank
 		end
 	end
 	
@@ -64,7 +41,8 @@ function _init()
 		for i = 1,8 do
 			local c = rnd(unstacked_cards)
 			if c then
-				add(cards_all, del(cards_all, c)).stack = s
+				card_to_top(c)
+				c.stack = s
 				add(s.cards, del(unstacked_cards, c))
 			end
 			stack_reposition(s)

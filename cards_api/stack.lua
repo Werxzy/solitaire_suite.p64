@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 15:46:34",revision=157]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 16:44:17",revision=433]]
 
 stacks_all = {}
 
@@ -36,7 +36,7 @@ function unstack_cards(card)
 	local i = has(old_stack.cards, card)
 	while #old_stack.cards >= i do
 		local c = add(new_stack.cards, deli(old_stack.cards, i))
-		add(cards_all, del(cards_all, c)) -- puts cards on top of all the others
+		card_to_top(c) -- puts cards on top of all the others
 		c.stack = new_stack
 	end
 	

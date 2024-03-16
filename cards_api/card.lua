@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 15:46:34",revision=730]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 16:44:17",revision=1038]]
 
 all_suits = {
 	--"Spades",
@@ -41,8 +41,23 @@ card_gap = 4
 
 cards_all = {}
 
-function card_draw(sprite, x, y, width, height, angle)
-	angle /= -3
+function card_new(sprite, x, y, a)
+	x = x or 0
+	y = y or 0
+	a = a or 0
+	return add(cards_all, {
+		x = smooth_val(x, 0.7, 0.1), 
+		y = smooth_val(y, 0.7, 0.1), 
+		a = smooth_angle(a, 0.9, 0.2),
+		x_to = x,
+		y_to = y,
+		a_to = a,
+		sprite = sprite
+		})
+end
+
+function card_draw(c)
+	local sprite, x, y, width, height, angle = c.a_to == 0.5 and 1 or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then
 		sprite = 1
@@ -71,11 +86,12 @@ function card_draw(sprite, x, y, width, height, angle)
 	end
 end
 
-function draw_card(c)
-	card_draw(c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / 20)
-end
-
 function card_update(c)
 	c.x(c.x_to)
 	c.y(c.y_to)
+	c.a(c.a_to)
+end
+
+function card_to_top(c)
+	add(cards_all, del(cards_all, c))
 end
