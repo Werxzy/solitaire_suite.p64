@@ -1,7 +1,8 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 21:30:12",revision=1588]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-16 22:24:21",revision=1719]]
 
 card_width = 45
 card_height = 60
+card_back = 1 -- can be number or userdata
 
 cards_all = {}
 
@@ -24,7 +25,7 @@ function card_draw(c)
 	local sprite, x, y, width, height, angle = c.a_to == 0.5 and 1 or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then
-		sprite = 1
+		sprite = card_back
 	end
 	
 	y -= dy * width / 2

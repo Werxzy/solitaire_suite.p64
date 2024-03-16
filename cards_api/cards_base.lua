@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 21:30:12",revision=930]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-16 22:24:21",revision=1053]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -85,6 +85,16 @@ function cards_api_update()
 --	end
 	mouse_last, mouse_lx, mouse_ly = md, mx, my
 	
+end
+
+function cards_api_clear()
+	-- removes recursive connection between cards to safely remove them from memory
+	-- at least I believe this is needed
+	for c in all(cards_all) do
+		c.stack = nil
+	end
+	cards_all = {}
+	stacks_all = {}
 end
 
 -- maybe stuff these into userdata to evaluate all at once?

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 21:30:12",revision=3032]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 22:24:21",revision=3184]]
 
 include"cards_api/cards_base.lua"
 
@@ -64,6 +64,7 @@ function _init()
 
 	for i = 1,7 do
 		local s = stack_new(
+			{5},
 			i*(card_width + card_gap*2) + card_gap, 
 			card_gap, 
 			true, stack_can_rule, stack_on_click_unstack, stack_on_double_goal)
@@ -77,6 +78,7 @@ function _init()
 	stack_goals = {}
 	for i = 0,3 do
 		local s = add(stack_goals, stack_new(
+			{5},
 			8*(card_width + card_gap*2) + card_gap,
 			i*(card_height + card_gap*2-1) + card_gap,
 			true, stack_can_goal, stack_on_click_unstack))
@@ -86,15 +88,17 @@ function _init()
 	
 	
 	deck_stack = stack_new(
+		{5, 6},
 		card_gap, card_gap,
 		true, stack_cant, stack_on_click_reveal)
-	deck_stack.y_delta = 0
+	deck_stack.y_delta = -0.5
 	deck_stack.repos_decay = 3
 	
 	deck_playable = stack_new(
+		{5,7},
 		card_gap, card_height + card_gap*3,
 		true, stack_cant, stack_on_click_unstack, stack_on_double_goal)
-	deck_playable.y_delta = 0
+	deck_playable.y_delta = 2
 	deck_playable.repos_decay = 3
 	
 	while #unstacked_cards > 0 do

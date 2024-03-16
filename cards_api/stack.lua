@@ -1,9 +1,11 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 21:30:12",revision=1008]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-16 22:24:21",revision=1139]]
 
 stacks_all = {}
+stack_border = 3
 
-function stack_new(x, y, perm, stack_rule, on_click, on_double)
+function stack_new(sprites, x, y, perm, stack_rule, on_click, on_double)
 	return add(stacks_all, {
+		sprites = sprites,
 		x_to = x,
 		y_to = y,
 		cards = {},
@@ -18,9 +20,10 @@ end
 
 function stack_draw(s)
 	if s.perm then
-		local x, y = s.x_to, s.y_to
-		spr(5, x-3, y-3)
-		--rectfill(x - 3, y - 3, x + card_width + 2, y + card_height + 2, 19)
+		local x, y = s.x_to - stack_border, s.y_to - stack_border
+		for sp in all(s.sprites) do
+			spr(sp, x, y)
+		end
 	end
 end
 
@@ -49,7 +52,7 @@ end
 function unstack_cards(card)
 	local old_stack = card.stack
 	
-	local new_stack = stack_new(0, 0, false, stack_cant, stack_cant)
+	local new_stack = stack_new(nil, 0, 0, false, stack_cant, stack_cant)
 	new_stack.y_delta = 10
 	new_stack.old_stack = old_stack
 
