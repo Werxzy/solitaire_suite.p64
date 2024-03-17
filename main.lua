@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-16 22:24:21",revision=3184]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-17 02:37:02",revision=3252]]
 
 include"cards_api/cards_base.lua"
 
@@ -92,14 +92,14 @@ function _init()
 		card_gap, card_gap,
 		true, stack_cant, stack_on_click_reveal)
 	deck_stack.y_delta = -0.5
-	deck_stack.repos_decay = 3
+	deck_stack.repos_decay = 2
 	
 	deck_playable = stack_new(
 		{5,7},
 		card_gap, card_height + card_gap*3,
 		true, stack_cant, stack_on_click_unstack, stack_on_double_goal)
 	deck_playable.y_delta = 2
-	deck_playable.repos_decay = 3
+	deck_playable.repos_decay = 2
 	
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -191,25 +191,26 @@ end
 
 function stack_on_double_goal(card)
 	-- only accept top card (though could work with multiple cards
-	local old_stack = card.stack
-	if card_is_top(old_stack, card) then 
-		
-		-- create a temporary stack
-		local temp_stack = unstack_cards(card)
-		
-		-- attempt to place on each of the goal stacks
-		for g in all(stack_goals) do
-			if g:can_stack(temp_stack) then
-				stack_cards(g, temp_stack)
-				temp_stack = nil
-				break
+	if card then
+		local old_stack = card.stack
+		if card_is_top(old_stack, card) then 
+			
+			-- create a temporary stack
+			local temp_stack = unstack_cards(card)
+			
+			-- attempt to place on each of the goal stacks
+			for g in all(stack_goals) do
+				if g:can_stack(temp_stack) then
+					stack_cards(g, temp_stack)
+					temp_stack = nil
+					break
+				end
+			end
+			
+			-- if temp stack still exists, then return card to original stack
+			if temp_stack then
+				stack_cards(old_stack, temp_stack)
 			end
 		end
-		
-		-- if temp stack still exists, then return card to original stack
-		if temp_stack then
-			stack_cards(old_stack, temp_stack)
-		end
 	end
-	
 end
