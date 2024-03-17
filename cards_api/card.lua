@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-17 02:37:02",revision=1778]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-17 13:56:39",revision=1820]]
 
 card_width = 45
 card_height = 60
@@ -62,6 +62,7 @@ function card_to_top(card)
 	add(cards_all, del(cards_all, card))
 end
 
-function card_is_top(stack, card)
-	return stack.cards[#stack.cards] == card
+function card_is_top(card)
+	local s = card.stack.cards
+	return s[#s] == card
 end

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-17 02:37:02",revision=3252]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-17 13:56:39",revision=3296]]
 
 include"cards_api/cards_base.lua"
 
@@ -65,9 +65,9 @@ function _init()
 	for i = 1,7 do
 		local s = stack_new(
 			{5},
-			i*(card_width + card_gap*2) + card_gap, 
-			card_gap, 
-			true, stack_can_rule, stack_on_click_unstack, stack_on_double_goal)
+			i*(card_width + card_gap*2) + card_gap, card_gap, 
+			true, stack_can_rule, 
+			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal)
 			
 		for i = 1,5 do
 			stack_add_card(s, rnd(unstacked_cards), unstacked_cards)
@@ -81,7 +81,7 @@ function _init()
 			{5},
 			8*(card_width + card_gap*2) + card_gap,
 			i*(card_height + card_gap*2-1) + card_gap,
-			true, stack_can_goal, stack_on_click_unstack))
+			true, stack_can_goal, stack_on_click_unstack(card_is_top)))
 			
 		s.y_delta = 0
 	end
@@ -97,7 +97,7 @@ function _init()
 	deck_playable = stack_new(
 		{5,7},
 		card_gap, card_height + card_gap*3,
-		true, stack_cant, stack_on_click_unstack, stack_on_double_goal)
+		true, stack_cant, stack_on_click_unstack(card_is_top), stack_on_double_goal)
 	deck_playable.y_delta = 2
 	deck_playable.repos_decay = 2
 	
@@ -191,26 +191,42 @@ end
 
 function stack_on_double_goal(card)
 	-- only accept top card (though could work with multiple cards
-	if card then
+	if card and card_is_top(card) then 
 		local old_stack = card.stack
-		if card_is_top(old_stack, card) then 
-			
-			-- create a temporary stack
-			local temp_stack = unstack_cards(card)
-			
-			-- attempt to place on each of the goal stacks
-			for g in all(stack_goals) do
-				if g:can_stack(temp_stack) then
-					stack_cards(g, temp_stack)
-					temp_stack = nil
-					break
-				end
-			end
-			
-			-- if temp stack still exists, then return card to original stack
-			if temp_stack then
-				stack_cards(old_stack, temp_stack)
+		-- create a temporary stack
+		local temp_stack = unstack_cards(card)
+		
+		-- attempt to place on each of the goal stacks
+		for g in all(stack_goals) do
+			if g:can_stack(temp_stack) then
+				stack_cards(g, temp_stack)
+				temp_stack = nil
+				break
 			end
 		end
+			
+		-- if temp stack still exists, then return card to original stack
+		if temp_stack then
+			stack_cards(old_stack, temp_stack)
+		end
 	end
+end
+
+function unstack_rule_decending(card)
+	local s = card.stack.cards
+	local i = has(s, card)
+	
+	-- goes through each card above clicked card to see if it fits the rule
+	for j = i+1, #s do
+		local next_card = s[j]
+		
+		-- either rank matches, not decending by 1
+		if next_card.suit == card.suit or next_card.rank+1 ~= card.rank then
+			return false
+		end
+	
+		card = next_card -- current card becomes previous card
+	end
+	
+	return true
 end
