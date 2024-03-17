@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-17 18:25:32",revision=1286]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-17 18:34:23",revision=1306]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -6,6 +6,7 @@ include"cards_api/card.lua"
 mouse_last = 0
 mouse_lx, mouse_ly = mouse()
 mouse_last_click = time() - 100
+mouse_last_clicked = nil
 	
 function cards_api_draw()
 	foreach(stacks_all, stack_draw)	
@@ -22,13 +23,19 @@ function cards_api_update()
 
 	if mouse_down&1 == 1 and not held_stack then
 		local clicked = false
+		
 		for i = #cards_all, 1, -1 do
 			local c = cards_all[i]
 			if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
-				if double_click and c.stack.on_double then
+				
+				if double_click 
+				and mouse_last_clicked == c
+				and c.stack.on_double then
 					c.stack.on_double(c)
+					mouse_last_clicked = nil
 				else
 					c.stack.on_click(c)
+					mouse_last_clicked = c
 				end
 				clicked = true
 				break
@@ -38,10 +45,15 @@ function cards_api_update()
 		if not clicked then
 			for s in all(stacks_all) do
 				if point_box(mx, my, s.x_to, s.y_to, card_width, card_height) then
-					if time() - mouse_last_click < 0.5 and s.on_double then
+				
+					if time() - mouse_last_click < 0.5 
+					and mouse_last_clicked == s 
+					and s.on_double then
 						s.on_double()
+						mouse_last_clicked = nil
 					else
 						s.on_click()
+						mouse_last_clicked = s
 					end
 					break
 				end
@@ -55,7 +67,7 @@ function cards_api_update()
 			if s:can_stack(held_stack) 
 			and point_box(held_stack.x_to + card_width/2, 
 			held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
-			
+				
 				stack_cards(s, held_stack)
 				held_stack = nil
 				break
@@ -77,7 +89,7 @@ function cards_api_update()
 	foreach(cards_all, card_update)
 	
 
-	if mouse_down&1 == 1 and not double_click then
+	if mouse_down&1 == 1 then
 		mouse_last_click = time()
 	end
 --	if double_click then
