@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-17 13:56:39",revision=1820]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-17 14:29:37",revision=1838]]
 
 card_width = 45
 card_height = 60
