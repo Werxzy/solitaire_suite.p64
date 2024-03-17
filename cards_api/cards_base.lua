@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-17 18:34:23",revision=1306]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-17 20:14:16",revision=1448]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -82,10 +82,11 @@ function cards_api_update()
 	if held_stack then
 		held_stack.x_to += mouse_dx
 		held_stack.y_to += mouse_dy
-		--stack_reposition(held_stack)
 	end
 	
-	foreach(stacks_all, stack_reposition)
+	for s in all(stacks_all) do
+		s:reposition()
+	end
 	foreach(cards_all, card_update)
 	
 
