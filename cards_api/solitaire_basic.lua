@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 03:15:36",revision=673]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 03:40:43",revision=770]]
 
 all_suits = {
 	--"Spades",
@@ -100,7 +100,7 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
-	button_simple_text("reset", 5, 200, function()
+	button_simple_text("New Game", 1, 200, function()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
@@ -110,7 +110,7 @@ end
 -- deals the cards out
 function game_setup_anim()
 	pause_frames(30)
-	for i = 1,5 do	
+	for i = 1,5 do	
 		for s in all(stacks_supply) do
 			local c = get_top_card(deck_stack)
 			stack_add_card(s, c)
@@ -133,7 +133,8 @@ function game_reset_anim()
 		end
 	end
 	
-	-- todo shuffle
+	pause_frames(35)
+	
 	game_shuffle_anim()
 	game_shuffle_anim()
 	game_shuffle_anim()
@@ -141,8 +142,28 @@ function game_reset_anim()
 	game_setup_anim()
 end
 
+-- physically shuffle the cards
 function game_shuffle_anim()
-
+	local temp_stack = stack_new(
+		nil, deck_stack.x_to + card_width + 4, deck_stack.y_to, 
+		stack_repose_static(-0.2), 
+		false, stack_cant, stack_cant)
+		
+	for i = 1, rnd(10)-5 + #deck_stack.cards/2 do
+		stack_add_card(temp_stack, get_top_card(deck_stack))
+	end
+	
+	pause_frames(30)
+	
+	for c in all(temp_stack.cards) do
+		stack_add_card(deck_stack, c, rnd(#deck_stack.cards+1)\1+1)
+	end
+	for c in all(deck_stack.cards) do
+		card_to_top(c)
+	end
+	del(stacks_all, temp_stack)
+	
+	pause_frames(20)
 end
 
 

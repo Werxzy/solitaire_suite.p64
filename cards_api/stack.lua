@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-18 03:15:36",revision=2011]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-18 03:40:43",revision=2091]]
 
 stacks_all = {}
 stack_border = 3
@@ -119,11 +119,17 @@ end
 function stack_add_card(stack, card, old_stack)
 	if card then
 		card_to_top(card)
-		if old_stack then
+		
+		if type(old_stack) == "table" then
 			del(old_stack, card)
 		elseif card.stack then
 			del(card.stack.cards, card)
 		end
-		add(stack.cards, card).stack = stack
+		
+		if type(old_stack) == "number" then
+			add(stack.cards, card, old_stack).stack = stack
+		else
+			add(stack.cards, card).stack = stack
+		end
 	end
 end

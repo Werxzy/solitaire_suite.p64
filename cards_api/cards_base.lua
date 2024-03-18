@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 03:15:36",revision=1947]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 03:40:43",revision=2021]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -49,7 +49,7 @@ function cards_api_mouse_update(interact)
 	local mouse_up = ~md & mouse_last
 	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
 	local double_click = time() - mouse_last_click < 0.5	
-	
+	
 	if interact then
 		for b in all(buttons_all) do
 			b.highlight = not held_stack and point_box(mx, my, b.x, b.y, b.w, b.h)
