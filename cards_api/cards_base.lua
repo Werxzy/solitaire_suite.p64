@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 04:46:36",revision=2034]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 13:33:13",revision=2069]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -146,42 +146,65 @@ function cards_api_clear()
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
-function smooth_val(val, damp, acc)
+function smooth_val(pos, damp, acc)
 	local vel = 0
-	return function(to)
+	return function(to, set)
 		if to == "vel" then
+			if set then
+				vel = set
+				return
+			end
 			return vel
+			
+		elseif to == "pos" then
+			if set then
+				pos = set
+				return
+			end
+			return pos -- not necessary, but for consistency
 		end
+		
 		if to then
-			local dif = (to - val) * acc
+			local dif = (to - pos) * acc
 			vel += dif
 			vel *= damp
-			val += vel
+			pos += vel
 			if abs(vel) < 0.1 and abs(dif) < 0.1 then
-				val, vel = to, 0
+				pos, vel = to, 0
 			end
 		end
-		return val
+		return pos
 	end
 end
 
--- angle might be overkill
-function smooth_angle(val, damp, acc)
+function smooth_angle(pos, damp, acc)
 	local vel = 0
 	return function(to)
 		if to == "vel" then
+			if set then
+				vel = set
+				return
+			end
 			return vel
+			
+		elseif to == "pos" then
+			if set then
+				pos = set
+				return
+			end
+			return pos -- not necessary, but for consistency
 		end
+		
 		if to then
-			local dif = ((to - val + 0.5) % 1 - 0.5) * acc
+			local dif = ((to - pos + 0.5) % 1 - 0.5) * acc
 			vel += dif
 			vel *= damp
-			val += vel
+			pos += vel
 			if abs(vel) < 0.0006 and abs(dif) < 0.007 then
-				val, vel = to, 0
+				pos, vel = to, 0
 			end
 		end
-		return val
+		return pos
 	end
 end
 

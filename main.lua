@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-18 04:46:36",revision=4145]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-18 13:33:13",revision=4185]]
 
 include"cards_api/cards_base.lua"
 
@@ -15,5 +15,5 @@ function _draw()
 	cls(3)
 	cards_api_draw()
 	
-	--?stat(1), 0, 0, 6
+	?stat(1), 1, 262, 6
 end
