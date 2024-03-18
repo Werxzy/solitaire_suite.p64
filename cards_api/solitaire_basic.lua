@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 16:41:42",revision=1115]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 19:24:34",revision=1930]]
 
 all_suits = {
 	--"Spades",
@@ -34,8 +34,26 @@ all_ranks = {
 	"K"
 }
 
+
 function game_setup()
+	
+	win_count = 0
+
 	cards_api_clear()
+	poke(0x5508, 0xff) -- read
+	poke(0x550a, 0xff) -- target
+	
+	-- shadow mask color
+	for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,17,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
+		-- bit 0x40 is to change the table color to prevent writing onto shaded areas
+		-- kinda like some of the old shadow techniques in 3d games
+		poke(0x8000 + 32*64 + i-1, 0x40|b)
+	end
+	-- poke(0x5509, 0xff) -- enable writing new color table
+	-- draw shadow
+	-- poke(0x5509, 0x3f) -- disable
+	
+	-- can apply write 
 
 	local card_gap = 4
 	for suit = 1,4 do
@@ -100,7 +118,7 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
-	button_simple_text("New Game", 1, 200, function()
+	button_simple_text("New Game", 1, 220, function()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
@@ -325,11 +343,27 @@ end
 
 function game_draw(layer)
 	if layer == 1 then
+		spr(58, 2, 167) -- wins label
+		
 		for i = 0,3 do
 			local x, y = 1+i*21, 180
-			sspr(49, 0, i*time(), 16, 18, x + 3, y + 3)
-			spr(50, x, 180)
+			local sy = (i + 1)*time()/2 -- temp
 			
+			sy += sin(sy) * 0.3 -- little shift
+			sy = 144 - sy * 16 -- proper direction
+			sy %= 160 -- looping
+			
+			sspr(49, 0, sy, 16, 16, x + 3, y + 3)
+			if sy > 144 then -- looping digit
+				sspr(49, 0, sy-160, 16, min(16 - (160-sy), 16), x + 3, y + 3)
+			end
+			
+			-- shadows
+			spr(52, x, 180)
+			spr(51, x, 180) -- a bit overkill, could use sspr or rectfill
+			
+			-- case
+			spr(50, x, 180)
 		end
 	end
 end
