@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-18 15:32:51",revision=4315]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-18 16:41:42",revision=4406]]
 
 include"cards_api/cards_base.lua"
 
@@ -9,7 +9,6 @@ end
 
 function _update()
 	cards_api_update()	
-	notify(tostr(stacks_supply))
 end
 
 function _draw()

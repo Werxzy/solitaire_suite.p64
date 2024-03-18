@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 15:32:51",revision=988]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 16:41:42",revision=1115]]
 
 all_suits = {
 	--"Spades",
@@ -321,4 +321,15 @@ function unstack_rule_decending(card)
 	end
 	
 	return true
+end
+
+function game_draw(layer)
+	if layer == 1 then
+		for i = 0,3 do
+			local x, y = 1+i*21, 180
+			sspr(49, 0, i*time(), 16, 18, x + 3, y + 3)
+			spr(50, x, 180)
+			
+		end
+	end
 end

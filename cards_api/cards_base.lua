@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 15:32:51",revision=2201]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 16:41:42",revision=2289]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -12,13 +12,19 @@ mouse_last_clicked = nil
 cards_coroutine = nil
 	
 function cards_api_draw()
+	if(game_draw) game_draw(0)
+	
 	foreach(stacks_all, stack_draw)
 	
 	for b in all(buttons_all) do
 		b:draw()
 	end
+	
+	if(game_draw) game_draw(1)
 		
 	foreach(cards_all, card_draw)
+	
+	if(game_draw) game_draw(2)
 end
 
 function cards_api_update()
