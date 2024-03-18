@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 02:18:33",revision=451]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 03:15:36",revision=673]]
 
 all_suits = {
 	--"Spades",
@@ -100,6 +100,10 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
+	button_simple_text("reset", 5, 200, function()
+		cards_coroutine = cocreate(game_reset_anim)
+	end)
+	
 	cards_coroutine = cocreate(game_setup_anim)
 end
 
@@ -115,6 +119,30 @@ function game_setup_anim()
 		end
 		pause_frames(5)
 	end
+end
+
+function game_reset_anim()
+	for a in all{stacks_supply, stack_goals, {deck_playable}} do
+		for s in all(a) do
+			while #s.cards > 0 do
+				local c = get_top_card(s)
+				stack_add_card(deck_stack, c)
+				c.a_to = 0.5
+				pause_frames(3)
+			end
+		end
+	end
+	
+	-- todo shuffle
+	game_shuffle_anim()
+	game_shuffle_anim()
+	game_shuffle_anim()
+	
+	game_setup_anim()
+end
+
+function game_shuffle_anim()
+
 end
 
 

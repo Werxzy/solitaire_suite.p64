@@ -1,7 +1,8 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 02:18:33",revision=1732]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 03:15:36",revision=1947]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
+include"cards_api/button.lua"
 
 mouse_last = 0
 mouse_lx, mouse_ly = mouse()
@@ -11,7 +12,12 @@ mouse_last_clicked = nil
 cards_coroutine = nil
 	
 function cards_api_draw()
-	foreach(stacks_all, stack_draw)	
+	foreach(stacks_all, stack_draw)
+	
+	for b in all(buttons_all) do
+		b:draw()
+	end
+		
 	foreach(cards_all, card_draw)
 end
 
@@ -43,9 +49,12 @@ function cards_api_mouse_update(interact)
 	local mouse_up = ~md & mouse_last
 	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
 	local double_click = time() - mouse_last_click < 0.5	
-
-	
+	
 	if interact then
+		for b in all(buttons_all) do
+			b.highlight = not held_stack and point_box(mx, my, b.x, b.y, b.w, b.h)
+		end
+
 		if mouse_down&1 == 1 and not held_stack then
 			local clicked = false
 			
@@ -64,6 +73,15 @@ function cards_api_mouse_update(interact)
 					end
 					clicked = true
 					break
+				end
+			end
+			
+			if not clicked then
+				for b in all(buttons_all) do
+					if b.highlight then
+						b:on_click()
+						clicked = true
+					end
 				end
 			end
 			
@@ -124,6 +142,7 @@ function cards_api_clear()
 	end
 	cards_all = {}
 	stacks_all = {}
+	buttons_all = {}
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
