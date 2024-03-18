@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 01:05:16",revision=1505]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 01:16:57",revision=1532]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -14,6 +14,17 @@ function cards_api_draw()
 end
 
 function cards_api_update()
+	
+	cards_api_mouse_update()
+
+	for s in all(stacks_all) do
+		s:reposition()
+	end
+	foreach(cards_all, card_update)	
+end
+
+function cards_api_mouse_update()
+
 	local mx, my, md = mouse()
 	
 	local mouse_down = md & ~mouse_last
@@ -83,21 +94,11 @@ function cards_api_update()
 		held_stack.x_to += mouse_dx
 		held_stack.y_to += mouse_dy
 	end
-	
-	for s in all(stacks_all) do
-		s:reposition()
-	end
-	foreach(cards_all, card_update)
-	
 
 	if mouse_down&1 == 1 then
 		mouse_last_click = time()
 	end
---	if double_click then
---		mouse_last_click = time() - 100
---	end
 	mouse_last, mouse_lx, mouse_ly = md, mx, my
-	
 end
 
 function cards_api_clear()

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 01:05:16",revision=187]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 01:16:57",revision=207]]
 
 all_suits = {
 	--"Spades",
