@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-17 21:14:33",revision=152]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 00:24:24",revision=165]]
 
 all_suits = {
 	--"Spades",
@@ -86,7 +86,7 @@ function game_setup()
 	
 	deck_stack = stack_new(
 		{5,6},
-		card_gap, card_gap,
+		card_gap, card_gap,
 		stack_repose_static(-0.5),
 		true, stack_cant, stack_on_click_reveal)
 	
