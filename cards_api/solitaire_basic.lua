@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 19:24:34",revision=1930]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 20:24:28",revision=2065]]
 
 all_suits = {
 	--"Spades",
@@ -103,7 +103,7 @@ function game_setup()
 	deck_stack = stack_new(
 		{5,6},
 		card_gap, card_gap,
-		stack_repose_static(-0.20),
+		stack_repose_static(-0.16),
 		true, stack_cant, stack_on_click_reveal)
 	
 	deck_playable = stack_new(
@@ -169,7 +169,7 @@ end
 function game_shuffle_anim()
 	local temp_stack = stack_new(
 		nil, deck_stack.x_to + card_width + 4, deck_stack.y_to, 
-		stack_repose_static(-0.2), 
+		stack_repose_static(-0.16), 
 		false, stack_cant, stack_cant)
 		
 	for i = 1, rnd(10)-5 + #deck_stack.cards/2 do

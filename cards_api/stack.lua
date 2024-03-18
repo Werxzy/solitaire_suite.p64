@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-18 19:24:34",revision=2998]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-18 20:24:28",revision=3130]]
 
 stacks_all = {}
 stack_border = 3
@@ -39,6 +39,7 @@ end
 function stack_cards(stack, stack2)
 	for c in all(stack2.cards) do
 		add(stack.cards, del(stack2.cards, c))
+		card_to_top(c)
 		c.stack = stack
 	end
 	stack2.old_stack = nil

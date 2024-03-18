@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-18 19:24:34",revision=1265]]
+--[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-18 20:24:28",revision=1434]]
 
 -- this could use more work
 -- the purpose is to allow for animated sprite buttons
@@ -18,14 +18,20 @@ end
 function button_simple_text(t, x, y, on_click)
 	local w, h = print(t, 0, 300)	
 	h -= 300
-	x += 5
-	y += 3
-	w += 3
-	return button_new(x, y, w, h, function(b)
-			rectfill(x-5, y, x+w, y+h+3, 19)
-			rectfill(x-5, y-3, x+w, y+h, b.highlight and 11 or 27)
-			print(t, x, y, 19)
-		end, on_click)
+	w += 9
+	h += 4
+	local bn = button_new(x, y, w, h, function(b)
+			local click_y = sin(b.ct/2)*3
+			nine_slice(55, x, y+3, w, h)
+			nine_slice(b.highlight and 53 or 54, x, y-click_y, w, h)
+			print(t, x+5, y+3-click_y, b.highlight and 3 or 19)
+			b.ct = max(b.ct - 0.08)
+		end, 
+		function (b)
+			b.ct = 1
+			on_click(b)
+		end)
+	bn.ct = 0
 end
 
 function nine_slice(sprite, x, y, w, h, fillcol)

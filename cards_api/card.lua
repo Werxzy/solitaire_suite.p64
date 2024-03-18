@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-18 19:24:34",revision=3620]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-18 20:24:28",revision=3751]]
 
 card_width = 45
 card_height = 60
@@ -6,6 +6,7 @@ card_back = 10 -- can be number or userdata
 
 cards_all = {}
 
+-- todo??? make a card metatable with a weak reference to a stack
 function card_new(sprite, x, y, a)
 	x = x or 0
 	y = y or 0
