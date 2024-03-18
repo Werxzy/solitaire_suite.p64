@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 13:33:13",revision=817]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 14:33:03",revision=956]]
 
 all_suits = {
 	--"Spades",
@@ -104,6 +104,10 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
+	button_simple_text("Auto Place ->", 340, 240, function()
+		cards_coroutine = cocreate(game_auto_place_anim)
+	end)
+
 	cards_coroutine = cocreate(game_setup_anim)
 end
 
@@ -121,6 +125,7 @@ function game_setup_anim()
 	end
 end
 
+-- places all the cards back onto the main deck
 function game_reset_anim()
 	for a in all{stacks_supply, stack_goals, {deck_playable}} do
 		for s in all(a) do
@@ -164,6 +169,49 @@ function game_shuffle_anim()
 	del(stacks_all, temp_stack)
 	
 	pause_frames(20)
+end
+
+-- goes through each card and plays a card where it expects
+-- easier than double clicking each card
+function game_auto_place_anim()
+	local found = true
+	
+	local function find_placement(stack)
+		-- create temp stack with top card
+		local card = get_top_card(stack)
+		if not card then
+			return
+		end
+		local temp_stack = unstack_cards(card)
+	
+		-- check with each goal stack if card can be placed
+		for g in all(stack_goals) do
+			if g:can_stack(temp_stack) then
+				found = true
+				stack_cards(g, temp_stack)
+				break
+			end
+		end
+		
+		-- return card to original stack
+		if not found then
+			stack_cards(stack, temp_stack)
+		end
+	end
+	
+	while found do
+		found = false
+		for i = #stacks_supply, 1, -1 do
+			find_placement(stacks_supply[i])
+			if found then
+				break
+			end
+		end
+		if not found then
+			find_placement(deck_playable)
+		end
+		pause_frames(6)
+	end
 end
 
 

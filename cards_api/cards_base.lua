@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 13:33:13",revision=2069]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 14:33:03",revision=2177]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -125,6 +125,11 @@ function cards_api_mouse_update(interact)
 		if held_stack then
 			held_stack.x_to += mouse_dx
 			held_stack.y_to += mouse_dy
+		end
+		
+	else
+		for b in all(buttons_all) do
+			b.highlight = false
 		end
 	end
 
