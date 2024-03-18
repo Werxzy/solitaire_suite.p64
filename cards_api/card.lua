@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-18 01:16:57",revision=2203]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-18 02:18:33",revision=2407]]
 
 card_width = 45
 card_height = 60
@@ -22,7 +22,8 @@ function card_new(sprite, x, y, a)
 end
 
 function card_draw(c)
-	local sprite, x, y, width, height, angle = c.a_to == 0.5 and 1 or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
+	local facing_down = (c.a_to-0.25) % 1 < 0.5
+	local sprite, x, y, width, height, angle = facing_down and card_back or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then
 		sprite = card_back
@@ -63,6 +64,9 @@ function card_to_top(card)
 end
 
 function card_is_top(card)
-	local s = card.stack.cards
-	return s[#s] == card
+	return get_top_card(card.stack) == card
+end
+
+function get_top_card(stack)
+	return stack.cards[#stack.cards]
 end

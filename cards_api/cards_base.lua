@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 01:16:57",revision=1532]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 02:18:33",revision=1732]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -7,6 +7,8 @@ mouse_last = 0
 mouse_lx, mouse_ly = mouse()
 mouse_last_click = time() - 100
 mouse_last_clicked = nil
+
+cards_coroutine = nil
 	
 function cards_api_draw()
 	foreach(stacks_all, stack_draw)	
@@ -15,7 +17,17 @@ end
 
 function cards_api_update()
 	
-	cards_api_mouse_update()
+	-- don't accept mouse input when there is a coroutine
+	-- though, coroutines are a bit annoying to debug
+	if cards_coroutine then
+		coresume(cards_coroutine)
+		if costatus(cards_coroutine) == "dead" then
+			cards_coroutine = nil
+		end
+		cards_api_mouse_update(false)
+	else
+		cards_api_mouse_update(true)
+	end
 
 	for s in all(stacks_all) do
 		s:reposition()
@@ -23,7 +35,7 @@ function cards_api_update()
 	foreach(cards_all, card_update)	
 end
 
-function cards_api_mouse_update()
+function cards_api_mouse_update(interact)
 
 	local mx, my, md = mouse()
 	
@@ -32,67 +44,70 @@ function cards_api_mouse_update()
 	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
 	local double_click = time() - mouse_last_click < 0.5	
 
-	if mouse_down&1 == 1 and not held_stack then
-		local clicked = false
-		
-		for i = #cards_all, 1, -1 do
-			local c = cards_all[i]
-			if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
-				
-				if double_click 
-				and mouse_last_clicked == c
-				and c.stack.on_double then
-					c.stack.on_double(c)
-					mouse_last_clicked = nil
-				else
-					c.stack.on_click(c)
-					mouse_last_clicked = c
-				end
-				clicked = true
-				break
-			end
-		end
-		
-		if not clicked then
-			for s in all(stacks_all) do
-				if point_box(mx, my, s.x_to, s.y_to, card_width, card_height) then
-				
-					if time() - mouse_last_click < 0.5 
-					and mouse_last_clicked == s 
-					and s.on_double then
-						s.on_double()
+	
+	if interact then
+		if mouse_down&1 == 1 and not held_stack then
+			local clicked = false
+			
+			for i = #cards_all, 1, -1 do
+				local c = cards_all[i]
+				if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
+					
+					if double_click 
+					and mouse_last_clicked == c
+					and c.stack.on_double then
+						c.stack.on_double(c)
 						mouse_last_clicked = nil
 					else
-						s.on_click()
-						mouse_last_clicked = s
+						c.stack.on_click(c)
+						mouse_last_clicked = c
 					end
+					clicked = true
 					break
 				end
 			end
-		end
-	end
-	
-	if mouse_up&1 == 1 and held_stack then
-		for s in all(stacks_all) do
-			local y = stack_y_pos(s)
-			if s:can_stack(held_stack) 
-			and point_box(held_stack.x_to + card_width/2, 
-			held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
-				
-				stack_cards(s, held_stack)
-				held_stack = nil
-				break
+			
+			if not clicked then
+				for s in all(stacks_all) do
+					if point_box(mx, my, s.x_to, s.y_to, card_width, card_height) then
+					
+						if time() - mouse_last_click < 0.5 
+						and mouse_last_clicked == s 
+						and s.on_double then
+							s.on_double()
+							mouse_last_clicked = nil
+						else
+							s.on_click()
+							mouse_last_clicked = s
+						end
+						break
+					end
+				end
 			end
 		end
-		if held_stack ~= nil then
-			stack_cards(held_stack.old_stack, held_stack)
-			held_stack = nil
+		
+		if mouse_up&1 == 1 and held_stack then
+			for s in all(stacks_all) do
+				local y = stack_y_pos(s)
+				if s:can_stack(held_stack) 
+				and point_box(held_stack.x_to + card_width/2, 
+				held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
+					
+					stack_cards(s, held_stack)
+					held_stack = nil
+					break
+				end
+			end
+			if held_stack ~= nil then
+				stack_cards(held_stack.old_stack, held_stack)
+				held_stack = nil
+			end
 		end
-	end
-	
-	if held_stack then
-		held_stack.x_to += mouse_dx
-		held_stack.y_to += mouse_dy
+		
+		if held_stack then
+			held_stack.x_to += mouse_dx
+			held_stack.y_to += mouse_dy
+		end
 	end
 
 	if mouse_down&1 == 1 then
@@ -165,7 +180,12 @@ function point_box(x1, y1, x2, y2, w, h)
 	return x1 >= 0 and y1 >= 0 and x1 < w and y1 < h 
 end 
 
-
 function lerp(a, b, t)
 	return a + (b-a) * t
+end
+
+function pause_frames(n)
+	for i = 1,n do
+		yield()
+	end
 end

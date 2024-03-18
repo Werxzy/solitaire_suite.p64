@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 01:16:57",revision=207]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 02:18:33",revision=451]]
 
 all_suits = {
 	--"Spades",
@@ -16,7 +16,6 @@ all_suit_colors = {
 	8,
 	27,
 	25
-	
 }
 
 all_ranks = {
@@ -36,6 +35,8 @@ all_ranks = {
 }
 
 function game_setup()
+	cards_api_clear()
+
 	local card_gap = 4
 	for suit = 1,4 do
 		for rank = 1,13 do
@@ -58,19 +59,16 @@ function game_setup()
 		add(unstacked_cards, c)
 	end
 	
-	stacks = {}
-
+	
+	stacks_supply = {}
 	for i = 1,7 do
-		local s = stack_new(
+		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
 			stack_repose_normal(),
 			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal)
+			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))
 			
-		for i = 1,5 do
-			stack_add_card(s, rnd(unstacked_cards), unstacked_cards)
-		end
 	end
 	
 	stack_goals = {}
@@ -87,7 +85,7 @@ function game_setup()
 	deck_stack = stack_new(
 		{5,6},
 		card_gap, card_gap,
-		stack_repose_static(-0.5),
+		stack_repose_static(-0.20),
 		true, stack_cant, stack_on_click_reveal)
 	
 	deck_playable = stack_new(
@@ -100,6 +98,22 @@ function game_setup()
 		local c = rnd(unstacked_cards)
 		stack_add_card(deck_stack, c, unstacked_cards)
 		c.a_to = 0.5
+	end
+	
+	cards_coroutine = cocreate(game_setup_anim)
+end
+
+-- deals the cards out
+function game_setup_anim()
+	pause_frames(30)
+	for i = 1,5 do	
+		for s in all(stacks_supply) do
+			local c = get_top_card(deck_stack)
+			stack_add_card(s, c)
+			c.a_to = 0
+			pause_frames(3)
+		end
+		pause_frames(5)
 	end
 end
 
