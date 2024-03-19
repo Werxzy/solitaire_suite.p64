@@ -1,6 +1,29 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 03:31:02",revision=2907]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 17:41:43",revision=3161]]
+
+function game_info()
+	return {
+		sprite = 40,
+		name = "Solitaire Too",
+		author = "Werxzy",
+		description = "Complete stacks of the same suit, while moving cards with non-matching suits.",
+		rules = {
+			"Stack cards of the same suit, from Ace to King, in the card slots on the right",
+			"Cards can be stacked in the 7 middle slots if they don't match in suit and are 1 rank lower than the card below.",
+			"Ace is rank 1. Jack, Queen, King are rank 10, 11, 12.",
+			"Click the deck to draw a reveal a card. Revealed cards can be moved noramlly one at a time, but can't be stacked on.",
+			"When the deck is out of cards, click the its deck slot to move all the cards back."
+		}
+	}
+end
+
+function game_load() -- !!! start of game load function
+-- this is to prevent overwriting of game modes
 
 include "cards_api/rolling_score.lua"
+
+-- updates card size if it changed
+card_width = 45
+card_height = 60
 
 all_suits = {
 	--"Spades",
@@ -41,9 +64,9 @@ all_ranks = {
 	"Z",
 }
 
-rank_count = 16 -- adjustable
+rank_count = 13 -- adjustable
 
-
+-- game setup could be removed as it is only called right after game_load()
 function game_setup()
 	
 	-- TODO, the file itself should not be the one to determine this
@@ -57,21 +80,8 @@ function game_setup()
 	end
 
 	cards_api_clear()
-	poke(0x5508, 0xff) -- read
-	poke(0x550a, 0xff) -- target
+	cards_api_shadows_enable(true)
 	
-	-- shadow mask color
-	for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,17,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
-		-- bit 0x40 is to change the table color to prevent writing onto shaded areas
-		-- kinda like some of the old shadow techniques in 3d games
-		poke(0x8000 + 32*64 + i-1, 0x40|b)
-	end
-	-- poke(0x5509, 0xff) -- enable writing new color table
-	-- draw shadow
-	-- poke(0x5509, 0x3f) -- disable
-	
-	-- can apply write 
-
 	local card_gap = 4
 	for suit = 1,4 do
 		for rank = 1,rank_count do
@@ -139,10 +149,7 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Exit", 6, 248, function()
-		-- todo
-		-- cards_coroutine = cocreate(game_reset_anim)
-	end)
+	button_simple_text("Exit", 6, 248, cards_api_exit)
 	
 	button_simple_text("Auto Place ->", 340, 248, function()
 		cards_coroutine = cocreate(game_auto_place_anim)
@@ -397,3 +404,5 @@ end
 function game_update()
 	game_score:update()
 end
+
+end -- !!! end of game load function

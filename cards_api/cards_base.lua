@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 03:31:02",revision=3773]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 17:41:43",revision=4017]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -184,6 +184,16 @@ function cards_api_clear()
 	buttons_all = {}
 end
 
+function cards_api_exit()
+	if(game_on_exit) game_on_exit()
+	
+	if cards_game_exiting then
+		cards_game_exiting()
+	else
+		exit()
+	end
+end
+
 -- grabs the requested save file
 -- ensures that the proper folder exists
 -- returns nil if save does not exist
@@ -199,6 +209,36 @@ end
 -- saves a table of data at established location
 function cards_api_save(data)
 	store(cards_api_saveloc, data)
+end
+
+function cards_api_shadows_enable(enable)
+	
+	if cards_shadows_enabled ~= enable then
+		cards_shadows_enabled = enable
+		
+		if enable then
+			poke(0x5508, 0xff) -- read
+			poke(0x550a, 0xff) -- target sprite
+			poke(0x550b, 0xff) -- target shapes
+			
+			-- shadow mask color
+			for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,17,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
+				-- bit 0x40 is to change the table color to prevent writing onto shaded areas
+				-- kinda like some of the old shadow techniques in 3d games
+				poke(0x8000 + 32*64 + i-1, 0x40|b)
+			end
+			-- poke(0x5509, 0xff) -- enable writing new color table
+			-- draw shadow
+			-- poke(0x5509, 0x3f) -- disable
+		
+		else
+			poke(0x5508, 0x3f) -- read
+			poke(0x550a, 0x3f) -- target sprite
+			poke(0x550b, 0x3f) -- target shapes
+			-- todo, reset color table (probably not necessary
+		end
+	end
+	
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
