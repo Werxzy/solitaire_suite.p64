@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 01:35:04",revision=2644]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 02:17:59",revision=2728]]
 
 include "cards_api/rolling_score.lua"
 
@@ -36,7 +36,7 @@ all_ranks = {
 	"K"
 }
 
-rank_count = 3 -- adjustable
+rank_count = 5 -- adjustable
 
 
 function game_setup()
@@ -148,16 +148,19 @@ end
 -- deals the cards out
 function game_setup_anim()
 	pause_frames(30)
+
 	for i = 1,5 do	
 		for s in all(stacks_supply) do
 			local c = get_top_card(deck_stack)
+			if(not c) break
+			
 			stack_add_card(s, c)
 			c.a_to = 0
 			pause_frames(3)
 		end
 		pause_frames(5)
 	end
-	
+
 	cards_api_game_started()
 end
 
@@ -270,9 +273,6 @@ end
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
 function stack_can_rule(stack, stack2)
-	if s == held_stack then
-		return false
-	end
 	if #stack.cards == 0 then
 		return true
 	end
@@ -293,10 +293,6 @@ end
 -- expects to be stacked from ace to king with the same suit
 function stack_can_goal(stack, stack2)
 	
-	if stack == held_stack then
-		return false
-	end
-	--
 	if #stack2.cards ~= 1 then
 		return false
 	end

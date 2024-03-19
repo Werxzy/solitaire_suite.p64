@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-19 01:35:04",revision=3560]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-19 02:17:59",revision=3637]]
 
 stacks_all = {}
 stack_border = 3
@@ -49,10 +49,7 @@ end
 function stack_on_click_unstack(rule)
 	return function(card)
 		if card and (not rule or rule(card)) then
-			local mx, my = mouse()
 			held_stack = unstack_cards(card)
-			held_stack.x_to = mx - card_width/2
-			held_stack.y_to = my - card_height/2
 		end
 	end
 end

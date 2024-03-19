@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 01:35:04",revision=3522]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 02:17:59",revision=3597]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -122,7 +122,7 @@ function cards_api_mouse_update(interact)
 		if mouse_up&1 == 1 and held_stack then
 			for s in all(stacks_all) do
 				local y = stack_y_pos(s)
-				if s:can_stack(held_stack) 
+				if s ~= held_stack and s:can_stack(held_stack) 
 				and point_box(held_stack.x_to + card_width/2, 
 				held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
 					
@@ -139,8 +139,8 @@ function cards_api_mouse_update(interact)
 		end
 		
 		if held_stack then
-			held_stack.x_to += mouse_dx
-			held_stack.y_to += mouse_dy
+			held_stack.x_to = mx - card_width/2
+			held_stack.y_to = my - card_height/2
 		end
 		
 	else
