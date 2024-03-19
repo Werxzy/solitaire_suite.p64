@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-19 17:41:43",revision=4647]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-19 23:05:47",revision=5145]]
 
 card_width = 45
 card_height = 60
@@ -25,7 +25,7 @@ end
 -- drawing function for cards
 -- shifts vertical lines of pixels to give the illusion if the card turning
 function card_draw(c)
-	local facing_down = (c.a_to-0.25) % 1 < 0.5
+	local facing_down = (c.a()-0.25) % 1 < 0.5
 	local sprite, x, y, width, height, angle = facing_down and card_back or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then

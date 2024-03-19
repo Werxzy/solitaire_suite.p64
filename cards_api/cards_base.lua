@@ -1,8 +1,10 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 17:41:43",revision=4017]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 23:05:47",revision=4583]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
 include"cards_api/button.lua"
+
+cards_api_save_folder = "solitaire_collection/"
 
 mouse_last = 0
 mouse_last_click = time() - 100
@@ -89,9 +91,10 @@ function cards_api_mouse_update(interact)
 			
 			if not clicked then
 				for b in all(buttons_all) do
-					if b.highlight then
+					if b.enabled and b.highlight then
 						b:on_click()
 						clicked = true
+						break
 					end
 				end
 			end
@@ -182,11 +185,35 @@ function cards_api_clear()
 	cards_all = {}
 	stacks_all = {}
 	buttons_all = {}
+	
+	cards_coroutine = nil
+	
+	game_win_condition = nil
+	game_update = nil
+	game_draw = nil
+end
+
+function cards_api_load_game(game_path)
+	-- example "cards_api/solitaire_basic.lua"
+	local path = split(game_path, "/")
+	path = path[#path]
+	path = split(path, ".")
+	
+	assert(path[2] == "lua")
+	
+	cards_api_game_name = path[1]
+	
+	include(game_path)
+	
+	game_load()
+	game_setup()
 end
 
 function cards_api_exit()
+	-- for that specific game
 	if(game_on_exit) game_on_exit()
 	
+	-- where to go next
 	if cards_game_exiting then
 		cards_game_exiting()
 	else
@@ -197,10 +224,13 @@ end
 -- grabs the requested save file
 -- ensures that the proper folder exists
 -- returns nil if save does not exist
-function cards_api_load(name)
-	cards_api_saveloc = "/appdata/solitaire_collection/" .. name .. ".pod"
-	if not has(ls("/appdata"), "solitaire_collection") then
-		mkdir"/appdata/solitaire_collection"
+function cards_api_load()
+	cards_api_saveloc = "/appdata/"
+		.. cards_api_save_folder .. "/" 
+		.. cards_api_game_name .. ".pod"
+		
+	if not has(ls("/appdata"), cards_api_save_folder) then
+		mkdir("/appdata/" .. cards_api_save_folder)
 	else
 		return fetch(cards_api_saveloc)
 	end

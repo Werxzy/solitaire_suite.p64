@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 17:41:43",revision=3161]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 23:05:47",revision=3669]]
 
 function game_info()
 	return {
@@ -66,7 +66,8 @@ all_ranks = {
 
 rank_count = 13 -- adjustable
 
--- game setup could be removed as it is only called right after game_load()
+cards_api_clear()
+
 function game_setup()
 	
 	-- TODO, the file itself should not be the one to determine this
@@ -79,7 +80,7 @@ function game_setup()
 		}
 	end
 
-	cards_api_clear()
+	
 	cards_api_shadows_enable(true)
 	
 	local card_gap = 4
@@ -395,7 +396,10 @@ function unstack_rule_decending(card)
 end
 
 function game_draw(layer)
-	if layer == 1 then
+	if layer == 0 then
+		cls(3)
+	
+	elseif layer == 1 then
 		spr(58, 7, 207) -- wins label
 		game_score:draw()
 	end
