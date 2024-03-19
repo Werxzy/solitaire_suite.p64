@@ -1,4 +1,6 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-18 20:24:28",revision=2065]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 00:02:42",revision=2494]]
+
+include "cards_api/rolling_score.lua"
 
 all_suits = {
 	--"Spades",
@@ -118,15 +120,28 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
-	button_simple_text("New Game", 1, 220, function()
+	button_simple_text("New Game", 40, 248, function()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Auto Place ->", 340, 240, function()
+	button_simple_text("Exit", 6, 248, function()
+		-- todo
+		-- cards_coroutine = cocreate(game_reset_anim)
+	end)
+	
+	button_simple_text("Auto Place ->", 340, 248, function()
 		cards_coroutine = cocreate(game_auto_place_anim)
 	end)
 
 	cards_coroutine = cocreate(game_setup_anim)
+	
+	game_score = rolling_score_new(6, 220, 3, 3, 21, 16, 16, 4, 49, function(s, x, y)
+			-- shadows
+			spr(52, x, y)
+			spr(51, x, y) -- a bit overkill, could use sspr or rectfill
+			-- case
+			spr(50, x, y)
+	end)
 end
 
 -- deals the cards out
@@ -343,27 +358,12 @@ end
 
 function game_draw(layer)
 	if layer == 1 then
-		spr(58, 2, 167) -- wins label
-		
-		for i = 0,3 do
-			local x, y = 1+i*21, 180
-			local sy = (i + 1)*time()/2 -- temp
-			
-			sy += sin(sy) * 0.3 -- little shift
-			sy = 144 - sy * 16 -- proper direction
-			sy %= 160 -- looping
-			
-			sspr(49, 0, sy, 16, 16, x + 3, y + 3)
-			if sy > 144 then -- looping digit
-				sspr(49, 0, sy-160, 16, min(16 - (160-sy), 16), x + 3, y + 3)
-			end
-			
-			-- shadows
-			spr(52, x, 180)
-			spr(51, x, 180) -- a bit overkill, could use sspr or rectfill
-			
-			-- case
-			spr(50, x, 180)
-		end
+		spr(58, 7, 207) -- wins label
+		local n = time()
+		game_score:draw()
 	end
+end
+
+function game_update()
+	game_score:update()
 end

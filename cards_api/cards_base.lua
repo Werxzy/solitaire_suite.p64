@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-18 20:24:28",revision=3069]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 00:02:42",revision=3389]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -45,6 +45,8 @@ function cards_api_update()
 		s:reposition()
 	end
 	foreach(cards_all, card_update)	
+	
+	if(game_update) game_update()
 end
 
 function cards_api_mouse_update(interact)
