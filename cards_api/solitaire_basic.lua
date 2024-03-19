@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 00:02:42",revision=2494]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 01:35:04",revision=2644]]
 
 include "cards_api/rolling_score.lua"
 
@@ -36,10 +36,11 @@ all_ranks = {
 	"K"
 }
 
+rank_count = 3 -- adjustable
+
 
 function game_setup()
 	
-	win_count = 0
 
 	cards_api_clear()
 	poke(0x5508, 0xff) -- read
@@ -59,7 +60,7 @@ function game_setup()
 
 	local card_gap = 4
 	for suit = 1,4 do
-		for rank = 1,13 do
+		for rank = 1,rank_count do
 			local new_sprite = userdata("u8", card_width, card_height)
 			
 			set_draw_target(new_sprite)
@@ -156,6 +157,8 @@ function game_setup_anim()
 		end
 		pause_frames(5)
 	end
+	
+	cards_api_game_started()
 end
 
 -- places all the cards back onto the main deck
@@ -245,9 +248,24 @@ function game_auto_place_anim()
 		end
 		pause_frames(6)
 	end
+	
+	cards_api_condition_check()
 end
 
+function game_win_condition()
+	for g in all(stack_goals) do
+		for i = 1,rank_count do
+			if not g.cards[i] or g.cards[i].rank ~= i then
+				return false
+			end
+		end
+	end
+	return true
+end
 
+function game_count_win()
+	game_score.value += 1
+end
 
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits

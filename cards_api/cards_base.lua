@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 00:02:42",revision=3389]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 01:35:04",revision=3522]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -66,21 +66,23 @@ function cards_api_mouse_update(interact)
 		if mouse_down&1 == 1 and not held_stack then
 			local clicked = false
 			
-			for i = #cards_all, 1, -1 do
-				local c = cards_all[i]
-				if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
-					
-					if double_click 
-					and mouse_last_clicked == c
-					and c.stack.on_double then
-						c.stack.on_double(c)
-						mouse_last_clicked = nil
-					else
-						c.stack.on_click(c)
-						mouse_last_clicked = c
+			if not cards_frozen then
+				for i = #cards_all, 1, -1 do
+					local c = cards_all[i]
+					if point_box(mx, my, c.x(), c.y(), card_width, card_height) then
+						
+						if double_click 
+						and mouse_last_clicked == c
+						and c.stack.on_double then
+							c.stack.on_double(c)
+							mouse_last_clicked = nil
+						else
+							c.stack.on_click(c)
+							mouse_last_clicked = c
+						end
+						clicked = true
+						break
 					end
-					clicked = true
-					break
 				end
 			end
 			
@@ -93,7 +95,7 @@ function cards_api_mouse_update(interact)
 				end
 			end
 			
-			if not clicked then
+			if not clicked and not cards_frozen then
 				for s in all(stacks_all) do
 					if point_box(mx, my, s.x_to, s.y_to, card_width, card_height) then
 					
@@ -106,9 +108,14 @@ function cards_api_mouse_update(interact)
 							s.on_click()
 							mouse_last_clicked = s
 						end
+						clicked = true
 						break
 					end
 				end
+			end
+			
+			if clicked then
+				cards_api_condition_check()
 			end
 		end
 		
@@ -128,6 +135,7 @@ function cards_api_mouse_update(interact)
 				stack_cards(held_stack.old_stack, held_stack)
 				held_stack = nil
 			end
+			cards_api_condition_check()
 		end
 		
 		if held_stack then
@@ -145,6 +153,19 @@ function cards_api_mouse_update(interact)
 		mouse_last_click = time()
 	end
 	mouse_last, mouse_lx, mouse_ly = md, mx, my
+end
+
+function cards_api_condition_check()
+	if not cards_frozen and game_win_condition and game_win_condition() then
+		if game_count_win then
+			game_count_win()
+			cards_frozen = true
+		end
+	end
+end
+
+function cards_api_game_started()
+	 cards_frozen = false
 end
 
 function cards_api_clear()

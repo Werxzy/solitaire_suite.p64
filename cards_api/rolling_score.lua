@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-03-19 00:02:42",revision=380]]
+--[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-03-19 01:35:04",revision=469]]
 
 function rolling_score_update(s)
 	local val = s.value
@@ -14,13 +14,10 @@ function rolling_score_update(s)
 end
 
 function rolling_score_draw(s)
-	local n = time()
 	for i = 1,#s.digits do
 		local sy = s.digits[i]
 		local x, y = (i - 1)*s.spread + s.x, s.y
-		
-		n /= 10
-		
+				
 		sy += sin(sy) * 0.3 -- little shift
 		sy = (9 - sy) * s.dh -- proper direction
 		sy %= s.dh*10 -- looping
