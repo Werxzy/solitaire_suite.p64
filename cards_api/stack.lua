@@ -1,9 +1,12 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-19 02:17:59",revision=3637]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-19 03:31:02",revision=3795]]
 
 stacks_all = {}
 stack_border = 3
 
 --[[
+Stacks are essentially tables containing cards.
+Each stack has a set of rules for how cards interact with it.
+
 sprites = table of sprite ids or userdata to be drawn with sspr
 x,y = top left position of stack
 repos = function called when changing the target position of the cards
@@ -27,6 +30,8 @@ function stack_new(sprites, x, y, repos, perm, stack_rule, on_click, on_double)
 		})
 end
 
+-- drawing function for stacks
+-- always drawn below cards
 function stack_draw(s)
 	if s.perm then
 		local x, y = s.x_to - stack_border, s.y_to - stack_border
@@ -36,6 +41,7 @@ function stack_draw(s)
 	end
 end
 
+-- Places cards from stack2 to onto stack
 function stack_cards(stack, stack2)
 	for c in all(stack2.cards) do
 		add(stack.cards, del(stack2.cards, c))
@@ -46,6 +52,8 @@ function stack_cards(stack, stack2)
 	del(stacks_all, stack2)
 end
 
+-- on_click event that unstacks cards starting from the given card
+-- if a given rule function returns true
 function stack_on_click_unstack(rule)
 	return function(card)
 		if card and (not rule or rule(card)) then
@@ -54,6 +62,8 @@ function stack_on_click_unstack(rule)
 	end
 end
 
+-- creates a new stack by taking cards from the given card's stack.
+-- cards starting from the given card to the top of the stack (stack[#stack])
 function unstack_cards(card)
 	local old_stack = card.stack
 	
@@ -74,6 +84,7 @@ function unstack_cards(card)
 	return new_stack
 end
 
+-- reposition calculation for a stack that allows for more floaty cards
 function stack_repose_normal(y_delta, decay)
 	y_delta = y_delta or 12
 	decay = decay or 0.7
@@ -93,6 +104,7 @@ function stack_repose_normal(y_delta, decay)
 	end
 end
 
+-- reposition calculation that has fixed positions
 function stack_repose_static(y_delta)
 	y_delta = y_delta or 12
 	
@@ -106,14 +118,20 @@ function stack_repose_static(y_delta)
 	end
 end
 
+-- returns the y position of the top of the stack
 function stack_y_pos(stack)
 	local top = stack.cards[#stack.cards]
 	return top and top.y_to or stack.y_to
 end
 
+-- basically always returns false for
+-- more just for nice naming
+-- could still be used for other events like sound effects
 function stack_cant()
 end
 
+-- adds a card to the top of a stack
+-- if an old stack is given, the card is removed from that table/stack instead
 function stack_add_card(stack, card, old_stack)
 	if card then
 		card_to_top(card)

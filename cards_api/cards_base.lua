@@ -1,16 +1,16 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 02:17:59",revision=3597]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-19 03:31:02",revision=3773]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
 include"cards_api/button.lua"
 
 mouse_last = 0
-mouse_lx, mouse_ly = mouse()
 mouse_last_click = time() - 100
 mouse_last_clicked = nil
 
 cards_coroutine = nil
-	
+
+-- main drawing function
 function cards_api_draw()
 	if(game_draw) game_draw(0)
 	
@@ -27,6 +27,7 @@ function cards_api_draw()
 	if(game_draw) game_draw(2)
 end
 
+-- main update function
 function cards_api_update()
 	
 	-- don't accept mouse input when there is a coroutine
@@ -49,13 +50,13 @@ function cards_api_update()
 	if(game_update) game_update()
 end
 
+-- updates mouse interactions
+-- not meant to be called outside
 function cards_api_mouse_update(interact)
-
 	local mx, my, md = mouse()
 	
 	local mouse_down = md & ~mouse_last
 	local mouse_up = ~md & mouse_last
-	local mouse_dx, mouse_dy = mx - mouse_lx, my - mouse_ly
 	local double_click = time() - mouse_last_click < 0.5	
 	
 	if interact then
@@ -150,11 +151,12 @@ function cards_api_mouse_update(interact)
 	end
 
 	if mouse_down&1 == 1 then
-		mouse_last_click = time()
+		mouse_last_click = time(s)
 	end
-	mouse_last, mouse_lx, mouse_ly = md, mx, my
+	mouse_last = md
 end
 
+-- main function to call for if the win condition is met
 function cards_api_condition_check()
 	if not cards_frozen and game_win_condition and game_win_condition() then
 		if game_count_win then
@@ -164,10 +166,13 @@ function cards_api_condition_check()
 	end
 end
 
+-- allows card interaction
+-- may have more uses in the future
 function cards_api_game_started()
 	 cards_frozen = false
 end
 
+-- clears any objects being stored
 function cards_api_clear()
 	-- removes recursive connection between cards to safely remove them from memory
 	-- at least I believe this is needed
@@ -177,6 +182,23 @@ function cards_api_clear()
 	cards_all = {}
 	stacks_all = {}
 	buttons_all = {}
+end
+
+-- grabs the requested save file
+-- ensures that the proper folder exists
+-- returns nil if save does not exist
+function cards_api_load(name)
+	cards_api_saveloc = "/appdata/solitaire_collection/" .. name .. ".pod"
+	if not has(ls("/appdata"), "solitaire_collection") then
+		mkdir"/appdata/solitaire_collection"
+	else
+		return fetch(cards_api_saveloc)
+	end
+end
+
+-- saves a table of data at established location
+function cards_api_save(data)
+	store(cards_api_saveloc, data)
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
@@ -242,6 +264,8 @@ function smooth_angle(pos, damp, acc)
 	end
 end
 
+-- returns the key of a searched value inside a table
+-- such that tab[has(tab, val)] == val
 function has(tab, val)
 	for k,v in pairs(tab) do
 		if v == val then
@@ -250,16 +274,20 @@ function has(tab, val)
 	end
 end
 
+-- aabb point to box collision
 function point_box(x1, y1, x2, y2, w, h)
 	x1 -= x2
 	y1 -= y2
 	return x1 >= 0 and y1 >= 0 and x1 < w and y1 < h 
 end 
 
+-- you know what this is
 function lerp(a, b, t)
 	return a + (b-a) * t
 end
 
+-- yields a certain number of times
+-- may need to be updated in case low battery mode causes halved update rate
 function pause_frames(n)
 	for i = 1,n do
 		yield()

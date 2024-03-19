@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-19 02:17:59",revision=4262]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-19 03:31:02",revision=4418]]
 
 card_width = 45
 card_height = 60
@@ -22,6 +22,8 @@ function card_new(sprite, x, y, a)
 		})
 end
 
+-- drawing function for cards
+-- shifts vertical lines of pixels to give the illusion if the card turning
 function card_draw(c)
 	local facing_down = (c.a_to-0.25) % 1 < 0.5
 	local sprite, x, y, width, height, angle = facing_down and card_back or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
@@ -54,20 +56,24 @@ function card_draw(c)
 	end
 end
 
+-- updates cards position and angle
 function card_update(card)
 	card.x(card.x_to)
 	card.y(card.y_to)
 	card.a(card.a_to)
 end
 
+-- puts the given card above all other cards in drawing order
 function card_to_top(card)
 	add(cards_all, del(cards_all, card))
 end
 
+-- checks if the given card is on top of its stack
 function card_is_top(card)
 	return get_top_card(card.stack) == card
 end
 
+-- returns the top card of a stack
 function get_top_card(stack)
 	return stack.cards[#stack.cards]
 end

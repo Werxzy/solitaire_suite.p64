@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 02:17:59",revision=2728]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 03:31:02",revision=2907]]
 
 include "cards_api/rolling_score.lua"
 
@@ -33,14 +33,28 @@ all_ranks = {
 	"10",
 	"J",
 	"Q",
-	"K"
+	"K",
+	
+-- just extra to reach rank 16, no reason for these
+	"X",
+	"Y",
+	"Z",
 }
 
-rank_count = 5 -- adjustable
+rank_count = 16 -- adjustable
 
 
 function game_setup()
 	
+	-- TODO, the file itself should not be the one to determine this
+	-- it should instead be based on the file's name
+	game_save = cards_api_load"basic"
+
+	if not game_save then
+		game_save = {
+			wins = 0
+		}
+	end
 
 	cards_api_clear()
 	poke(0x5508, 0xff) -- read
@@ -143,6 +157,7 @@ function game_setup()
 			-- case
 			spr(50, x, y)
 	end)
+	game_score.value = game_save.wins
 end
 
 -- deals the cards out
@@ -268,6 +283,8 @@ end
 
 function game_count_win()
 	game_score.value += 1
+	game_save.wins += 1
+	cards_api_save(game_save)
 end
 
 -- determines if stack2 can be placed on stack
@@ -373,7 +390,6 @@ end
 function game_draw(layer)
 	if layer == 1 then
 		spr(58, 7, 207) -- wins label
-		local n = time()
 		game_score:draw()
 	end
 end
