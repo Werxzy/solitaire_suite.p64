@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-20 18:35:02",revision=5991]]
+--[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-20 22:09:48",revision=6205]]
 
 -- this could use more work
 -- the purpose is to allow for animated sprite buttons
@@ -36,6 +36,10 @@ function button_simple_text(t, x, y, on_click)
 	bn.ct = 0
 	
 	return bn
+end
+
+function button_center(b, x)
+	b.x = (x or 240) - b.w/2
 end
 
 function nine_slice(sprite, x, y, w, h, fillcol)

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 18:35:02",revision=6905]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 22:09:48",revision=7119]]
 
 function game_info()
 	return {
@@ -73,14 +73,9 @@ cards_api_shadows_enable(true)
 function game_setup()
 
 	-- save data is based on lua file's name
-	game_save = cards_api_load()
-
-	if not game_save then
-		game_save = {
-			wins = 0
-		}
-	end
-	
+	game_save = cards_api_load() or {
+		wins = 0
+	}	
 	
 	local card_gap = 4
 	for suit = 1,4 do

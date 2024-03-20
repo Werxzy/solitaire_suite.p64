@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 18:35:02",revision=4290]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 22:09:48",revision=4544]]
 
 game_version = "0.1.0"
 
@@ -6,14 +6,8 @@ include"cards_api/card_backs.lua"
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
-function set_card_back(info)
-	current_card_back_info = info
-	card_back = info.sprite
-end
 
-set_card_back(has_key(card_back_info, "id", 1) or rnd(card_back_info))
-
-function main_menu_load() -- similar to game_load, but we always want this available
+function game_load() -- similar to game_load, but we always want this available
 
 cards_api_clear()
 cards_api_shadows_enable(true)
@@ -43,7 +37,21 @@ function button_deckbox_click(b)
 	main_menu_selected = b
 end
 
+function set_card_back(info)
+	current_card_back_info = info
+	card_back = info.sprite
+	settings_data.card_back_id = info.id
+	cards_api_save(settings_data)
+end
+
 function game_setup()
+
+	settings_data = cards_api_load() or {
+		card_back_id = 1
+	}
+
+	set_card_back(has_key(card_back_info, "id", settings_data.card_back_id) or rnd(card_back_info))
+	
 	main_menu_y = smooth_val(0, 0.8, 0.023, 0.00001)
 	main_menu_y_to = 0
 
@@ -83,16 +91,17 @@ function game_setup()
 	x_offset("pos", 240 - first.sprite:width()/2 - first.x_old)
 	
 	set_draw_target(userdata("u8", 1, 1)) -- TEMP : draw target isn't initialized? print doesn't return any values
-	button_play = button_simple_text("Start Game", 200, 200, 
+	
+	button_center(button_simple_text("Start Game", 200, 200, 
 		function() 
 			if main_menu_selected then
 				cards_api_load_game(main_menu_selected.game)
 			end
-		end)
+		end))
 	
-	button_play.x = 240 - button_play.w / 2
+	button_center(button_simple_text("Exit Game", 200, 220, exit))
 	
-	button_play = button_simple_text("Back", 355, 270, 
+	button_simple_text("Back", 355, 270, 
 		function() 
 			main_menu_y_to = 0
 		end)
@@ -101,7 +110,7 @@ function game_setup()
 	set_draw_target()
 	
 	card_back_edit_button = stack_new(
-		{15},
+		{5},
 		300, 200, 
 		stack_repose_normal(),
 		true, function() return true end, 
@@ -121,7 +130,7 @@ function game_setup()
 		if cb.id ~= current_card_back_info.id then
 			local i = #card_back_options
 			local s = add(card_back_options, stack_new(
-				{15},
+				{5},
 				 i*(card_width + 10)/2 + 10, 365 + i%2 * (card_height + 10), 
 				stack_repose_normal(),
 				true, function() return true end, 
@@ -206,6 +215,9 @@ function game_draw(layer)
 		print(s, 220 - x/2, 295, 1)
 		
 		print(loreprint, x1+4 + (truew-lw-5)/2, y1+16)
+		
+		nine_slice(8, 275, 345, 97, 15)
+		print("Selected Card Back", 280, 348)
 	end
 end
 
@@ -233,8 +245,7 @@ function print_wrap_prep(s, width)
 end
 
 function cards_game_exiting()
-	main_menu_load()
-	game_setup()
+	cards_api_load_game"cards_api/main_menu.lua"
 end
 
 end -- end of load
