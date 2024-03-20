@@ -1,10 +1,11 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 05:12:07",revision=6992]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 06:45:17",revision=7483]]
 
 card_width = 45
 card_height = 60
 card_back = 10 -- can be number or userdata
 
 cards_all = {}
+card_shadows_on = true
 
 -- todo??? make a card metatable with a weak reference to a stack
 function card_new(sprite, x, y, a)
@@ -18,7 +19,8 @@ function card_new(sprite, x, y, a)
 		x_to = x,
 		y_to = y,
 		a_to = a,
-		sprite = sprite
+		sprite = sprite,
+		shadow = 0
 		})
 end
 
@@ -32,33 +34,10 @@ function card_draw(c)
 		sprite = card_back
 		dx = -dx
 	end
-	--[[ as cool as it might be, shadows are expensive and don't add much
-	-- plus they're difficult to get right at the moment
-	
-	--if c.stack.cards[1] == c then
---	if c.stack == held_stack then
-		local x1, y1, x2, y2 = x + width*(1-dx), y+7, x+width*dx-1, y+height+6
-		poke(0x5508, 0xff) -- read
-		poke(0x550a, 0xff) -- target sprite
-		poke(0x550b, 0xff) -- target shapes
-		poke(0x5509, 0xff)
-		
-		--fillp(0xa5a5a5a5a5a5a5a5)
-		rectfill(x1+2, y1+2, x2-2, y2-2, 32)
-		--rectfill(x2+1, y1+1, x2+1, y2-1, 32)
-		--rectfill(x1-1, y1+1, x1-1, y2-1, 32)
-		fillp(0xa5a5a5a5a5a5a5a5)
-		rect(x1, y1, x2, y2, 32)
-		rect(x1+1, y1+1, x2-1, y2-1, 32)
-		fillp()
-		
-		-- these migth not be correct
-		poke(0x5508, 0x3f) -- read
-		poke(0x550a, 0x3f) -- target sprite
-		poke(0x550b, 0xff) -- target shapes
-		poke(0x5509, 0x3f)
---	end
-	--]]
+
+	if	card_shadows_on then
+		card_shadow_draw(c, x, y, width, height, dx, dy)
+	end
 
 	y -= dy * width / 2
 	
@@ -79,6 +58,49 @@ function card_draw(c)
 			x += dx
 			y += dy
 		end
+	end
+end
+
+
+function card_shadow_draw(c, x, y, width, height, dx, dy)
+
+	c.shadow = lerp(c.shadow, c.stack == held_stack and 1 or -0.1, 0.2 - mid((abs(c.x"vel") - abs(c.y"vel"))/15, 0.15))
+	
+	--subtle effect for cards that are moving around
+	--local v = c.stack == held_stack and 1 or mid((abs(c.x"vel") + abs(c.y"vel"))/5-0.1, 1, -0.1)
+	--c.shadow = lerp(c.shadow or 0, v, 0.2 - mid((abs(c.x"vel") + abs(c.y"vel"))/15, 0.15))		
+	
+	if c.shadow > 0 then
+		
+		local xx = x - dx*width/2 + width/2
+		local x1, y1, x2, y2 = xx, y+7 + height/3, xx+width*dx-1, y+height+6 + abs(dy)*card_width/3 - (1-c.shadow) * 10
+		local xmid = (x1+x2)/2
+		x1 = min(x1, xmid-7)
+		x2 = max(x2, xmid+7)
+		poke(0x5509, 0xff) -- only shadow once on a pixel
+		
+		fillp(0xa5a5a5a5a5a5a5a5)
+	
+		local xmid = (x1+x2)/2
+		local xc1, xc2 = x1+4,  x2-4
+		rectfill(x1, y1, x2, y2-4, 32)
+		rectfill(x1+4, y2-8, x2-4, y2)
+		circfill(x1+4, y2-4, 4)
+		circfill(x2-4, y2-4, 4)
+		circfill(xmid, y1, 7)
+		fillp()
+		
+		x1 += 3
+		x2 -= 3
+		y2 -= 3
+		
+		rectfill(x1, y1, x2, y2-4)
+		rectfill(x1+4, y2-8, x2-4, y2)
+		circfill(x1+4,y2-4,4)
+		circfill(x2-4,y2-4,4)
+		circfill(xmid,y1,4)
+		
+		poke(0x5509, 0x3f)
 	end
 end
 

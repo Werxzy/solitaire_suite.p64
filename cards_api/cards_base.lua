@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-20 05:12:07",revision=6390]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-20 06:45:17",revision=6776]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -247,8 +247,8 @@ function cards_api_shadows_enable(enable)
 		cards_shadows_enabled = enable
 		
 		if enable then
-			poke(0x5508, 0xff) -- read
-			poke(0x550a, 0xff) -- target sprite
+		--	poke(0x5508, 0xff) -- read
+		--	poke(0x550a, 0xff) -- target sprite
 			poke(0x550b, 0xff) -- target shapes
 			
 			-- shadow mask color
@@ -262,8 +262,8 @@ function cards_api_shadows_enable(enable)
 			-- poke(0x5509, 0x3f) -- disable
 		
 		else
-			poke(0x5508, 0x3f) -- read
-			poke(0x550a, 0x3f) -- target sprite
+		--	poke(0x5508, 0x3f) -- read
+		--	poke(0x550a, 0x3f) -- target sprite
 			poke(0x550b, 0x3f) -- target shapes
 			-- todo, reset color table (probably not necessary
 		end
