@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-19 23:05:47",revision=943]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 00:47:21",revision=1016]]
 
 game_version = "0.1.0"
 
@@ -8,6 +8,7 @@ function main_menu_load() -- similar to game_load, but we always want this avail
 	
 cards_api_clear()
 cards_api_shadows_enable(true)
+main_menu_selected = nil
 
 local x_offset = smooth_val(0, 0.5, 0.1)
 

@@ -1,11 +1,11 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-19 23:05:47",revision=3669]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 00:47:21",revision=3757]]
 
 function game_info()
 	return {
 		sprite = 40,
 		name = "Solitaire Too",
 		author = "Werxzy",
-		description = "Complete stacks of the same suit, while moving cards with non-matching suits.",
+		description = "Similar to standard solitaire, but can alternate between any suit.",
 		rules = {
 			"Stack cards of the same suit, from Ace to King, in the card slots on the right",
 			"Cards can be stacked in the 7 middle slots if they don't match in suit and are 1 rank lower than the card below.",
@@ -64,7 +64,8 @@ all_ranks = {
 	"Z",
 }
 
-rank_count = 13 -- adjustable
+rank_count = 3 -- adjustable
+-- TODO save isn't working
 
 cards_api_clear()
 
@@ -72,7 +73,7 @@ function game_setup()
 	
 	-- TODO, the file itself should not be the one to determine this
 	-- it should instead be based on the file's name
-	game_save = cards_api_load"basic"
+	game_save = cards_api_load()
 
 	if not game_save then
 		game_save = {
