@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-20 06:45:17",revision=8879]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-20 17:25:51",revision=9562]]
 
 include"cards_api/cards_base.lua"
 include"cards_api/main_menu.lua"
@@ -15,7 +15,7 @@ game_list = {
 function _init()
 	--include"cards_api/solitaire_basic.lua"
 	main_menu_load()
-	--game_setup()
+	game_setup()
 end
 
 function _update()

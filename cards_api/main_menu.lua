@@ -1,11 +1,20 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 06:45:17",revision=3100]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 17:25:51",revision=3959]]
 
 game_version = "0.1.0"
 
+include"cards_api/card_backs.lua"
+
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
+function set_card_back(info)
+	current_card_back_info = info
+	card_back = info.sprite
+end
+
+set_card_back(has_key(card_back_info, "id", 1) or rnd(card_back_info))
+
 function main_menu_load() -- similar to game_load, but we always want this available
-	
+
 cards_api_clear()
 cards_api_shadows_enable(true)
 main_menu_selected = nil
@@ -34,51 +43,130 @@ function button_deckbox_click(b)
 	main_menu_selected = b
 end
 
--- creates buttons for each game mode
-game_mode_buttons = {}
-local bx = 2
+function game_setup()
+	main_menu_y = smooth_val(0, 0.8, 0.023, 0.00001)
+	main_menu_y_to = 0
 
-for game in all(game_list) do
-
-	-- game exists
-	if include(game) then 
+	-- creates buttons for each game mode
+	game_mode_buttons = {}
+	local bx = 2
 	
-		-- get info provided by game
-		info = game_info()
+	for game in all(game_list) do
+	
+		-- game exists
+		if include(game) then 
 		
-		if type(info.sprite) == "number" then
-			info.sprite = get_spr(info.sprite)
-		end
-		
-		local b = add(game_mode_buttons, 
-			button_new(bx, 100, 
-				info.sprite:width(), info.sprite:height(), 
-				button_deckbox_draw, 
-				button_deckbox_click)
-			)
+			-- get info provided by game
+			info = game_info()
 			
-		b.sprite = info.sprite
-		b.game = game
-		b.info = info
-		b.x_old = bx
-		
-		bx += info.sprite:width() + 10
+			if type(info.sprite) == "number" then
+				info.sprite = get_spr(info.sprite)
+			end
+			
+			local b = add(game_mode_buttons, 
+				button_new(bx, 100, 
+					info.sprite:width(), info.sprite:height(), 
+					button_deckbox_draw, 
+					button_deckbox_click)
+				)
+				
+			b.sprite = info.sprite
+			b.game = game
+			b.info = info
+			b.x_old = bx
+			
+			bx += info.sprite:width() + 10
+		end
 	end
+	
+	local first = game_mode_buttons[1]
+	x_offset("pos", 240 - first.sprite:width()/2 - first.x_old)
+	
+	set_draw_target(userdata("u8", 1, 1)) -- TEMP : draw target isn't initialized? print doesn't return any values
+	button_play = button_simple_text("Start Game", 200, 200, 
+		function() 
+			if main_menu_selected then
+				cards_api_load_game(main_menu_selected.game)
+			end
+		end)
+	
+	button_play.x = 240 - button_play.w / 2
+	
+	button_play = button_simple_text("Back", 355, 270, 
+		function() 
+			main_menu_y_to = 0
+		end)
+		
+	
+	set_draw_target()
+	
+	card_back_edit_button = stack_new(
+		{15},
+		300, 200, 
+		stack_repose_normal(),
+		true, function() return true end, 
+		function(c)
+			stack_on_click_unstack()(c)
+			main_menu_y_to = 1
+		end)
+		
+	card_back_edit_button.resolve_stack = swap_stacks
+	
+	card_back_selected = card_new(card_back, 300, 200)
+	card_back_selected.info = current_card_back_info
+	stack_add_card(card_back_edit_button, card_back_selected)
+	
+	card_back_options = {}
+	for cb in all(card_back_info) do
+		if cb.id ~= current_card_back_info.id then
+			local i = #card_back_options
+			local s = add(card_back_options, stack_new(
+				{15},
+				 i*(card_width + 10)/2 + 10, 365 + i%2 * (card_height + 10), 
+				stack_repose_normal(),
+				true, function() return true end, 
+				stack_on_click_unstack()))
+			s.resolve_stack = swap_stacks
+			
+		
+			local c = card_new(cb.sprite, s.x_to, s.y_to)
+			c.info = cb
+			stack_add_card(s,  c)
+		end
+	end
+		
+	
 end
 
-local first = game_mode_buttons[1]
-x_offset("pos", 240 - first.sprite:width()/2 - first.x_old)
-
-set_draw_target(userdata("u8", 1, 1)) -- TEMP : draw target isn't initialized? print doesn't return any values
-button_play = button_simple_text("Start Game", 200, 200, 
-	function() 
-		if main_menu_selected then
-			cards_api_load_game(main_menu_selected.game)
-		end
-	end)
-
-button_play.x = 240 - button_play.w / 2
-set_draw_target()
+-- also updates the card back
+function swap_stacks(stack, stack2)
+	local old_cards = {}
+	local old_stack = stack2.old_stack
+	
+	for c in all(stack2.cards) do
+		add(old_cards, c)
+	end
+	
+	for c in all(stack.cards) do
+		add(old_stack.cards, del(stack.cards, c))
+		card_to_top(c)
+		c.stack = old_stack
+	end
+	
+	for c in all(old_cards) do
+		add(stack.cards, del(stack2.cards, c))
+		card_to_top(c)
+		c.stack = stack
+	end
+	
+	stack2.old_stack = nil
+	
+	if not stack2.perm then
+		del(stacks_all, stack2)
+	end
+	
+	set_card_back(card_back_edit_button.cards[1].info)
+end
 
 function game_update()
 	local x = main_menu_selected 
@@ -88,11 +176,17 @@ function game_update()
 	for b in all(game_mode_buttons) do
 		b.x = x + b.x_old
 	end
+	
+	main_menu_y(main_menu_y_to)
+	
+	card_back_edit_button.y_to = lerp(200.5, 280.5, main_menu_y())
 end
 
 function game_draw(layer)
 	if layer == 0 then
 		cls(3)
+		camera(0, main_menu_y() * 260.5)	
+	
 		print("Version " .. game_version, 1, 262, 19)
 		print("Mostly by Werxzy", 399, 261)
 	end
@@ -100,6 +194,7 @@ end
 
 function cards_game_exiting()
 	main_menu_load()
+	game_setup()
 end
 
 end -- end of load

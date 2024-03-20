@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 06:45:17",revision=7483]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 17:25:51",revision=8189]]
 
 card_width = 45
 card_height = 60
@@ -7,11 +7,17 @@ card_back = 10 -- can be number or userdata
 cards_all = {}
 card_shadows_on = true
 
--- todo??? make a card metatable with a weak reference to a stack
 function card_new(sprite, x, y, a)
 	x = x or 0
 	y = y or 0
 	a = a or 0
+	
+-- todo, allow for specifying card back
+
+-- todo??? make a card metatable with a weak reference to a stack
+-- sometimes after a lot of testing, picotron runs out of memory
+-- stacks/cards might not be garbage collected due to referencing eachother
+-- I think this only occurs if exiting in the middle of a game
 	return add(cards_all, {
 		x = smooth_val(x, 0.7, 0.1), 
 		y = smooth_val(y, 0.7, 0.1), 

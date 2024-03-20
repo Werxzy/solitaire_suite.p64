@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-20 06:45:17",revision=6776]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-20 17:25:51",revision=7501]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -56,10 +56,15 @@ end
 -- not meant to be called outside
 function cards_api_mouse_update(interact)
 	local mx, my, md = mouse()
-	
 	local mouse_down = md & ~mouse_last
 	local mouse_up = ~md & mouse_last
 	local double_click = time() - mouse_last_click < 0.5	
+	
+	-- fix mouse interaction based on camera
+	local cx, cy = camera()
+	camera(cx, cy)
+	mx += cx
+	my += cy
 	
 	if interact then
 		for b in all(buttons_all) do
@@ -130,7 +135,7 @@ function cards_api_mouse_update(interact)
 				and point_box(held_stack.x_to + card_width/2, 
 				held_stack.y_to + card_height/2, s.x_to, y, card_width, card_height) then
 					
-					stack_cards(s, held_stack)
+					s:resolve_stack(held_stack)
 					held_stack = nil
 					break
 				end
@@ -252,7 +257,7 @@ function cards_api_shadows_enable(enable)
 			poke(0x550b, 0xff) -- target shapes
 			
 			-- shadow mask color
-			for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,17,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
+			for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,16,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
 				-- bit 0x40 is to change the table color to prevent writing onto shaded areas
 				-- kinda like some of the old shadow techniques in 3d games
 				poke(0x8000 + 32*64 + i-1, 0x40|b)
@@ -272,7 +277,8 @@ function cards_api_shadows_enable(enable)
 end
 
 -- maybe stuff these into userdata to evaluate all at once?
-function smooth_val(pos, damp, acc)
+function smooth_val(pos, damp, acc, lim)
+	lim = lim or 0.1
 	local vel = 0
 	return function(to, set)
 		if to == "vel" then
@@ -295,7 +301,7 @@ function smooth_val(pos, damp, acc)
 			vel += dif
 			vel *= damp
 			pos += vel
-			if abs(vel) < 0.1 and abs(dif) < 0.1 then
+			if abs(vel) < lim and abs(dif) < lim then
 				pos, vel = to, 0
 			end
 		end
@@ -340,6 +346,16 @@ function has(tab, val)
 	for k,v in pairs(tab) do
 		if v == val then
 			return k
+		end
+	end
+end
+
+-- returns the key of a searched value inside a table
+-- such that tab[has(tab, key, val)][key] == val
+function has_key(tab, key, val)
+	for k,v in pairs(tab) do
+		if v[key] == val then
+			return v, k 
 		end
 	end
 end

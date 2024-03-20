@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-20 06:45:17",revision=6688]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-20 17:25:51",revision=7388]]
 
 stacks_all = {}
 stack_border = 3
@@ -26,7 +26,8 @@ function stack_new(sprites, x, y, repos, perm, stack_rule, on_click, on_double)
 		reposition = repos,
 		can_stack = stack_rule,
 		on_click = on_click,
-		on_double = on_double
+		on_double = on_double,
+		resolve_stack = stack_cards
 		})
 end
 
