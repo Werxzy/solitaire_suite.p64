@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 00:47:21",revision=3757]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 03:19:13",revision=4982]]
 
 function game_info()
 	return {
@@ -20,6 +20,7 @@ function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
 
 include "cards_api/rolling_score.lua"
+include "cards_api/confetti.lua"
 
 -- updates card size if it changed
 card_width = 45
@@ -65,14 +66,13 @@ all_ranks = {
 }
 
 rank_count = 3 -- adjustable
--- TODO save isn't working
 
 cards_api_clear()
+cards_api_shadows_enable(true)
 
 function game_setup()
-	
-	-- TODO, the file itself should not be the one to determine this
-	-- it should instead be based on the file's name
+
+	-- save data is based on lua file's name
 	game_save = cards_api_load()
 
 	if not game_save then
@@ -80,9 +80,7 @@ function game_setup()
 			wins = 0
 		}
 	end
-
 	
-	cards_api_shadows_enable(true)
 	
 	local card_gap = 4
 	for suit = 1,4 do
@@ -279,6 +277,12 @@ function game_auto_place_anim()
 	cards_api_condition_check()
 end
 
+function game_win_anim()
+	confetti_new(130,135, 100, 10)
+	pause_frames(25)
+	confetti_new(350,135, 100, 10)
+end
+
 function game_win_condition()
 	for g in all(stack_goals) do
 		for i = 1,rank_count do
@@ -294,6 +298,7 @@ function game_count_win()
 	game_score.value += 1
 	game_save.wins += 1
 	cards_api_save(game_save)
+	cards_coroutine = cocreate(game_win_anim)
 end
 
 -- determines if stack2 can be placed on stack
@@ -403,11 +408,15 @@ function game_draw(layer)
 	elseif layer == 1 then
 		spr(58, 7, 207) -- wins label
 		game_score:draw()
+		
+	elseif layer == 2 then
+		confetti_draw()
 	end
 end
 
 function game_update()
 	game_score:update()
+	confetti_update()
 end
 
 end -- !!! end of game load function
