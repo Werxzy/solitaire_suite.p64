@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-20 03:19:13",revision=5781]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-20 04:31:40",revision=6089]]
 
 stacks_all = {}
 stack_border = 3
@@ -49,7 +49,9 @@ function stack_cards(stack, stack2)
 		c.stack = stack
 	end
 	stack2.old_stack = nil
-	del(stacks_all, stack2)
+	if not stack2.perm then
+		del(stacks_all, stack2)
+	end
 end
 
 -- on_click event that unstacks cards starting from the given card

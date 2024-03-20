@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 03:19:13",revision=6404]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 04:31:40",revision=6724]]
 
 card_width = 45
 card_height = 60
@@ -46,10 +46,9 @@ function card_draw(c)
 			-- only draw one vertical slice at a time
 			-- could do this mathmatically, but nah :)
 			if x\1 ~= last_drawn then
-				sspr(sprite, sx, 0, 1, height, x, y)
+				sspr(sprite, x2, 0, 1, height, x, y)
 				last_drawn = x\1
 			end
-			sx += 1
 			x += dx
 			y += dy
 		end

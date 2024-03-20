@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 03:19:13",revision=4982]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-20 04:31:40",revision=5361]]
 
 function game_info()
 	return {
@@ -65,7 +65,7 @@ all_ranks = {
 	"Z",
 }
 
-rank_count = 3 -- adjustable
+rank_count = 13 -- adjustable
 
 cards_api_clear()
 cards_api_shadows_enable(true)
@@ -300,6 +300,32 @@ function game_count_win()
 	cards_api_save(game_save)
 	cards_coroutine = cocreate(game_win_anim)
 end
+
+--[[ as cool as this might be, it's expensive
+function stack_win_anim()
+	win_stack = stack_new({}, 0, 0, stack_win_reposition, false, stack_cant, stack_cant)
+	for s in all(stack_goals) do
+		while #s.cards > 0 do
+			local c = get_top_card(s)
+			stack_add_card(win_stack, c)
+			c.a_to=0
+			pause_frames(3)
+		end
+	end
+end
+	
+function stack_win_reposition(stack)
+	local dx, dy = 240 - card_width/2, 135 - card_height/2
+	for i, c in pairs(stack.cards) do
+		i = -i
+		local r = 170
+		local t = time()/9 + i/#stack.cards
+		local t2 = time() + i/#stack.cards*6
+		c.x_to = sin(t)*r + dx + sin(t2)  * 14
+		c.y_to = cos(t)*r/2 + dy + cos(t2) * 14
+	end
+end
+]]
 
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
