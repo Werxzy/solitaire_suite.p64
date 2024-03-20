@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 00:52:48",modified="2024-03-20 04:31:40",revision=1798]]
+--[[pod_format="raw",created="2024-03-20 00:52:48",modified="2024-03-20 05:12:07",revision=2003]]
 
 -- TODO change to user data?
 
@@ -30,10 +30,12 @@ function confetti_update()
 	local mx, my = mouse()
 	local mdx, mdy = mx - mlx, my - mly
 	mlx, mly = mx, my
+	
+	local t = time() * 0.25
 	for c in all(confetti_all) do
 		
 		-- swing
-		local t = time() * 0.25 * c.f + c.f2
+		local t = t * c.f + c.f2
 		c.dx += sin(t) * 0.06
 		c.dy -= abs(cos(t + 0.1)) * 0.06
 		

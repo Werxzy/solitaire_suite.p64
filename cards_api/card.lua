@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 04:31:40",revision=6724]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 05:12:07",revision=6992]]
 
 card_width = 45
 card_height = 60
@@ -32,9 +32,36 @@ function card_draw(c)
 		sprite = card_back
 		dx = -dx
 	end
+	--[[ as cool as it might be, shadows are expensive and don't add much
+	-- plus they're difficult to get right at the moment
 	
-	y -= dy * width / 2
+	--if c.stack.cards[1] == c then
+--	if c.stack == held_stack then
+		local x1, y1, x2, y2 = x + width*(1-dx), y+7, x+width*dx-1, y+height+6
+		poke(0x5508, 0xff) -- read
+		poke(0x550a, 0xff) -- target sprite
+		poke(0x550b, 0xff) -- target shapes
+		poke(0x5509, 0xff)
 		
+		--fillp(0xa5a5a5a5a5a5a5a5)
+		rectfill(x1+2, y1+2, x2-2, y2-2, 32)
+		--rectfill(x2+1, y1+1, x2+1, y2-1, 32)
+		--rectfill(x1-1, y1+1, x1-1, y2-1, 32)
+		fillp(0xa5a5a5a5a5a5a5a5)
+		rect(x1, y1, x2, y2, 32)
+		rect(x1+1, y1+1, x2-1, y2-1, 32)
+		fillp()
+		
+		-- these migth not be correct
+		poke(0x5508, 0x3f) -- read
+		poke(0x550a, 0x3f) -- target sprite
+		poke(0x550b, 0xff) -- target shapes
+		poke(0x5509, 0x3f)
+--	end
+	--]]
+
+	y -= dy * width / 2
+	
 	if abs(dy*card_width) < 1 then
 		sspr(sprite, 0, 0, width, height, x, y)
 	else
