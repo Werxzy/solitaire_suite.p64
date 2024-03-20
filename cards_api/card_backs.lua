@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-20 17:25:51",revision=577]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-20 18:35:02",revision=845]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -19,7 +19,7 @@ card_back_info = {
 	},
 	{ 
 		sprite = 18, artist = "Werxzy", id = 2,
-		lore = "Zep's Jelpi from Pico-8"
+		lore = "(And technically Zep) \nZep's Jelpi from Pico-8"
 	},
 	{ 
 		sprite = 19, artist = "Werxzy", id = 3,

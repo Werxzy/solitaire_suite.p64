@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 17:25:51",revision=3959]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-20 18:35:02",revision=4290]]
 
 game_version = "0.1.0"
 
@@ -185,11 +185,51 @@ end
 function game_draw(layer)
 	if layer == 0 then
 		cls(3)
-		camera(0, main_menu_y() * 260.5)	
+		local cy = main_menu_y() * 260.5
+		camera(0, cy)	
 	
 		print("Version " .. game_version, 1, 262, 19)
 		print("Mostly by Werxzy", 399, 261)
+		
+		local s = "Artist : " .. current_card_back_info.artist
+		
+		local x = print(s, 0, -1000) 
+		local w = x + 10
+		
+		local x1, y1, x2, y2 = 200 - w/2, 290, 240 + w/2, 308
+		local truew = x2-x1
+		local lw, lh, loreprint = print_wrap_prep(current_card_back_info.lore, truew-5)
+		nine_slice(8, x1, y1, x2-x1, y2-y1 + lh)
+		--rectfill(x1, y1, x2, y2, 7)
+		
+		
+		print(s, 220 - x/2, 295, 1)
+		
+		print(loreprint, x1+4 + (truew-lw-5)/2, y1+16)
 	end
+end
+
+-- THE NORMAL PRINT WRAPPING CANNOT BE TRUSTED
+function print_wrap_prep(s, width)
+	local words = split(s, " ")
+	local lines = {}
+	local current_line = ""
+	local final_w = 0
+	
+	for w in all(words) do
+		local c2 = current_line == "" and w or current_line .. " " .. w
+		local x = print(c2, 0, -1000)
+		if x > width then
+			current_line = current_line .. "\n" .. w
+		else
+			current_line = c2
+			final_w = max(final_w, x)
+		end
+	end
+	local _, final_h = print(current_line, 0, -1000)
+	final_h += 1000
+	
+	return final_w, final_h, current_line
 end
 
 function cards_game_exiting()
