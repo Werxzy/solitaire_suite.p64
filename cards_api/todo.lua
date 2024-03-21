@@ -1,9 +1,8 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-21 21:01:32",revision=218]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-21 22:45:53",revision=269]]
 --[[
 
 0.1.0
 fix buttons being frozen
-move card backs to their own folder
 title image
 game description
 

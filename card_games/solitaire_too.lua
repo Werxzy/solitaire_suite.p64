@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-21 05:36:30",revision=7405]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-21 22:45:53",revision=7446]]
 
 function game_info()
 	return {
@@ -12,7 +12,8 @@ function game_info()
 			"Ace is rank 1. Jack, Queen, King are rank 10, 11, 12.",
 			"Click the deck to draw a reveal a card. Revealed cards can be moved noramlly one at a time, but can't be stacked on.",
 			"When the deck is out of cards, click the its deck slot to move all the cards back."
-		}
+		},
+		order = 1
 	}
 end
 

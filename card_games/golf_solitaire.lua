@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-21 21:01:32",revision=468]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-21 22:45:53",revision=529]]
 
 function game_info()
 	return {
@@ -13,7 +13,8 @@ function game_info()
 			"Kings and Aces can be placed on top of each other on the goal stack.",
 			"Click the supply stack on the left to replace the top card.",
 			"If you cannot place a card from anywhere onto the goal stack, you cannot win and must start a new game."
-		}
+		},
+		order = 2
 	}
 end
 

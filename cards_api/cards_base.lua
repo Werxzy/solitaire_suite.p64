@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-21 21:01:32",revision=8426]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-21 22:45:53",revision=8478]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -379,4 +379,29 @@ function pause_frames(n)
 	for i = 1,n do
 		yield()
 	end
+end
+
+function quicksort(tab, key)
+	local function qs(a, lo, hi)
+		if lo >= hi or lo < 1 then
+			return
+		end
+			    
+		-- find pivot
+		local lo2, hi2 = lo, hi
+		local pivot, p = a[hi2], lo2-1
+		for j = lo2,hi2-1 do
+			if a[j][key] <= pivot[key] then
+				p += 1
+				a[j], a[p] = a[p], a[j]
+			end
+		end
+		p += 1
+		a[hi2], a[p] = a[p], a[hi2]
+		    
+		-- quicksort next step
+		qs(a, lo, p-1)
+		qs(a, p+1, hi)
+	end
+    qs(tab, 1, #tab)
 end

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 21:01:32",revision=4695]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 22:45:53",revision=4763]]
 
 game_version = "0.1.0"
 
@@ -11,9 +11,10 @@ game_list = {}
 for g in all(ls"card_games") do
 	local ext = split(g, ".")
 	if ext[#ext] == "lua" then
-		add(game_list, "card_games/" .. g)
+		local op = add(game_list, "card_games/" .. g)
 	end
 end
+
 
 card_back_info = {}
 for cb in all(ls"card_backs") do
@@ -73,32 +74,37 @@ function game_setup()
 	game_mode_buttons = {}
 	local bx = 2
 	
-	for game in all(game_list) do
+	local all_info = {}
 	
-		-- game exists
-		if include(game) then 
-		
-			-- get info provided by game
-			info = game_info()
-			
-			if type(info.sprite) == "number" then
-				info.sprite = get_spr(info.sprite)
-			end
-			
-			local b = add(game_mode_buttons, 
-				button_new(bx, 100, 
-					info.sprite:width(), info.sprite:height(), 
-					button_deckbox_draw, 
-					button_deckbox_click)
-				)
-				
-			b.sprite = info.sprite
-			b.game = game
-			b.info = info
-			b.x_old = bx
-			
-			bx += info.sprite:width() + 10
+	for game in all(game_list) do
+		if include(game) then
+			local op = add(all_info, game_info())
+			op.order = op.order or 999999
+			op.path = game
 		end
+	end
+	
+	quicksort(all_info, "order")
+
+	for info in all(all_info) do
+				
+		if type(info.sprite) == "number" then
+			info.sprite = get_spr(info.sprite)
+		end
+		
+		local b = add(game_mode_buttons, 
+			button_new(bx, 100, 
+				info.sprite:width(), info.sprite:height(), 
+				button_deckbox_draw, 
+				button_deckbox_click)
+			)
+			
+		b.sprite = info.sprite
+		b.game = info.game
+		b.info = info
+		b.x_old = bx
+		
+		bx += info.sprite:width() + 10
 	end
 	
 	local first = game_mode_buttons[1]
