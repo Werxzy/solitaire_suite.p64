@@ -1,11 +1,8 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 19:10:42",revision=4582]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 21:01:32",revision=4695]]
 
 game_version = "0.1.0"
 
-include"cards_api/card_backs.lua"
-
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
-
 
 function game_load() -- similar to game_load, but we always want this available
 
@@ -15,6 +12,14 @@ for g in all(ls"card_games") do
 	local ext = split(g, ".")
 	if ext[#ext] == "lua" then
 		add(game_list, "card_games/" .. g)
+	end
+end
+
+card_back_info = {}
+for cb in all(ls"card_backs") do
+	include("card_backs/" .. cb)
+	for info in all(get_info()) do
+		add(card_back_info, info)
 	end
 end
 
