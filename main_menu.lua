@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 00:34:10",revision=4553]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 19:10:42",revision=4582]]
 
 game_version = "0.1.0"
 
@@ -8,6 +8,15 @@ include"cards_api/card_backs.lua"
 
 
 function game_load() -- similar to game_load, but we always want this available
+
+-- initializes the list of game variants
+game_list = {}
+for g in all(ls"card_games") do
+	local ext = split(g, ".")
+	if ext[#ext] == "lua" then
+		add(game_list, "card_games/" .. g)
+	end
+end
 
 cards_api_clear()
 cards_api_shadows_enable(true)
@@ -245,7 +254,7 @@ function print_wrap_prep(s, width)
 end
 
 function cards_game_exiting()
-	cards_api_load_game"cards_api/main_menu.lua"
+	cards_api_load_game"main_menu.lua"
 end
 
 end -- end of load

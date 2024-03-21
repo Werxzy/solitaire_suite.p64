@@ -1,21 +1,23 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-21 04:36:53",revision=45]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-21 19:10:42",revision=120]]
 --[[
 
 0.1.0
-move game scripts to their own folder
-	compile list of games only using ls()
+fix buttons being frozen
 move card backs to their own folder
 title image
 game description
 
 0.2.0?
 transition
+	use pget to sample colors and then use circfill to grow and fill the screen
 
 Add script dedicated to card sprite generation.
 	use nine_slice to generate base
 	make a cut out of the card backs
 		they should be 100x100 pixels each
 		focusing on 41x56 pixels in the center being the normal sprite
+		
+Add face card sprites
 
 stack on_highlight rule function
 	per card and per 

@@ -1,19 +1,10 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-21 04:36:53",revision=10285]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-21 19:10:42",revision=10371]]
 
 include"cards_api/cards_base.lua"
-include"cards_api/main_menu.lua"
-
-game_list = {
-	"cards_api/solitaire_too.lua",
-	"cards_api/golf_solitaire.lua",
-}
-
--- other solitaire games to add
--- golf solitaire
+include"main_menu.lua"
 
 function _init()
-	--include"cards_api/solitaire_basic.lua"
-	cards_api_load_game"cards_api/main_menu.lua"
+	cards_api_load_game"main_menu.lua"
 end
 
 function _update()
