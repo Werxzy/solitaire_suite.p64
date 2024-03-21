@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-20 22:09:48",revision=7985]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-21 03:49:35",revision=8233]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -196,6 +196,7 @@ function cards_api_clear()
 	game_win_condition = nil
 	game_update = nil
 	game_draw = nil
+	cards_frozen = false
 end
 
 function cards_api_load_game(game_path)

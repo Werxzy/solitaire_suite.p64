@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-20 22:09:48",revision=8721]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-21 03:49:35",revision=8973]]
 
 card_width = 45
 card_height = 60
@@ -21,7 +21,7 @@ function card_new(sprite, x, y, a)
 	return add(cards_all, {
 		x = smooth_val(x, 0.7, 0.1), 
 		y = smooth_val(y, 0.7, 0.1), 
-		a = smooth_angle(a, 0.6, 0.1),
+		a = smooth_angle(a, 0.7, 0.12),
 		x_to = x,
 		y_to = y,
 		a_to = a,
@@ -34,11 +34,16 @@ end
 -- shifts vertical lines of pixels to give the illusion if the card turning
 function card_draw(c)
 	local facing_down = (c.a()-0.25) % 1 < 0.5
-	local sprite, x, y, width, height, angle = facing_down and card_back or c.sprite, c.x(), c.y(), card_width, card_height, c.x"vel" / -60 + c.a()
+	local sprite = facing_down and card_back or c.sprite
+	local x, y, width, height = c.x(), c.y(), card_width, card_height
+	local angle = c.x"vel" / -100 + c.a()
+	--local angle =  c.a()
+		
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then
 		sprite = card_back
 		dx = -dx
+		dy = -dy
 	end
 
 	if	card_shadows_on then
@@ -114,7 +119,7 @@ end
 function card_update(card)
 	card.x(card.x_to)
 	card.y(card.y_to)
-	card.a(card.a_to)
+	card.a(card.a_to - card.x"vel"/10000)
 end
 
 -- puts the given card above all other cards in drawing order

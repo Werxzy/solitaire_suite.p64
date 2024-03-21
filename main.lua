@@ -1,12 +1,11 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-20 22:09:48",revision=10031]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-21 03:49:35",revision=10259]]
 
 include"cards_api/cards_base.lua"
 include"cards_api/main_menu.lua"
 
 game_list = {
-	"cards_api/solitaire_basic.lua",
-	"cards_api/solitaire_basic.lua",
-	"cards_api/solitaire_basic.lua",
+	"cards_api/solitaire_too.lua",
+	"cards_api/golf_solitaire.lua",
 }
 
 -- other solitaire games to add
