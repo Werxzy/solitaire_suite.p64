@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-22 06:09:46",revision=1051]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-22 06:52:21",revision=1149]]
 --[[
 
 0.1.0
-fix buttons being frozen
 title image
 
 0.2.0?

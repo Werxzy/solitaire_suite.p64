@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 06:09:46",revision=1037]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 06:52:21",revision=1106]]
 
 function game_info()
 	return {
@@ -135,7 +135,7 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Exit", 6, 248, cards_api_exit)
+	button_simple_text("Exit", 6, 248, cards_api_exit).always_active = true
 	
 	-- rules cards 
 	rule_cards = rule_cards_new(303, 160, game_info(), "top")
@@ -146,9 +146,10 @@ function game_setup()
 		rc.y = rc.y_smooth(rc.on_off and 192.5 or 300)
 		old_update(rc)
 	end
+	
 	button_simple_text("Rules", 97, 248, function()
 		rule_cards.on_off = not rule_cards.on_off
-	end)
+	end).always_active = true
 	
 	
 	cards_coroutine = cocreate(game_setup_anim)

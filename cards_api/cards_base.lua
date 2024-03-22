@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-22 06:09:46",revision=9245]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-22 06:52:21",revision=9341]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -66,11 +66,22 @@ function cards_api_mouse_update(interact)
 	mx += cx
 	my += cy
 	
-	if interact then
+	function buttons_click() 
 		for b in all(buttons_all) do
-			b.highlight = not held_stack and point_box(mx, my, b.x, b.y, b.w, b.h)
+			if b.enabled and b.highlight 
+			and (b.always_active or interact) then
+				b:on_click()
+				clicked = true
+				break
+			end
 		end
-
+	end
+	
+	for b in all(buttons_all) do
+		b.highlight = not held_stack and point_box(mx, my, b.x, b.y, b.w, b.h)
+	end
+		
+	if interact then
 		if mouse_down&1 == 1 and not held_stack then
 			local clicked = false
 			
@@ -95,13 +106,7 @@ function cards_api_mouse_update(interact)
 			end
 			
 			if not clicked then
-				for b in all(buttons_all) do
-					if b.enabled and b.highlight then
-						b:on_click()
-						clicked = true
-						break
-					end
-				end
+				buttons_click() 
 			end
 			
 			if not clicked and not cards_frozen then
@@ -152,9 +157,9 @@ function cards_api_mouse_update(interact)
 			held_stack.y_to = my - card_height/2
 		end
 		
-	else
-		for b in all(buttons_all) do
-			b.highlight = false
+	else		
+		if mouse_down&1 == 1 and not held_stack then
+			buttons_click()
 		end
 	end
 
