@@ -1,8 +1,9 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 06:52:21",revision=5862]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 21:29:12",revision=6105]]
 
 include"cards_api/rule_cards.lua"
 
 game_version = "0.1.0"
+api_version_expected = 1
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
@@ -53,7 +54,7 @@ end
 function button_deckbox_click(b)
 	main_menu_selected = b
 	rule_cards.info = b.info
-	game_info_page = 0
+	rule_cards.page = 0
 end
 
 function set_card_back(info)

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-21 21:01:32",revision=1190]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-22 19:08:43",revision=1212]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -47,6 +47,10 @@ function get_info()
 		{ 
 			sprite = 21, artist = "Werxzy", id = 7,
 			lore = "Referenced from Window's original solitaire card back."
+		},
+		{ 
+			sprite = 26, artist = "Werxzy", id = 8,
+			lore = "Pico-8 Icon"
 		}
 	}
 end

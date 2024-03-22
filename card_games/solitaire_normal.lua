@@ -1,20 +1,21 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-22 21:29:12",revision=8205]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-22 21:29:12",revision=283]]
 
 function game_info()
 	return {
-		sprite = 40,
-		name = "Solitaire Too",
+		sprite = 24,
+		name = "Solitaire",
 		author = "Werxzy",
-		description = "Similar to standard solitaire, but can alternate between any suit.",
+		description = "The game you know and love/hate.",
 		rules = {
 			"\tStack cards of the same suit, from Ace to King, in the card slots on the right",
-			"\tCards can be stacked in the 7 middle slots if they don't match in suit and are 1 rank lower than the card below.\n\tAce is rank 1. Jack, Queen, King are rank 10, 11, 12.",
-			"\tClick the deck to draw a reveal a card. Revealed cards can be moved noramlly one at a time, but can't be stacked on.",
+			"\tCards can be stacked in the 7 middle slots if alternate between red and black suits (hearts/diamonds and spades/clubs) and are 1 rank lower than the card below.",
+			"\tAce is rank 1. Jack, Queen, King are rank 10, 11, 12.",
+			"\tClick the deck to draw a reveal the next 3 cards. You can play the top revealed card, but can't stack on top of it.",
 			"\tWhen the deck is out of cards, click the its deck slot to move all the cards back.",
 			"\tIf you believe you have reached a state in which you cannot move any cards, you will have to start a new game."
 		},
 		api_version = 1,
-		order = 2
+		order = 1
 	}
 end
 
@@ -40,9 +41,9 @@ all_suits = {
 }
 
 all_suit_colors = {
-	16,
+	1,
 	8,
-	27,
+	21,
 	25
 }
 
@@ -133,7 +134,7 @@ function game_setup()
 	deck_playable = stack_new(
 		{5,7},
 		card_gap, card_height + card_gap*3,
-		stack_repose_static(2),
+		stack_repose_top_three,
 		true, stack_cant, stack_on_click_unstack(card_is_top), stack_on_double_goal)
 	
 	while #unstacked_cards > 0 do
@@ -166,7 +167,9 @@ function game_setup()
 	end).always_active = true
 	
 	button_simple_text("Auto Place ->", 340, 248, function()
-		cards_coroutine = cocreate(game_auto_place_anim)
+		if not cards_coroutine then
+			cards_coroutine = cocreate(game_auto_place_anim)
+		end
 	end)
 
 	cards_coroutine = cocreate(game_setup_anim)
@@ -315,31 +318,16 @@ function game_count_win()
 	cards_coroutine = cocreate(game_win_anim)
 end
 
---[[ as cool as this might be, it's expensive
-function stack_win_anim()
-	win_stack = stack_new({}, 0, 0, stack_win_reposition, false, stack_cant, stack_cant)
-	for s in all(stack_goals) do
-		while #s.cards > 0 do
-			local c = get_top_card(s)
-			stack_add_card(win_stack, c)
-			c.a_to=0
-			pause_frames(3)
-		end
-	end
-end
-	
-function stack_win_reposition(stack)
-	local dx, dy = 240 - card_width/2, 135 - card_height/2
+-- reposition calculation that has fixed positions
+function stack_repose_top_three(stack)
+	local y = stack.y_to
+	local len = #stack.cards - 3
 	for i, c in pairs(stack.cards) do
-		i = -i
-		local r = 170
-		local t = time()/9 + i/#stack.cards
-		local t2 = time() + i/#stack.cards*6
-		c.x_to = sin(t)*r + dx + sin(t2)  * 14
-		c.y_to = cos(t)*r/2 + dy + cos(t2) * 14
+		c.x_to = stack.x_to
+		c.y_to = y
+		y += i <= len and 2 or 12
 	end
 end
-]]
 
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
@@ -352,7 +340,7 @@ function stack_can_rule(stack, stack2)
 	local c2 = stack2.cards[1]
 	
 	if c1.rank - 1 == c2.rank 
-	and c1.suit ~= c2.suit then
+	and (c1.suit + c2.suit) % 2 == 1 then -- alternating suits (b,r,b,r) (0,1,2,3)
 		return true
 	end
 
@@ -384,11 +372,20 @@ end
 function stack_on_click_reveal()
 	local s = deck_stack.cards
 	
+	-- draw 3 cards
 	if #s > 0 then
-		local c = s[#s]
-		stack_add_card(deck_playable, c)
-		c.a_to = 0
-				
+		cards_coroutine = cocreate(function()
+			for i = 1, 3 do
+				if #s > 0 then
+					local c = s[#s]
+					stack_add_card(deck_playable, c)
+					c.a_to = 0
+					pause_frames(10)
+				end
+			end
+		end)
+		
+	-- put stack of cards back
 	else
 		local s = deck_playable.cards
 		while #s > 0 do

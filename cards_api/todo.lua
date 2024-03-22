@@ -1,8 +1,9 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-22 06:52:21",revision=1149]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-22 21:29:12",revision=1385]]
 --[[
 
 0.1.0
 title image
+card face sprites
 
 0.2.0?
 transition
