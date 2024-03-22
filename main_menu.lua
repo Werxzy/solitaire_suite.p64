@@ -1,4 +1,6 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 03:54:13",revision=5208]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 04:43:11",revision=5352]]
+
+include"cards_api/rule_cards.lua"
 
 game_version = "0.1.0"
 
@@ -50,6 +52,7 @@ end
 
 function button_deckbox_click(b)
 	main_menu_selected = b
+	rule_cards.info = b.info
 	game_info_page = 0
 end
 
@@ -127,26 +130,7 @@ function game_setup()
 			main_menu_y_to = 0
 		end)
 		
-	button_simple_text("\-f\^:181899dbff7e3c18\|i", 3, 227, 
-		function() 
-			if main_menu_selected then
-				game_info_page += 1
-				if game_info_page > #main_menu_selected.info.rules then
-					game_info_page = 0
-				end
-			end
-		end)
-		
-	button_simple_text("\-f\^:183c7effdb991818\|i", 3, 204, 
-		function() 
-			if main_menu_selected then
-				game_info_page -= 1
-				if game_info_page < 0 then
-					game_info_page = #main_menu_selected.info.rules
-				end
-			end
-		end)
-		
+	rule_cards = rule_cards_new(22, 186)
 	
 	set_draw_target()
 	
@@ -263,36 +247,7 @@ function game_draw(layer)
 		
 
 	-- game info
-		-- little inefficient, but eh
-		
-		nine_slice(8, 22, 244, 170, 16)
-		nine_slice(8, 22, 242, 170, 16)
-		
-		nine_slice(8, 22, 186, 170, 70)
-		
-		local s = "Click a deck box to see information about it."
-		if main_menu_selected then
-			local info = main_menu_selected.info
-			if game_info_page == 0 then
-				s =  "\n\n" .. info.description
-				
-				local x = print(info.name, 0, -1000)
-				double_print(info.name, 170/2+22-x/2, 190, 2)
-				
-				local by = "\nBy " .. info.author
-				local x = print(by, 0, -1000)
-				double_print(by, 170/2+22-x/2, 190, 1)
-			
-			else
-				s = info.rules[game_info_page]
-				
-				local num = tostr(game_info_page)
-				local x = print(num, 0, -1000)
-				double_print(num, 170+22-x-3, 245, 2)
-			end
-		end
-		local lw, lh, loreprint = print_wrap_prep(s, 164)
-		double_print(loreprint, 26, 190, 1)
+		rule_cards:draw()
 	end
 end
 
