@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 04:31:10",revision=884]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 06:09:46",revision=1037]]
 
 function game_info()
 	return {
@@ -136,6 +136,20 @@ function game_setup()
 	end)
 	
 	button_simple_text("Exit", 6, 248, cards_api_exit)
+	
+	-- rules cards 
+	rule_cards = rule_cards_new(303, 160, game_info(), "top")
+	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
+	rule_cards.on_off = false
+	local old_update = rule_cards.update
+	rule_cards.update = function(rc)
+		rc.y = rc.y_smooth(rc.on_off and 192.5 or 300)
+		old_update(rc)
+	end
+	button_simple_text("Rules", 97, 248, function()
+		rule_cards.on_off = not rule_cards.on_off
+	end)
+	
 	
 	cards_coroutine = cocreate(game_setup_anim)
 	
@@ -281,6 +295,7 @@ function game_draw(layer)
 	elseif layer == 1 then
 		spr(58, 7, 207) -- wins label
 		game_score:draw()
+		if(rule_cards) rule_cards:draw()
 		
 	elseif layer == 2 then
 		confetti_draw()
@@ -290,6 +305,7 @@ end
 function game_update()
 	game_score:update()
 	confetti_update()
+	if(rule_cards) rule_cards:update()
 end
 
 

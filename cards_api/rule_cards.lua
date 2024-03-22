@@ -1,24 +1,24 @@
---[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-22 04:43:11",revision=155]]
+--[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-22 06:09:46",revision=590]]
 
 
-function rule_cards_new(x, y, info, on_close)
+function rule_cards_new(x, y, info, side)
 	local rc = {
 		x = x, y = y, info = info, page = 0,
-		draw = rule_cards_draw, on_close = on_close
+		draw = rule_cards_draw, 
+		update = rule_cards_update
 	}
 	
-	button_simple_text("\-f\^:181899dbff7e3c18\|i", 3, 227, 
+	rc.b1 = button_simple_text("\-f\^:181899dbff7e3c18\|i", 3, 227, 
 		function()
 			if rc.info then
 				rc.page += 1
 				if rc.page > #rc.info.rules then
-					notify("b")
 					rc.page = 0
 				end
 			end
 		end)
-		
-	button_simple_text("\-f\^:183c7effdb991818\|i", 3, 204, 
+	
+	rc.b2 = button_simple_text("\-f\^:183c7effdb991818\|i", 3, 204, 
 		function() 
 			if rc.info then
 				rc.page -= 1
@@ -27,13 +27,34 @@ function rule_cards_new(x, y, info, on_close)
 				end
 			end
 		end)
+		
+	if not side or side == "left" then
+		rc.b1.dx = -19
+		rc.b1.dy = 41
+		rc.b2.dx = -19
+		rc.b2.dy = 18
+		
+	elseif side == "right" then
+		rc.b1.dx = 173
+		rc.b1.dy = 41
+		rc.b2.dx = 173
+		rc.b2.dy = 18
+		
+	elseif side == "top" then
+		-- todo test
+		rc.b1.dx = 140
+		rc.b1.dy = -19
+		rc.b2.dx = 110
+		rc.b2.dy = -19
+	end
 	
 	return rc
 end
 
 function rule_cards_draw(rc)
-	camera(-rc.x, -rc.y)
-	
+	local oldx, oldy = camera()
+	camera(oldx-rc.x, oldy-rc.y)
+		
 	-- little inefficient, but eh
 	nine_slice(8, 0, 58, 170, 16)
 	nine_slice(8, 0, 56, 170, 16)
@@ -64,5 +85,13 @@ function rule_cards_draw(rc)
 	local lw, lh, loreprint = print_wrap_prep(s, 164)
 	double_print(loreprint, 4, 4, 1)
 	
-	camera()
+	camera(oldx, oldy)
+end
+
+function rule_cards_update(rc)
+	rc.b1.x = rc.x + rc.b1.dx
+	rc.b1.y = rc.y + rc.b1.dy
+	
+	rc.b2.x = rc.x + rc.b2.dx
+	rc.b2.y = rc.y + rc.b2.dy
 end

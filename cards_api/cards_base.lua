@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-22 04:43:11",revision=8889]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-22 06:09:46",revision=9245]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -58,7 +58,7 @@ function cards_api_mouse_update(interact)
 	local mx, my, md = mouse()
 	local mouse_down = md & ~mouse_last
 	local mouse_up = ~md & mouse_last
-	local double_click = time() - mouse_last_click < 0.5	
+	local double_click = time() - mouse_last_click < 0.3	
 	
 	-- fix mouse interaction based on camera
 	local cx, cy = camera()

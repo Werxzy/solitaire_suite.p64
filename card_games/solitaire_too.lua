@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-22 04:21:10",revision=7593]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-22 06:09:46",revision=8003]]
 
 function game_info()
 	return {
@@ -144,7 +144,23 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Exit", 6, 248, cards_api_exit)
+	button_simple_text("Exit", 6, 248, function()
+		rule_cards = nil
+		cards_api_exit()
+	end)
+	
+	-- rules cards 
+	rule_cards = rule_cards_new(135, 192, game_info(), "right")
+	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
+	rule_cards.on_off = false
+	local old_update = rule_cards.update
+	rule_cards.update = function(rc)
+		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
+		old_update(rc)
+	end
+	button_simple_text("Rules", 97, 248, function()
+		rule_cards.on_off = not rule_cards.on_off
+	end)
 	
 	button_simple_text("Auto Place ->", 340, 248, function()
 		cards_coroutine = cocreate(game_auto_place_anim)
@@ -429,6 +445,7 @@ function game_draw(layer)
 	elseif layer == 1 then
 		spr(58, 7, 207) -- wins label
 		game_score:draw()
+		if(rule_cards) rule_cards:draw()
 		
 	elseif layer == 2 then
 		confetti_draw()
@@ -438,6 +455,7 @@ end
 function game_update()
 	game_score:update()
 	confetti_update()
+	if(rule_cards) rule_cards:update()
 end
 
 end -- !!! end of game load function

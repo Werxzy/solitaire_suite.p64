@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 04:43:11",revision=5352]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 06:09:46",revision=5759]]
 
 include"cards_api/rule_cards.lua"
 
@@ -119,6 +119,7 @@ function game_setup()
 	button_center(button_simple_text("Start Game", 200, 200, 
 		function() 
 			if main_menu_selected then
+				rule_cards = nil
 				cards_api_load_game(main_menu_selected.game)
 			end
 		end))
