@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 20:11:37",revision=1144]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 23:54:15",revision=1188]]
 
 function game_info()
 	return {
@@ -47,6 +47,14 @@ all_suit_colors = {
 	25
 }
 
+-- dark, medium, light
+all_face_colors = {
+	{1,16,12},
+	{24,8,14},
+	{19,3,27},
+	{4,25,9}
+}
+
 all_ranks = {
 	"A",
 	"2",
@@ -83,11 +91,34 @@ function game_setup()
 	local card_gap = 4
 	for suit = 1,4 do
 		for rank = 1,rank_count do
+						
+			-- prepare render
 			local new_sprite = userdata("u8", card_width, card_height)
-			
 			set_draw_target(new_sprite)
+			
+			-- draw card back
 			spr(2)
+			
+			-- draw rank/suit
 			print(all_ranks[rank] .. all_suits[suit], 3, 3, all_suit_colors[suit])
+			
+			-- draw face/ace
+			local c = all_face_colors[suit]
+			pal(24, c[1], 0)
+			pal(8, c[2], 0)
+			pal(14, c[3], 0)
+			if rank == 1 then
+				spr(66+suit)
+			elseif rank == 11 then	
+				spr(66)
+			elseif rank == 12 then	
+				spr(65)
+			elseif rank == 13 then	
+				spr(64)
+			end
+			pal(24,24,0)
+			pal(8,8,0)
+			pal(14,14,0)
 			
 			local c = card_new(new_sprite, 240,100)
 			c.suit = suit
