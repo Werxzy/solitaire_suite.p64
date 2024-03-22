@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-21 22:45:53",revision=4763]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-22 03:54:13",revision=5208]]
 
 game_version = "0.1.0"
 
@@ -50,6 +50,7 @@ end
 
 function button_deckbox_click(b)
 	main_menu_selected = b
+	game_info_page = 0
 end
 
 function set_card_back(info)
@@ -80,7 +81,7 @@ function game_setup()
 		if include(game) then
 			local op = add(all_info, game_info())
 			op.order = op.order or 999999
-			op.path = game
+			op.game = game
 		end
 	end
 	
@@ -124,6 +125,26 @@ function game_setup()
 	button_simple_text("Back", 355, 270, 
 		function() 
 			main_menu_y_to = 0
+		end)
+		
+	button_simple_text("\-f\^:181899dbff7e3c18\|i", 3, 227, 
+		function() 
+			if main_menu_selected then
+				game_info_page += 1
+				if game_info_page > #main_menu_selected.info.rules then
+					game_info_page = 0
+				end
+			end
+		end)
+		
+	button_simple_text("\-f\^:183c7effdb991818\|i", 3, 204, 
+		function() 
+			if main_menu_selected then
+				game_info_page -= 1
+				if game_info_page < 0 then
+					game_info_page = #main_menu_selected.info.rules
+				end
+			end
 		end)
 		
 	
@@ -220,6 +241,7 @@ function game_draw(layer)
 		print("Version " .. game_version, 1, 262, 19)
 		print("Mostly by Werxzy", 399, 261)
 		
+	-- card back info
 		local s = "Artist : " .. current_card_back_info.artist
 		
 		local x = print(s, 0, -1000) 
@@ -232,18 +254,51 @@ function game_draw(layer)
 		--rectfill(x1, y1, x2, y2, 7)
 		
 		
-		print(s, 220 - x/2, 295, 1)
+		double_print(s, 220 - x/2, 295, 1)
 		
-		print(loreprint, x1+4 + (truew-lw-5)/2, y1+16)
+		double_print(loreprint, x1+4 + (truew-lw-5)/2, y1+16, 1)
 		
 		nine_slice(8, 275, 345, 97, 15)
-		print("Selected Card Back", 280, 348)
+		double_print("Selected Card Back", 280, 348, 1)
+		
+
+	-- game info
+		-- little inefficient, but eh
+		
+		nine_slice(8, 22, 244, 170, 16)
+		nine_slice(8, 22, 242, 170, 16)
+		
+		nine_slice(8, 22, 186, 170, 70)
+		
+		local s = "Click a deck box to see information about it."
+		if main_menu_selected then
+			local info = main_menu_selected.info
+			if game_info_page == 0 then
+				s =  "\n\n" .. info.description
+				
+				local x = print(info.name, 0, -1000)
+				double_print(info.name, 170/2+22-x/2, 190, 2)
+				
+				local by = "\nBy " .. info.author
+				local x = print(by, 0, -1000)
+				double_print(by, 170/2+22-x/2, 190, 1)
+			
+			else
+				s = info.rules[game_info_page]
+				
+				local num = tostr(game_info_page)
+				local x = print(num, 0, -1000)
+				double_print(num, 170+22-x-3, 245, 2)
+			end
+		end
+		local lw, lh, loreprint = print_wrap_prep(s, 164)
+		double_print(loreprint, 26, 190, 1)
 	end
 end
 
 -- THE NORMAL PRINT WRAPPING CANNOT BE TRUSTED
 function print_wrap_prep(s, width)
-	local words = split(s, " ")
+	local words = split(s, " ", false)
 	local lines = {}
 	local current_line = ""
 	local final_w = 0
@@ -262,6 +317,11 @@ function print_wrap_prep(s, width)
 	final_h += 1000
 	
 	return final_w, final_h, current_line
+end
+
+function double_print(s, x, y, c)
+	print(s, x+1, y+1, 6)
+	print(s, x, y, c)
 end
 
 function cards_game_exiting()

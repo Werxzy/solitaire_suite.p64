@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-21 22:45:53",revision=7446]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-22 03:54:13",revision=7551]]
 
 function game_info()
 	return {
@@ -7,11 +7,10 @@ function game_info()
 		author = "Werxzy",
 		description = "Similar to standard solitaire, but can alternate between any suit.",
 		rules = {
-			"Stack cards of the same suit, from Ace to King, in the card slots on the right",
-			"Cards can be stacked in the 7 middle slots if they don't match in suit and are 1 rank lower than the card below.",
-			"Ace is rank 1. Jack, Queen, King are rank 10, 11, 12.",
-			"Click the deck to draw a reveal a card. Revealed cards can be moved noramlly one at a time, but can't be stacked on.",
-			"When the deck is out of cards, click the its deck slot to move all the cards back."
+			"\tStack cards of the same suit, from Ace to King, in the card slots on the right",
+			"\tCards can be stacked in the 7 middle slots if they don't match in suit and are 1 rank lower than the card below.\n\tAce is rank 1. Jack, Queen, King are rank 10, 11, 12.",
+			"\tClick the deck to draw a reveal a card. Revealed cards can be moved noramlly one at a time, but can't be stacked on.",
+			"\tWhen the deck is out of cards, click the its deck slot to move all the cards back."
 		},
 		order = 1
 	}
