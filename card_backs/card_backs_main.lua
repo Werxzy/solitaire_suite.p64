@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-22 19:08:43",revision=1212]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-23 04:28:27",revision=1352]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -51,6 +51,10 @@ function get_info()
 		{ 
 			sprite = 26, artist = "Werxzy", id = 8,
 			lore = "Pico-8 Icon"
+		},
+		{
+			sprite = 17, artist = "You", id = 9,
+			lore = "Ever feel like you're being watched?"
 		}
 	}
 end

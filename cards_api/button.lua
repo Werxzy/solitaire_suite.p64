@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-22 15:28:23",revision=6260]]
+--[[pod_format="raw",created="2024-03-18 02:31:29",modified="2024-03-23 04:28:27",revision=6282]]
 
 -- this could use more work
 -- the purpose is to allow for animated sprite buttons
@@ -27,7 +27,9 @@ function button_simple_text(t, x, y, on_click)
 			local click_y = sin(b.ct/2)*3
 			nine_slice(55, b.x, b.y+3, b.w, b.h)
 			nine_slice(b.highlight and 53 or 54, b.x, b.y-click_y, b.w, b.h)
-			print(t, b.x+5, b.y+3-click_y, b.highlight and 3 or 19)
+			local x, y = b.x+5, b.y+3 - click_y
+			print(t, x, y+1, 32)
+			print(t, x, y, b.highlight and 3 or 19)
 			b.ct = max(b.ct - 0.08)
 		end, 
 		function (b)

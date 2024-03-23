@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-23 00:19:42",revision=9806]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-23 04:28:27",revision=9964]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -263,7 +263,7 @@ function cards_api_shadows_enable(enable)
 			poke(0x550b, 0xff) -- target shapes
 			
 			-- shadow mask color
-			for i, b in pairs{0,0,21,19,20,21,22,6,24,25,9,27,16,18,13,31,1,16,2,1,21,0,5,14,2,4,11,3,12,13,2,4} do
+			for i, b in pairs{0,1,21,19,20,21,22,6,24,25,9,27,16,18,13,31,1,16,2,1,21,1,5,14,2,4,11,3,12,13,2,4} do
 				-- bit 0x40 is to change the table color to prevent writing onto shaded areas
 				-- kinda like some of the old shadow techniques in 3d games
 				poke(0x8000 + 32*64 + i-1, 0x40|b)

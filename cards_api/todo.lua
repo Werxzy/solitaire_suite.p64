@@ -1,9 +1,18 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 00:19:42",revision=1610]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 04:28:27",revision=1769]]
 --[[
 
 0.1.0
-title image
+fix solitaire a bit
+	cards go 1,2,3,4,5,6,7 instead of all 5s
+	only top cards are face up
+		turn top card face up
+			probably do this on resolve?
+	face down cards cannot be picked up
+	
 symbol count on cards
+title image
+function card backs?
+	if a card has a function, then call that function instead of just 
 
 0.2.0?
 transition
