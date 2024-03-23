@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-23 06:58:44",revision=1431]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-23 23:51:19",revision=1532]]
 
 
 -- todo, fetch cards in folder in appdata

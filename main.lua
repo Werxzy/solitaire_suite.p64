@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-23 06:58:44",revision=12085]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-23 23:51:19",revision=12193]]
 
 include"cards_api/cards_base.lua"
 include"main_menu.lua"
@@ -25,7 +25,11 @@ function _draw()
 		sspr(disp, mx, my, card_width-4, card_height-4, 2, 2)
 		rectfill(2, 2, card_width-3, card_height-3, 32)
 		if(time() % 1.5 < 0.75) circfill(7, 7, 2, 8 )circ(7, 7, 2, 32)
+		
 		fillp(0xf0f0f0f0f0f0f0f0)
+		--fillp(0xf0f0f0f0f0f0f0f0 >> (flicker and 4 or 0))
+		--flicker = not flicker
+		
 		rectfill(2, 2, card_width-4, card_height-4, 32)
 		fillp()
 		nine_slice(25, 0, 0, card_width, card_height, 0)

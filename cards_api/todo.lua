@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 06:58:44",revision=1850]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 23:51:19",revision=1956]]
 --[[
 
 0.1.0
@@ -9,12 +9,10 @@ fix solitaire a bit
 			probably do this on resolve?
 	face down cards cannot be picked up
 	
-symbol count on cards
-title image
 function card backs?
 	if a card has a function, then call that function instead of just 
-
 pull game mode scripts from appdata?
+title image
 
 0.2.0?
 transition
