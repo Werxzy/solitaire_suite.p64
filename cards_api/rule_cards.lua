@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-22 23:54:15",revision=1133]]
+--[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-22 23:54:26",revision=1134]]
 
 
 function rule_cards_new(x, y, info, side)
