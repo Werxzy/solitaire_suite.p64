@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 04:28:27",revision=1769]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-23 06:58:44",revision=1850]]
 --[[
 
 0.1.0
@@ -13,6 +13,8 @@ symbol count on cards
 title image
 function card backs?
 	if a card has a function, then call that function instead of just 
+
+pull game mode scripts from appdata?
 
 0.2.0?
 transition

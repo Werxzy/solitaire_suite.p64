@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-22 23:54:26",revision=1134]]
+--[[pod_format="raw",created="2024-03-22 04:01:37",modified="2024-03-23 06:58:44",revision=1178]]
 
 
 function rule_cards_new(x, y, info, side)
@@ -8,7 +8,7 @@ function rule_cards_new(x, y, info, side)
 		update = rule_cards_update
 	}
 	
-	rc.b1 = button_simple_text("\-f\^:181899dbff7e3c18\|i", 3, 227, 
+	rc.b1 = button_simple_text("\-f\^:181899dbff7e3c18\|j", 3, 227, 
 		function()
 			if rc.info then
 				rc.page += 1
@@ -18,7 +18,7 @@ function rule_cards_new(x, y, info, side)
 			end
 		end)
 	
-	rc.b2 = button_simple_text("\-f\^:183c7effdb991818\|i", 3, 204, 
+	rc.b2 = button_simple_text("\-f\^:183c7effdb991818\|j", 3, 204, 
 		function() 
 			if rc.info then
 				rc.page -= 1
