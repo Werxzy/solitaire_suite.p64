@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-22 23:54:50",revision=1190]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-24 01:36:51",revision=1316]]
 
 function game_info()
 	return {
@@ -24,57 +24,11 @@ function game_load() -- !!! start of game load function
 
 include "cards_api/rolling_score.lua"
 include "cards_api/confetti.lua"
+include "cards_api/card_gen.lua"
 
 -- updates card size if it changed
 card_width = 45
 card_height = 60
-
-all_suits = {
-	--"Spades",
-	--"Hearts",
-	--"Clubs",
-	--"Diamonds"
-	"\|f\^:081c3e7f7f36081c",
-	"\|g\^:00367f7f3e1c0800",
-	"\|f\^:001c1c7f7f77081c",
-	"\|g\^:081c3e7f3e1c0800"
-}
-
-all_suit_colors = {
-	16,
-	8,
-	27,
-	25
-}
-
--- dark, medium, light
-all_face_colors = {
-	{1,16,12},
-	{24,8,14},
-	{19,3,27},
-	{4,25,9}
-}
-
-all_ranks = {
-	"A",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"10",
-	"J",
-	"Q",
-	"K",
-	
--- just extra to reach rank 16, no reason for these
-	"X",
-	"Y",
-	"Z",
-}
 
 rank_count = 13 -- adjustable
 
@@ -89,45 +43,16 @@ function game_setup()
 	}	
 	
 	local card_gap = 4
+	local card_sprites = card_gen_standard(4, rank_count)
+	
 	for suit = 1,4 do
-		for rank = 1,rank_count do
-						
-			-- prepare render
-			local new_sprite = userdata("u8", card_width, card_height)
-			set_draw_target(new_sprite)
-			
-			-- draw card back
-			spr(2)
-			
-			-- draw rank/suit
-			print(all_ranks[rank] .. all_suits[suit], 3, 3, all_suit_colors[suit])
-			
-			-- draw face/ace
-			local c = all_face_colors[suit]
-			pal(24, c[1], 0)
-			pal(8, c[2], 0)
-			pal(14, c[3], 0)
-			if rank == 1 then
-				spr(66+suit)
-			elseif rank == 11 then	
-				spr(66)
-			elseif rank == 12 then	
-				spr(65)
-			elseif rank == 13 then	
-				spr(64)
-			end
-			pal(24,24,0)
-			pal(8,8,0)
-			pal(14,14,0)
-			
-			local c = card_new(new_sprite, 240,100)
+		for rank = 1,rank_count do		
+			local c = card_new(card_sprites[suit][rank], 240,100)
 			c.suit = suit
 			c.rank = rank
 		end
 	end
 	
-	set_draw_target()
-
 	local unstacked_cards = {}
 	for c in all(cards_all) do
 		add(unstacked_cards, c)

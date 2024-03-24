@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 00:40:05",revision=1109]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 01:36:51",revision=1343]]
 
 function game_info()
 	return {
@@ -30,67 +30,12 @@ include "cards_api/card_gen.lua"
 card_width = 45
 card_height = 60
 
-all_suits = {
-	--"Spades",
-	--"Hearts",
-	--"Clubs",
-	--"Diamonds"
-	"\|f\^:081c3e7f7f36081c",
-	"\|g\^:00367f7f3e1c0800",
-	"\|f\^:001c1c7f7f77081c",
-	"\|g\^:081c3e7f3e1c0800"
-}
-
--- text, dark, medium, light
 all_suit_colors = {
 	{1, 1,16,12},
 	{8, 24,8,14},
 	{21, 21,18,13},
 	{25, 4,25,9}
 }
-
--- x left, middle, right = {9, 19, 29}
-all_icon_pos = {
-	false,
-	{{19, 17}, {19, 39}},
-	{{19, 17}, {19, 28}, {19, 39}},
-	{{9, 17}, {9, 39}, {29, 17}, {29, 39}},
-	{{9, 17}, {9, 39}, {29, 17}, {29, 39}, {19, 28}},
-	{{9, 17}, {9, 39}, {9, 28}, {29, 17}, {29, 39}, {29, 28}},
-	{{19, 17},{19, 39},{19, 28}, {9, 23},{9, 34}, {29, 23},{29, 34}},
-	{{9, 17},{9, 39},{9, 28}, {19, 23},{19, 34}, {29, 17},{29, 39},{29, 28}},
-	{{19, 17},{19, 39},{19, 28}, {9, 23},{9, 34},{9, 45}, {29, 12},{29, 23},{29, 34}},
-	{{9, 18},{9, 29},{9, 40}, {19, 13},{19, 24},{19, 35},{19, 46}, {29, 18},{29, 29},{29, 40}},	
-}
-
-all_face_sprites = {
-	[1] = {67,68,69,70},
-	[11] = 66,
-	[12] = 65,
-	[13] = 64
-}
-
-all_ranks = {
-	"A",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"10",
-	"J",
-	"Q",
-	"K",
-	
--- just extra to reach rank 16, no reason for these
-	"X",
-	"Y",
-	"Z",
-}
-
 
 rank_count = 13 -- adjustable
 
@@ -104,8 +49,7 @@ function game_setup()
 		wins = 0
 	}	
 	
-	local card_sprites = card_gen_standard(
-		4, 13, all_suits, all_ranks, all_suit_colors, all_face_sprites, all_icon_pos)
+	local card_sprites = card_gen_standard(4, rank_count, nil, nil, all_suit_colors)
 
 	local card_gap = 4
 	for suit = 1,4 do
@@ -116,8 +60,6 @@ function game_setup()
 		end
 	end
 	
-	set_draw_target()
-
 	local unstacked_cards = {}
 	for c in all(cards_all) do
 		add(unstacked_cards, c)
