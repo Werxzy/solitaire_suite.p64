@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-24 01:36:51",revision=10463]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-24 03:00:14",revision=10592]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -36,10 +36,11 @@ function cards_api_update()
 	-- though, coroutines are a bit annoying to debug
 	if cards_coroutine then
 		coresume(cards_coroutine)
+		cards_api_mouse_update(false)
 		if costatus(cards_coroutine) == "dead" then
 			cards_coroutine = nil
+			cards_api_action_resolved()
 		end
-		cards_api_mouse_update(false)
 	else
 		cards_api_mouse_update(true)
 	end
@@ -129,7 +130,7 @@ function cards_api_mouse_update(interact)
 			end
 			
 			if clicked then
-				cards_api_condition_check()
+				cards_api_action_resolved()
 			end
 		end
 		
@@ -145,11 +146,12 @@ function cards_api_mouse_update(interact)
 					break
 				end
 			end
+			
 			if held_stack ~= nil then
 				stack_cards(held_stack.old_stack, held_stack)
 				held_stack = nil
 			end
-			cards_api_condition_check()
+			cards_api_action_resolved()
 		end
 		
 		if held_stack then
@@ -169,8 +171,11 @@ function cards_api_mouse_update(interact)
 	mouse_last = md
 end
 
--- main function to call for if the win condition is met
-function cards_api_condition_check()
+-- when an action is resolved, call the game's reaction function and check win condition
+function cards_api_action_resolved()
+	if(game_action_resolved) game_action_resolved()
+	
+	-- check if win condition is met
 	if not cards_frozen and game_win_condition and game_win_condition() then
 		if game_count_win then
 			game_count_win()

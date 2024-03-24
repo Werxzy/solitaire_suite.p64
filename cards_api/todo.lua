@@ -1,18 +1,13 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 01:36:51",revision=2274]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 03:00:14",revision=2400]]
 --[[
 
-0.1.0
-fix solitaire a bit
-	cards go 1,2,3,4,5,6,7 instead of all 5s
-	only top cards are face up
-		turn top card face up
-			probably do this on resolve?
-	face down cards cannot be picked up
-	
+0.1.0	
 function card backs?
 	if a card has a function, then call that function instead of just 
 pull game mode scripts from appdata?
 title image
+
+? rect to rect collision instead of point to rect
 
 0.2.0?
 transition

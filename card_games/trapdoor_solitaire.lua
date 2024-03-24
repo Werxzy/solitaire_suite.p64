@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-21 20:08:20",revision=2786]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-24 02:46:39",revision=2787]]
 function game_info()
 	return {
 		sprite = 56,

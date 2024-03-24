@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-24 01:36:51",revision=10276]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-24 03:00:14",revision=10394]]
 
 stacks_all = {}
 stack_border = 3
@@ -57,12 +57,22 @@ end
 
 -- on_click event that unstacks cards starting from the given card
 -- if a given rule function returns true
-function stack_on_click_unstack(rule)
+function stack_on_click_unstack(...)
+	local rules = {...}
+	
 	return function(card)
-		if card and (not rule or rule(card)) then
+		if card then
+			for r in all(rules) do
+				if(not r(card))return
+			end
+			
 			held_stack = unstack_cards(card)
 		end
 	end
+end
+
+function unstack_rule_face_up(card)
+	return card.a_to == 0
 end
 
 -- creates a new stack by taking cards from the given card's stack.

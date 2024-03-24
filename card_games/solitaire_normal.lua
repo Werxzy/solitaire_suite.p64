@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 01:36:51",revision=1343]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 03:00:14",revision=1484]]
 
 function game_info()
 	return {
@@ -151,14 +151,16 @@ end
 function game_setup_anim()
 	pause_frames(30)
 
-	for i = 1,5 do	
-		for s in all(stacks_supply) do
-			local c = get_top_card(deck_stack)
-			if(not c) break
-			
-			stack_add_card(s, c)
-			c.a_to = 0
-			pause_frames(3)
+	for i = 1,7 do	
+		for j, s in pairs(stacks_supply) do
+			if j >= i then
+				local c = get_top_card(deck_stack)
+				if(not c) break
+				
+				c.a_to = j == i and 0 or 0.5
+				stack_add_card(s, c)
+				pause_frames(3)
+			end
 		end
 		pause_frames(5)
 	end
@@ -253,8 +255,15 @@ function game_auto_place_anim()
 		end
 		pause_frames(6)
 	end
-	
-	cards_api_condition_check()
+end
+
+function game_action_resolved()
+	if not held_stack then
+		for s in all(stacks_supply) do
+			local c = get_top_card(s)
+			if(c) c.a_to = 0
+		end
+	end
 end
 
 function game_win_anim()
