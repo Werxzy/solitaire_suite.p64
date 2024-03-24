@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 03:00:14",revision=2400]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 21:46:20",revision=2444]]
 --[[
 
 0.1.0	
@@ -8,6 +8,9 @@ pull game mode scripts from appdata?
 title image
 
 ? rect to rect collision instead of point to rect
+
+use local instead of putting everything in game_load()?
+switch to userdata for some of the structures (it's much faster)
 
 0.2.0?
 transition

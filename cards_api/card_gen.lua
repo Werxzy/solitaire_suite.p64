@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 23:52:47",modified="2024-03-24 03:00:14",revision=508]]
+--[[pod_format="raw",created="2024-03-23 23:52:47",modified="2024-03-24 21:46:20",revision=577]]
 
 local default_suits = {
 	--"Spades",
@@ -39,7 +39,9 @@ local default_suit_colors = {
 	{16, 1,16,12},
 	{8, 24,8,14},
 	{27, 19,3,27},
-	{25, 4,25,9}
+	{25, 4,25,9},
+--	{13, 12,26,10}
+	{13, 18,13,29}
 }
 
 -- x left, middle, right = {9, 19, 29}
