@@ -1,10 +1,10 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-24 21:46:20",revision=10636]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-24 23:15:37",revision=10701]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
 include"cards_api/button.lua"
 
-cards_api_save_folder = "/solitaire_collection"
+--cards_api_save_folder = "/appdata/solitaire_collection"
 
 mouse_last = 0
 mouse_last_click = time() - 100
@@ -241,12 +241,13 @@ end
 -- ensures that the proper folder exists
 -- returns nil if save does not exist
 function cards_api_load()
-	cards_api_saveloc = "/appdata"
-		.. cards_api_save_folder .. "/"
+	assert(cards_api_save_folder, "Save location must be specified.")
+	
+	cards_api_saveloc = cards_api_save_folder .. "/"
 		.. cards_api_game_name .. ".pod"
 	
 	if cards_api_save_folder and #cards_api_save_folder > 0 then
-		mkdir("/appdata/" .. cards_api_save_folder)
+		mkdir(cards_api_save_folder)
 	end
 	
 	return fetch(cards_api_saveloc)

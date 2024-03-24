@@ -1,7 +1,8 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-24 00:10:29",revision=6694]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-24 23:15:37",revision=6764]]
 
 include"cards_api/rule_cards.lua"
 
+cards_api_save_folder = "/appdata/solitaire_collection"
 game_version = "0.1.0"
 api_version_expected = 1
 
@@ -11,19 +12,24 @@ function game_load() -- similar to game_load, but we always want this available
 
 -- initializes the list of game variants
 game_list = {}
-for g in all(ls"card_games") do
-	local ext = split(g, ".")
-	if ext[#ext] == "lua" then
-		local op = add(game_list, "card_games/" .. g)
+for loc in all{"card_games/", cards_api_save_folder .. "/card_games/"} do
+	for g in all(ls(loc)) do
+		local ext = split(g, ".")
+		if ext[#ext] == "lua" then
+			local op = add(game_list, loc .. g)
+		end
 	end
 end
 
 
 card_back_info = {}
-for cb in all(ls"card_backs") do
-	include("card_backs/" .. cb)
-	for info in all(get_info()) do
-		add(card_back_info, info)
+
+for loc in all{"card_backs/", cards_api_save_folder .. "/card_backs/"} do 
+	for cb in all(ls(loc)) do
+		include(loc .. cb)
+		for info in all(get_info()) do
+			add(card_back_info, info)
+		end
 	end
 end
 

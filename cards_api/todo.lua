@@ -1,10 +1,10 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 21:46:20",revision=2444]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-24 23:15:37",revision=2516]]
 --[[
 
 0.1.0	
 function card backs?
 	if a card has a function, then call that function instead of just 
-pull game mode scripts from appdata?
+
 title image
 
 ? rect to rect collision instead of point to rect
