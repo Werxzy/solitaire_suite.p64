@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-23 23:51:19",revision=930]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 00:40:05",revision=1109]]
 
 function game_info()
 	return {
@@ -24,6 +24,7 @@ function game_load() -- !!! start of game load function
 
 include "cards_api/rolling_score.lua"
 include "cards_api/confetti.lua"
+include "cards_api/card_gen.lua"
 
 -- updates card size if it changed
 card_width = 45
@@ -40,23 +41,17 @@ all_suits = {
 	"\|g\^:081c3e7f3e1c0800"
 }
 
+-- text, dark, medium, light
 all_suit_colors = {
-	1,
-	8,
-	21,
-	25
-}
-
--- dark, medium, light
-all_face_colors = {
-	{1,16,12},
-	{24,8,14},
-	{21,18,13},
-	{4,25,9}
+	{1, 1,16,12},
+	{8, 24,8,14},
+	{21, 21,18,13},
+	{25, 4,25,9}
 }
 
 -- x left, middle, right = {9, 19, 29}
 all_icon_pos = {
+	false,
 	{{19, 17}, {19, 39}},
 	{{19, 17}, {19, 28}, {19, 39}},
 	{{9, 17}, {9, 39}, {29, 17}, {29, 39}},
@@ -66,6 +61,13 @@ all_icon_pos = {
 	{{9, 17},{9, 39},{9, 28}, {19, 23},{19, 34}, {29, 17},{29, 39},{29, 28}},
 	{{19, 17},{19, 39},{19, 28}, {9, 23},{9, 34},{9, 45}, {29, 12},{29, 23},{29, 34}},
 	{{9, 18},{9, 29},{9, 40}, {19, 13},{19, 24},{19, 35},{19, 46}, {29, 18},{29, 29},{29, 40}},	
+}
+
+all_face_sprites = {
+	[1] = {67,68,69,70},
+	[11] = 66,
+	[12] = 65,
+	[13] = 64
 }
 
 all_ranks = {
@@ -89,6 +91,7 @@ all_ranks = {
 	"Z",
 }
 
+
 rank_count = 13 -- adjustable
 
 cards_api_clear()
@@ -101,49 +104,13 @@ function game_setup()
 		wins = 0
 	}	
 	
+	local card_sprites = card_gen_standard(
+		4, 13, all_suits, all_ranks, all_suit_colors, all_face_sprites, all_icon_pos)
+
 	local card_gap = 4
 	for suit = 1,4 do
-		for rank = 1,rank_count do
-			
-			-- prepare render
-			local new_sprite = userdata("u8", card_width, card_height)
-			set_draw_target(new_sprite)
-			
-			-- draw card back
-			spr(2)
-			
-			-- draw rank/suit
-			print(all_ranks[rank] .. all_suits[suit], 3, 3, all_suit_colors[suit])
-			
-			-- draw face/ace
-			local c = all_face_colors[suit]
-			pal(24, c[1], 0)
-			pal(8, c[2], 0)
-			pal(14, c[3], 0)
-			if rank == 1 then
-				spr(66+suit)
-			elseif rank == 11 then	
-				spr(66)
-			elseif rank == 12 then	
-				spr(65)
-			elseif rank == 13 then	
-				spr(64)
-			else
-				local ch = all_suits[suit]
-				for p in all(all_icon_pos[rank-1]) do
-					print(ch, p[1]+1, p[2]+2, 32)
-				end
-				color(all_suit_colors[suit])
-				for p in all(all_icon_pos[rank-1]) do
-					print(ch, p[1], p[2])
-				end	
-			end
-			
-			pal(24,24,0)
-			pal(8,8,0)
-			pal(14,14,0)
-		
-			local c = card_new(new_sprite, 240,100)
+		for rank = 1,rank_count do		
+			local c = card_new(card_sprites[suit][rank], 240,100)
 			c.suit = suit
 			c.rank = rank
 		end
