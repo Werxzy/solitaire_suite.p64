@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-25 01:00:35",revision=1807]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-25 01:10:51",revision=1850]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -59,6 +59,9 @@ function get_info()
 	}
 end
 
+-- init is true when the userdata needs to be reinitialized, either from first init or by card size change
+-- data is the card back sprite info
+-- data.sprite will need to be assigned
 function camera_card_back(init, data)
 	if init or not data.sprite then
 		data.sprite = userdata("u8", card_width, card_height)

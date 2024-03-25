@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-25 01:00:35",revision=13019]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-25 01:47:37",revision=13110]]
 
 include"cards_api/cards_base.lua"
 include"main_menu.lua"
@@ -11,13 +11,13 @@ end
 
 function _update()
 	cards_api_update()	
-	stat_up = stat(1)
+--	stat_up = stat(1)
 end
 
 
 function _draw()
 	cards_api_draw()
 
-	?stat_up, 111, 220, 6
-	?stat(1)-stat_up
+--	?stat_up, 111, 220, 6
+--	?stat(1)-stat_up
 end

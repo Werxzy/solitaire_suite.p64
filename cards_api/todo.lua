@@ -1,9 +1,7 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-25 01:00:35",revision=2787]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-25 01:47:37",revision=2875]]
 --[[
 
 0.1.0	
-function card backs?
-	if a card has a function, then call that function instead of just 
 
 title image
 
@@ -13,6 +11,9 @@ use local instead of putting everything in game_load()?
 switch to userdata for some of the structures (it's much faster)
 
 0.2.0?
+
+double click for instantly starting the game.
+
 transition
 	use pget to sample colors and then use circfill to grow and fill the screen
 

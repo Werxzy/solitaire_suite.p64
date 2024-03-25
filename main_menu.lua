@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 01:00:35",revision=7094]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 01:17:33",revision=7150]]
 
 include"cards_api/rule_cards.lua"
 
@@ -9,6 +9,9 @@ api_version_expected = 1
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
 function game_load() -- similar to game_load, but we always want this available
+
+mkdir(cards_api_save_folder .. "/card_games")
+mkdir(cards_api_save_folder .. "/card_backs")
 
 -- initializes the list of game variants
 game_list = {}
