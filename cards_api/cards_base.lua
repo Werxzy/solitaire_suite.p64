@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-25 02:11:27",revision=11153]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-25 02:56:09",revision=11217]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -52,7 +52,7 @@ function cards_api_update()
 	if cards_coroutine then
 		coresume(cards_coroutine)
 		cards_api_mouse_update(false)
-		if costatus(cards_coroutine) == "dead" then
+		if not cards_coroutine or costatus(cards_coroutine) == "dead" then
 			cards_coroutine = nil
 			cards_api_action_resolved()
 		end

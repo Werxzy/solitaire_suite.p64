@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 02:33:41",revision=7184]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 02:56:09",revision=7264]]
 
 include"cards_api/rule_cards.lua"
 
@@ -93,10 +93,12 @@ function game_setup()
 	for game in all(game_list) do
 		local p, n = unpack(game)
 		
-		if include(p .. "/" .. n .. "/game_info.lua") then
+		local info_path = p .. "/" .. n .. "/game_info.lua"
+		if include(info_path) then
 			local op = add(all_info, game_info())	
 			op.order = op.order or 999999
 			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
+			op.info_path = info_path
 		end
 	end
 	
@@ -117,6 +119,7 @@ function game_setup()
 			
 		b.sprite = info.sprite
 		b.game = info.game
+		b.info_path = info.info_path
 		b.info = info
 		b.x_old = bx
 		
@@ -132,6 +135,7 @@ function game_setup()
 		function() 
 			if main_menu_selected then
 				rule_cards = nil
+				include(main_menu_selected.info_path)
 				cards_api_load_game(main_menu_selected.game)
 			end
 		end))
