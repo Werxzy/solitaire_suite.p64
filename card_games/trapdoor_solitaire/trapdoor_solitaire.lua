@@ -1,14 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-25 01:47:37",revision=2855]]
-function game_info()
-	return {
-		sprite = 56,
-		name = "Trapdoor Solitaire",
-		author = "LouieChapm",
-		description = "A variant on spider solitaire with a more restrictive playspace",
-		rules = {
-		}
-	}
-end
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-25 02:17:14",revision=2879]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-25 01:47:37",revision=2875]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-25 02:11:22",revision=2888]]
 --[[
 
 0.1.0	
@@ -11,6 +11,10 @@ use local instead of putting everything in game_load()?
 switch to userdata for some of the structures (it's much faster)
 
 0.2.0?
+
+rather than a held stack containing old_stack, it contains a function for undoing the unstacking operation
+	this is for returning a card to the middle of a stack
+	or if an undo action cannot take place?
 
 double click for instantly starting the game.
 

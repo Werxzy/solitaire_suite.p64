@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 01:17:33",revision=7150]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 02:33:41",revision=7184]]
 
 include"cards_api/rule_cards.lua"
 
@@ -13,13 +13,12 @@ function game_load() -- similar to game_load, but we always want this available
 mkdir(cards_api_save_folder .. "/card_games")
 mkdir(cards_api_save_folder .. "/card_backs")
 
--- initializes the list of game variants
+-- initializes the list of game variant folders
 game_list = {}
 for loc in all{"card_games/", cards_api_save_folder .. "/card_games/"} do
 	for g in all(ls(loc)) do
-		local ext = split(g, ".")
-		if ext[#ext] == "lua" then
-			local op = add(game_list, loc .. g)
+		if #split(g,".") == 1 then -- is folder
+			local op = add(game_list, {loc, g})
 		end
 	end
 end
@@ -92,10 +91,12 @@ function game_setup()
 	local all_info = {}
 	
 	for game in all(game_list) do
-		if include(game) then
-			local op = add(all_info, game_info())
+		local p, n = unpack(game)
+		
+		if include(p .. "/" .. n .. "/game_info.lua") then
+			local op = add(all_info, game_info())	
 			op.order = op.order or 999999
-			op.game = game
+			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
 		end
 	end
 	
