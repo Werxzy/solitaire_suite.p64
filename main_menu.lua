@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 03:04:26",revision=7278]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 06:00:31",revision=7322]]
 
 include"cards_api/rule_cards.lua"
 
@@ -241,8 +241,11 @@ function game_draw(layer)
 		end	
 
 		cls(3)
+		
+	
 		local cy = main_menu_y() * 260.5
 		camera(0, cy)	
+		spr(22, 121, 2)
 	
 		print("Version " .. game_version, 1, 262, 19)
 		print("Mostly by Werxzy", 399, 261)

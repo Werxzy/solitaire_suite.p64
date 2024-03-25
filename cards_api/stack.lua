@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-25 02:11:21",revision=10910]]
+--[[pod_format="raw",created="2024-03-16 15:18:21",modified="2024-03-25 06:00:31",revision=10918]]
 
 stacks_all = {}
 stack_border = 3
@@ -98,12 +98,13 @@ function unstack_cards(card)
 end
 
 -- reposition calculation for a stack that allows for more floaty cards
-function stack_repose_normal(y_delta, decay)
+function stack_repose_normal(y_delta, decay, limit)
 	y_delta = y_delta or 12
 	decay = decay or 0.7
+	limit = limit or 220
 	
 	return function(stack)
-		local y, yd = stack.y_to, min(y_delta, 220 / #stack.cards)
+		local y, yd = stack.y_to, min(y_delta, limit / #stack.cards)
 		local lasty, lastx = y, stack.x_to
 		for i, c in pairs(stack.cards) do
 			local t = decay / (i+1)
