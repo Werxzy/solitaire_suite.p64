@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-25 02:56:09",revision=2954]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-25 03:04:26",revision=2975]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -100,6 +100,19 @@ function game_setup()
 	
 	button_simple_text("Exit", 6, 248, cards_api_exit)
 
+	-- rules cards 
+	rule_cards = rule_cards_new(135, 192, game_info(), "right")
+	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
+	rule_cards.on_off = false
+	local old_update = rule_cards.update
+	rule_cards.update = function(rc)
+		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
+		old_update(rc)
+	end
+	
+	button_simple_text("Rules", 97, 248, function()
+		rule_cards.on_off = not rule_cards.on_off
+	end).always_active = true
 	cards_coroutine = cocreate(game_setup_anim)
 
 	game_score = rolling_score_new(6, 220, 3, 3, 21, 16, 16, 4, 49, function(s, x, y)
@@ -360,7 +373,7 @@ function game_draw(layer)
 	elseif layer == 1 then
 		spr(58, 7, 207) -- wins label
 		game_score:draw()
-
+		rule_cards:draw()
 	elseif layer == 2 then
 		confetti_draw()
 	end
@@ -368,6 +381,7 @@ end
 
 function game_update()
 	game_score:update()
+	rule_cards:update()
 	confetti_update()
 end
 
