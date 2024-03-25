@@ -1,8 +1,8 @@
---[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-24 01:13:51",revision=11070]]
+--[[pod_format="raw",created="2024-03-16 12:26:44",modified="2024-03-25 01:00:35",revision=11405]]
 
 card_width = 45
 card_height = 60
-card_back = 10 -- can be number or userdata
+card_back = {sprite = 10} -- sprite can be number or userdata
 
 cards_all = {}
 card_shadows_on = true
@@ -34,14 +34,17 @@ end
 -- shifts vertical lines of pixels to give the illusion if the card turning
 function card_draw(c)
 	local facing_down = (c.a()-0.45) % 1 < 0.1 -- facing 45 degree limit for facing down
-	local sprite = facing_down and card_back or c.sprite
+	local sprite = facing_down and card_back.sprite or c.sprite
+	
+	if(type(sprite) == "table") sprite = sprite.sprite
+
 	local x, y, width, height = c.x(), c.y(), card_width, card_height
 	local angle = c.x"vel" / -100 + c.a()
 	--local angle =  c.a()
 		
 	local dx, dy = cos(angle), -sin(angle)*0.5
 	if dx < 0 then
-		sprite = card_back
+		sprite = card_back.sprite
 		dx = -dx
 		dy = -dy
 	end
@@ -135,4 +138,17 @@ end
 -- returns the top card of a stack
 function get_top_card(stack)
 	return stack.cards[#stack.cards]
+end
+
+-- makes a card back sprite that can be updated
+function card_back_animated(func, data)
+	-- this function may need to be changed in the future
+	data.update = function(init)
+		-- will be true when the card back needs to change resolution or be initilized
+		func(init, data)
+	end
+	
+	data.update(true)
+	
+	return data
 end

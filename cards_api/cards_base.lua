@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-24 23:15:37",revision=10701]]
+--[[pod_format="raw",created="2024-03-16 15:34:19",modified="2024-03-25 01:00:35",revision=11051]]
 
 include"cards_api/stack.lua"
 include"cards_api/card.lua"
@@ -14,6 +14,21 @@ cards_coroutine = nil
 
 -- main drawing function
 function cards_api_draw()
+	if card_back.update then
+		local upd = card_back_last ~= card_back
+		
+		if not upd then
+			local sp = card_back.sprite
+			sp = type(sp) == "number" and get_spr(sp) or sp
+			
+			-- if card size changed
+			upd = sp:width() ~= card_width and sp:height() ~= card_height
+		end
+		
+		card_back.update(upd)
+	end
+	card_back_last = card_back
+	
 	if(game_draw) game_draw(0)
 	
 	foreach(stacks_all, stack_draw)

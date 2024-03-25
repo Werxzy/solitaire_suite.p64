@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-24 21:40:01",revision=1510]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-25 01:00:35",revision=1531]]
 
 function game_info()
 	return {
@@ -231,6 +231,7 @@ function game_auto_place_anim()
 		for g in all(stack_goals) do
 			if g:can_stack(temp_stack) then
 				found = true
+				card.a_to = 0
 				stack_cards(g, temp_stack)
 				break
 			end

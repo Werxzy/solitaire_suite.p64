@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-24 23:15:37",revision=6764]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-25 01:00:35",revision=7094]]
 
 include"cards_api/rule_cards.lua"
 
@@ -22,13 +22,14 @@ for loc in all{"card_games/", cards_api_save_folder .. "/card_games/"} do
 end
 
 
-card_back_info = {}
+all_card_back_info = {}
 
 for loc in all{"card_backs/", cards_api_save_folder .. "/card_backs/"} do 
 	for cb in all(ls(loc)) do
 		include(loc .. cb)
 		for info in all(get_info()) do
-			add(card_back_info, info)
+			add(all_card_back_info, info)
+			if(info.update) info.update(true)
 		end
 	end
 end
@@ -64,8 +65,8 @@ function button_deckbox_click(b)
 end
 
 function set_card_back(info)
-	current_card_back_info = info
-	card_back = info.sprite
+	card_back = info
+	assert(info)
 	settings_data.card_back_id = info.id
 	cards_api_save(settings_data)
 end
@@ -76,7 +77,7 @@ function game_setup()
 		card_back_id = 1
 	}
 
-	set_card_back(has_key(card_back_info, "id", settings_data.card_back_id) or rnd(card_back_info))
+	set_card_back(has_key(all_card_back_info, "id", settings_data.card_back_id) or rnd(all_card_back_info))
 	
 	main_menu_y = smooth_val(0, 0.8, 0.023, 0.00001)
 	main_menu_y_to = 0
@@ -154,13 +155,11 @@ function game_setup()
 		
 	card_back_edit_button.resolve_stack = swap_stacks
 	
-	card_back_selected = card_new(card_back, 300, 200)
-	card_back_selected.info = current_card_back_info
-	stack_add_card(card_back_edit_button, card_back_selected)
+	stack_add_card(card_back_edit_button, card_new(card_back, 300, 200))
 	
 	card_back_options = {}
-	for cb in all(card_back_info) do
-		if cb.id ~= current_card_back_info.id then
+	for cb in all(all_card_back_info) do
+		if cb.id ~= card_back.id then
 			local i = #card_back_options
 			local s = add(card_back_options, stack_new(
 				{5},
@@ -171,7 +170,7 @@ function game_setup()
 			s.resolve_stack = swap_stacks
 			
 		
-			local c = card_new(cb.sprite, s.x_to, s.y_to)
+			local c = card_new(cb, s.x_to, s.y_to)
 			c.info = cb
 			stack_add_card(s,  c)
 		end
@@ -207,7 +206,7 @@ function swap_stacks(stack, stack2)
 		del(stacks_all, stack2)
 	end
 	
-	set_card_back(card_back_edit_button.cards[1].info)
+	set_card_back(card_back_edit_button.cards[1].sprite)
 end
 
 function game_update()
@@ -226,6 +225,13 @@ end
 
 function game_draw(layer)
 	if layer == 0 then
+	
+		for c in all(cards_all) do -- update all card_backs
+			if c.sprite.update and c.sprite ~= c.card_back then
+				c.sprite.update()
+			end
+		end	
+
 		cls(3)
 		local cy = main_menu_y() * 260.5
 		camera(0, cy)	
@@ -234,14 +240,14 @@ function game_draw(layer)
 		print("Mostly by Werxzy", 399, 261)
 		
 	-- card back info
-		local s = "Artist : " .. current_card_back_info.artist
+		local s = "Artist : " .. card_back.artist
 		
 		local x = print(s, 0, -1000) 
 		local w = x + 10
 		
 		local x1, y1, x2, y2 = 200 - w/2, 290, 240 + w/2, 308
 		local truew = x2-x1
-		local lw, lh, loreprint = print_wrap_prep(current_card_back_info.lore, truew-5)
+		local lw, lh, loreprint = print_wrap_prep(card_back.lore, truew-5)
 		nine_slice(8, x1, y1, x2-x1, y2-y1 + lh)
 		--rectfill(x1, y1, x2, y2, 7)
 		
