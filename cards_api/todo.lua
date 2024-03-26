@@ -1,7 +1,10 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-26 01:49:23",revision=3021]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-26 04:06:37",revision=3049]]
 --[[
 
 0.1.0	
+
+move card api to it's own repository
+have louie move his games to their own repository
 
 0.1.?
 
@@ -26,8 +29,6 @@ Add script dedicated to card sprite generation.
 		they should be 100x100 pixels each
 		focusing on 41x56 pixels in the center being the normal sprite
 		
-Add face card sprites
-
 stack on_highlight rule function
 	per card and per 
 	

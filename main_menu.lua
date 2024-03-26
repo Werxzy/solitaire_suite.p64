@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-26 01:49:23",revision=7429]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-26 04:06:37",revision=7452]]
 
 include"cards_api/rule_cards.lua"
 

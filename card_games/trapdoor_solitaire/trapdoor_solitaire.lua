@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-26 01:49:23",revision=3014]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-26 04:06:37",revision=3038]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -410,10 +410,14 @@ function game_win_condition()
 				local r = 8 -- start by searching for 8
 				
 				while i <= len -- haven't reached end of stack
-				and stack.cards[i].rank == r -- card has expected rank
+				and (stack.cards[i].rank == r -- card has expected rank
+					or stack.cards[i].rank > 9) -- or an Ace
 				and stack.cards[i].suit == suit -- card has same suit
 				and r > 0 do -- haven't haven't checked rank 1 yet
-					r -= 1 -- 1 rank lower
+				
+					if stack.cards[i].rank <= 9 then
+						r -= 1 -- 1 rank lower, ignore Aces
+					end
 					i += 1 -- next card
 				end
 				
