@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-26 04:06:37",revision=7452]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-26 06:59:45",revision=7550]]
 
 include"cards_api/rule_cards.lua"
 
@@ -15,10 +15,13 @@ mkdir(cards_api_save_folder .. "/card_backs")
 
 -- initializes the list of game variant folders
 game_list = {}
-for loc in all{"card_games/", cards_api_save_folder .. "/card_games/"} do
-	for g in all(ls(loc)) do
-		if #split(g,".") == 1 then -- is folder
-			local op = add(game_list, {loc, g})
+for loc in all{"card_games", cards_api_save_folder .. "/card_games"} do
+	local trav = folder_traversal(loc)
+	for p in trav do
+		-- find any game info files
+		if trav("find", "game_info.lua") then
+			local op = add(game_list, {string.dirname(p), string.basename(p)})
+			trav"exit" -- don't allow 
 		end
 	end
 end
@@ -26,12 +29,15 @@ end
 
 all_card_back_info = {}
 
-for loc in all{"card_backs/", cards_api_save_folder .. "/card_backs/"} do 
-	for cb in all(ls(loc)) do
-		include(loc .. cb)
-		for info in all(get_info()) do
-			add(all_card_back_info, info)
-			if(info.update) info.update(true)
+for loc in all{"card_backs", cards_api_save_folder .. "/card_backs"} do 
+	local trav = folder_traversal(loc)
+	for p in trav do
+		for cb in all(ls(p)) do
+			include(p .. "/" .. cb)
+			for info in all(get_info()) do
+				add(all_card_back_info, info)
+				if(info.update) info.update(true)
+			end
 		end
 	end
 end
@@ -274,34 +280,6 @@ function game_draw(layer)
 	-- game info
 		rule_cards:draw()
 	end
-end
-
--- THE NORMAL PRINT WRAPPING CANNOT BE TRUSTED
-function print_wrap_prep(s, width)
-	local words = split(s, " ", false)
-	local lines = {}
-	local current_line = ""
-	local final_w = 0
-	
-	for w in all(words) do
-		local c2 = current_line == "" and w or current_line .. " " .. w
-		local x = print(c2, 0, -1000)
-		if x > width then
-			current_line = current_line .. "\n" .. w
-		else
-			current_line = c2
-			final_w = max(final_w, x)
-		end
-	end
-	local _, final_h = print(current_line, 0, -1000)
-	final_h += 1000
-	
-	return final_w, final_h, current_line
-end
-
-function double_print(s, x, y, c)
-	print(s, x+1, y+1, 6)
-	print(s, x, y, c)
 end
 
 function cards_game_exiting()
