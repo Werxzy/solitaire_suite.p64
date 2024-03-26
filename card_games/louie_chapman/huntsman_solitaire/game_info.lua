@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-03-26 06:57:51",revision=1455]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-03-26 07:08:59",revision=1498]]
 
 function game_info()
 	return {
@@ -15,6 +15,6 @@ function game_info()
 			"\tTo win, match four-of-a-kind on each of the cards on the top of the tableau.",
 			},
 		api_version = 1,
-		order = 1
+		order = 4
 	}
 end
