@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-26 01:49:23",revision=9222]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-26 01:49:23",revision=3241]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -10,6 +10,20 @@ include "cards_api/card_gen.lua"
 -- updates card size if it changed
 card_width = 45
 card_height = 60
+
+tableau_width = 4
+tableau_initial_deal = 5
+
+reserve_initial_deal = 8
+
+foundation_targets = 4
+
+all_suit_colors = {
+	{1, 1,16,12},
+	{8, 24,8,14},
+	{1, 1,16,12},
+	{8, 24,8,14}
+}
 
 rank_count = 13 -- adjustable
 
@@ -23,9 +37,9 @@ function game_setup()
 		wins = 0
 	}	
 	
+	local card_sprites = card_gen_standard(4, rank_count, nil, nil, all_suit_colors)
+
 	local card_gap = 4
-	local card_sprites = card_gen_standard(4, rank_count)
-	
 	for suit = 1,4 do
 		for rank = 1,rank_count do		
 			local c = card_new(card_sprites[suit][rank], 240,100)
@@ -33,47 +47,48 @@ function game_setup()
 			c.rank = rank
 		end
 	end
-
+	
 	local unstacked_cards = {}
 	for c in all(cards_all) do
 		add(unstacked_cards, c)
 	end
 	
+	local x_offset = 70
 	
 	stacks_supply = {}
-	for i = 1,7 do
+	for i = 1,tableau_width do
 		add(stacks_supply, stack_new(
 			{5},
-			i*(card_width + card_gap*2) + card_gap, card_gap, 
-			stack_repose_normal(),
+			i*(card_width + card_gap*2) + card_gap + x_offset, card_gap + card_height + 10, 
+			stack_repose_normal(nil,nil,160),
 			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), 
-			stack_on_double_goal))
-			
+			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))
 	end
 	
+	-- foundation piles
 	stack_goals = {}
 	for i = 0,3 do
 		add(stack_goals, stack_new(
 			{5},
-			8*(card_width + card_gap*2) + card_gap,
-			i*(card_height + card_gap*2-1) + card_gap,
-			stack_repose_normal(0),
-			true, stack_can_goal, stack_on_click_unstack(card_is_top)))
+			(i+1)*(card_width + card_gap*2) + card_gap + x_offset,
+			5,
+			stack_repose_foundations,
+			true, stack_can_goal, stack_cant))
 	end
 	
-	
+	-- draw pile
 	deck_stack = stack_new(
-		{5,6},
-		card_gap, card_gap,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_on_click_reveal)
+		{5},
+		x_offset+(5)*(card_width + card_gap*2)+10, card_height - 30,
+		stack_repose_deck,
+		true, stack_can_on_deck, stack_on_click_reveal)
 	
-	deck_playable = stack_new(
-		{5,7},
-		card_gap, card_height + card_gap*3,
-		stack_repose_static(2),
-		true, stack_cant, stack_on_click_unstack(card_is_top), stack_on_double_goal)
+	-- reserve pile
+	deck_reserve = stack_new(
+		{5},
+		x_offset-card_gap, card_height - 30,
+		stack_repose_reserve,
+		true, stack_can_on_deck, stack_on_click_reserve, stack_on_double_goal)
 	
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -91,22 +106,18 @@ function game_setup()
 	end).always_active = true
 	
 	-- rules cards 
-	rule_cards = rule_cards_new(135, 192, game_info(), "right")
-	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
+	rule_cards = rule_cards_new(306, 192, game_info(), "top")
+	rule_cards.y_smooth = smooth_val(300, 0.8, 0.09, 0.0001)
 	rule_cards.on_off = false
 	local old_update = rule_cards.update
 	rule_cards.update = function(rc)
-		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
+		rc.y = rc.y_smooth(rc.on_off and 192.5 or 300.5)
 		old_update(rc)
 	end
 	
 	button_simple_text("Rules", 97, 248, function()
 		rule_cards.on_off = not rule_cards.on_off
 	end).always_active = true
-	
-	button_simple_text("Auto Place ->", 340, 248, function()
-		cards_coroutine = cocreate(game_auto_place_anim)
-	end)
 
 	cards_coroutine = cocreate(game_setup_anim)
 	
@@ -120,28 +131,91 @@ function game_setup()
 	game_score.value = game_save.wins
 end
 
+-- checks each foundation pile for a unique rank
+-- also you can't have aces
+function is_unique_rank(c)
+	if c.rank==1 then return false end
+
+	for s in all(stack_goals) do
+		local c1 = s.cards[1]
+		
+		if c1 and c1~=c then 
+			if c1.rank==c.rank then 
+				return false
+			end
+		end
+	end
+	
+	return true
+end
+
 -- deals the cards out
 function game_setup_anim()
-	pause_frames(30)
 
-	for i = 1,5 do	
+	is_setting_up = true
+
+	-- deal out goal cards
+	pause_frames(30)
+	local i=1
+	while i<=4 do
+		local s=stack_goals[i]
+		local c=get_top_card(deck_stack)
+		
+		stack_add_card(s, c)
+		c.a_to = 0
+		pause_frames(20)
+		
+		if is_unique_rank(c) then 
+			i+=1
+		else
+			pause_frames(20)
+			
+			stack_add_card(deck_stack, c, rnd(#deck_stack.cards+1)\1+1)
+			c.a_to = 0.5
+			
+			for c in all(deck_stack.cards) do 
+				card_to_top(c)
+			end	
+		
+			pause_frames(30)
+		end
+	end
+	
+	-- deal out reserve
+	for i=1,reserve_initial_deal do
+		local c = get_top_card(deck_stack)
+		stack_add_card(deck_reserve, c)
+		c.a_to =i==reserve_initial_deal and 0 or 0.5 
+		pause_frames(5)
+	end
+
+	-- deal out tableau
+	pause_frames(20)
+	for i = 1,tableau_initial_deal do	
 		for s in all(stacks_supply) do
 			local c = get_top_card(deck_stack)
-			if(not c) break
-			
 			stack_add_card(s, c)
-			c.a_to = 0
+			c.a_to =i==tableau_initial_deal and 0 or 0.5 
 			pause_frames(3)
 		end
 		pause_frames(5)
 	end
+	
+	is_setting_up = false
 
 	cards_api_game_started()
 end
 
 -- places all the cards back onto the main deck
 function game_reset_anim()
-	for a in all{stacks_supply, stack_goals, {deck_playable}} do
+	deck_reserve.has_been_emptied = false
+	deck_stack.has_been_emptied = false
+	
+	for c in all(deck_stack.cards) do 
+		c.a_to = 0.5
+	end
+
+	for a in all{stacks_supply, stack_goals, {deck_playable}, {deck_reserve}} do
 		for s in all(a) do
 			while #s.cards > 0 do
 				local c = get_top_card(s)
@@ -202,6 +276,7 @@ function game_auto_place_anim()
 		for g in all(stack_goals) do
 			if g:can_stack(temp_stack) then
 				found = true
+				card.a_to = 0
 				stack_cards(g, temp_stack)
 				break
 			end
@@ -228,6 +303,39 @@ function game_auto_place_anim()
 	end
 end
 
+function game_action_resolved()
+	if not held_stack then
+		for s in all(stacks_supply) do
+			local c = get_top_card(s)
+			if(c) c.a_to = 0
+		end
+		
+		local top = deck_reserve.cards[#deck_reserve.cards]
+		if not is_setting_up and top and top.a_to~=0 then 
+			top.a_to=0
+		end
+		
+		for s in all(stack_goals) do 
+			if #s.cards>=4 then
+				for c in all(s.cards) do 
+					c.a_to=0.5
+				end
+			end
+		end
+		
+		if not held_stack then
+			if #deck_reserve.cards==0 then 
+				deck_reserve.has_been_emptied = true
+			end
+			
+			-- set the deck to be fully empty
+			if #deck_stack.cards==0 then 
+				deck_stack.has_been_emptied=true
+			end	
+		end
+	end
+end
+
 function game_win_anim()
 	confetti_new(130,135, 100, 10)
 	pause_frames(25)
@@ -236,11 +344,7 @@ end
 
 function game_win_condition()
 	for g in all(stack_goals) do
-		for i = 1,rank_count do
-			if not g.cards[i] or g.cards[i].rank ~= i then
-				return false
-			end
-		end
+		if #g.cards~=4 then return false end
 	end
 	return true
 end
@@ -252,31 +356,33 @@ function game_count_win()
 	cards_coroutine = cocreate(game_win_anim)
 end
 
---[[ as cool as this might be, it's expensive
-function stack_win_anim()
-	win_stack = stack_new({}, 0, 0, stack_win_reposition, false, stack_cant, stack_cant)
-	for s in all(stack_goals) do
-		while #s.cards > 0 do
-			local c = get_top_card(s)
-			stack_add_card(win_stack, c)
-			c.a_to=0
-			pause_frames(3)
-		end
+function stack_repose_deck(stack)
+	if stack.has_been_emptied then 
+		stack_repose_normal()(stack)
+	else
+		stack_repose_static(-0.16)(stack)
 	end
 end
-	
-function stack_win_reposition(stack)
-	local dx, dy = 240 - card_width/2, 135 - card_height/2
+
+function stack_repose_reserve(stack)
+	if stack.has_been_emptied then 
+		stack_repose_normal()(stack)
+	else
+		stack_repose_normal(3)(stack)
+	end
+end
+
+-- reposition calculation that has fixed positions
+function stack_repose_foundations(stack)
+	local y = stack.y_to
 	for i, c in pairs(stack.cards) do
-		i = -i
-		local r = 170
-		local t = time()/9 + i/#stack.cards
-		local t2 = time() + i/#stack.cards*6
-		c.x_to = sin(t)*r + dx + sin(t2)  * 14
-		c.y_to = cos(t)*r/2 + dy + cos(t2) * 14
+		c.x_to = stack.x_to
+		c.y_to = y
+		
+		-- if the stack is full then only have one pile
+		y += #stack.cards>=4 and 0 or 2
 	end
 end
-]]
 
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
@@ -288,19 +394,19 @@ function stack_can_rule(stack, stack2)
 	local c1 = stack.cards[#stack.cards]
 	local c2 = stack2.cards[1]
 	
-	if c1.rank - 1 == c2.rank 
-	and c1.suit ~= c2.suit then
+	-- if the suits are alternating AND the rank is one below
+	if c1.rank - 1 == c2.rank then -- alternating suits (b,r,b,r) (0,1,2,3)
 		return true
 	end
-
-	--if c1.rank - 1 == c2.rank then
-	--	return true
-	--end
+	
+	-- if both ranks are the same then allow placement
+	-- or if either are an ace
+	if c1.rank == c2.rank or c1.rank==1 or c2.rank==1 then return true end
 end
 
--- expects to be stacked from ace to king with the same suit
+-- goal stacks
+-- in this case , just looking for four of a kind
 function stack_can_goal(stack, stack2)
-	
 	if #stack2.cards ~= 1 then
 		return false
 	end
@@ -308,33 +414,53 @@ function stack_can_goal(stack, stack2)
 	local c1 = stack.cards[#stack.cards]
 	local c2 = stack2.cards[1] 
 	
-	if #stack.cards == 0 and c2.rank == 1 then
-		return true
-	end
-	
-	
-	if #stack.cards > 0 and c1.rank + 1 == c2.rank and c1.suit == c2.suit then
+	if c1.rank==c2.rank then
 		return true
 	end
 end
 
-function stack_on_click_reveal()
+-- the animation for drawing cards <3
+function deck_draw_anim()
 	local s = deck_stack.cards
-	
-	if #s > 0 then
-		local c = s[#s]
-		stack_add_card(deck_playable, c)
-		c.a_to = 0
-				
-	else
-		local s = deck_playable.cards
-		while #s > 0 do
+
+	for i=1,#stacks_supply do
+		if #s > 0 then
+			-- normal viewing
 			local c = s[#s]
-			stack_add_card(deck_stack, c)
-			c.a_to = 0.5
+			stack_add_card(stacks_supply[i], c)
+			c.a_to = 0
+
+			pause_frames(3)
 		end
 	end
 end
+
+function stack_can_on_deck(stack, stack2)
+	if stack.has_been_emptied then 
+		return stack_can_rule(stack,stack2)
+	end
+	
+	return false
+end
+
+-- when the reserve pile is clicked
+function stack_on_click_reserve(card)
+	if deck_reserve.has_been_emptied then 
+		stack_on_click_unstack(unstack_rule_decending)(card)
+	else
+		stack_on_click_unstack(card_is_top)(card)
+	end
+end
+
+-- when the draw pile is clicked
+function stack_on_click_reveal(card)
+	if deck_stack.has_been_emptied then -- todo put this in reset
+		stack_on_click_unstack(unstack_rule_decending)(card)
+	else
+   		cards_coroutine = cocreate(deck_draw_anim)
+   end
+end
+
 
 function stack_on_double_goal(card)
 	-- only accept top card (though could work with multiple cards
@@ -363,15 +489,32 @@ function unstack_rule_decending(card)
 	local s = card.stack.cards
 	local i = has(s, card)
 	
+	-- if the card is an ace , see if it could move the cards beneath it
+	if card.rank==1 and i~=#s then  return unstack_rule_decending(s[i+1]) end
+	
+	-- first check if the card is a pair, triple, or four of a kind
+	local n_of_kind = 0
+	
 	-- goes through each card above clicked card to see if it fits the rule
 	for j = i+1, #s do
-		local next_card = s[j]
+		local next_card = s[j]	
 		
-		-- either rank matches, not decending by 1
-		if next_card.suit == card.suit or next_card.rank+1 ~= card.rank then
-			return false
+		if n_of_kind>=0 and card.rank==next_card.rank then 
+			n_of_kind+=1
+		else
+			-- if there's already been more than 1 matching card
+			-- then you can't have a straight
+			if n_of_kind>0 then return false end
+			
+			-- otherwise set it to -1
+			n_of_kind = -1
 		end
 	
+		if n_of_kind==-1 then
+			if next_card.rank+1 ~= card.rank then
+				return false
+			end
+		end
 		card = next_card -- current card becomes previous card
 	end
 	

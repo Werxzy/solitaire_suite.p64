@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-25 03:04:26",revision=2975]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-26 01:49:23",revision=3014]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -14,7 +14,7 @@ card_height = 60
 available_suits = 4
 available_decks = 1
 
-available_rows = 7
+available_rows = 6
 
 all_ranks = {
 	"1",

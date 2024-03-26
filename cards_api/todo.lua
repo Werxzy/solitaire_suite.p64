@@ -1,13 +1,12 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-25 06:00:31",revision=2921]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-26 01:49:23",revision=3021]]
 --[[
 
 0.1.0	
 
-title image
+0.1.?
 
 ? rect to rect collision instead of point to rect
 
-use local instead of putting everything in game_load()?
 switch to userdata for some of the structures (it's much faster)
 
 0.2.0?

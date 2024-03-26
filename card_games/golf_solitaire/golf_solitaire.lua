@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-25 03:04:26",revision=1434]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-26 01:49:23",revision=1448]]
 
 
 function game_load() -- !!! start of game load function
@@ -78,10 +78,10 @@ function game_setup()
 	
 	-- rules cards 
 	rule_cards = rule_cards_new(303, 160, game_info(), "top")
-	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
+	rule_cards.y_smooth = smooth_val(300, 0.8, 0.09, 0.0001)
 	rule_cards.on_off = false
 	local old_update = rule_cards.update
-	rule_cards.update = function(rc)
+	rule_cards.update = function(rc) 
 		rc.y = rc.y_smooth(rc.on_off and 192.5 or 300)
 		old_update(rc)
 	end
