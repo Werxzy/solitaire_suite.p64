@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-26 04:14:49",modified="2024-03-26 22:09:48",revision=200]]
+--[[pod_format="raw",created="2024-03-26 04:14:49",modified="2024-03-27 23:01:47",revision=228]]
 -- returns the key of a searched value inside a table
 -- such that tab[has(tab, val)] == val
 function has(tab, val)
@@ -166,7 +166,7 @@ function folder_traversal(start_dir)
 	local prev_folder = nil
 	
 	function exit_dir()
-		current_dir, prev_folder = string.dirname(current_dir), string.basename(current_dir)
+		current_dir, prev_folder = current_dir:dirname(), current_dir:basename()
 	end
 	
 	return function(cmd, a)
@@ -189,7 +189,7 @@ function folder_traversal(start_dir)
 			local list = ls(current_dir)
 			
 			for i, f in next, list, has(list, prev_folder) do
-				if not string.ext(f) then -- folder
+				if not f:ext() then -- folder
 					current_dir ..= "/" .. f
 					return current_dir
 				end

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-27 02:29:48",revision=8041]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-27 23:01:47",revision=8080]]
 
 include"cards_api/rule_cards.lua"
 
@@ -20,7 +20,7 @@ for loc in all{"card_games", cards_api_save_folder .. "/card_games"} do
 	for p in trav do
 		-- find any game info files
 		if trav("find", "game_info.lua") then
-			local op = add(game_list, {string.dirname(p), string.basename(p)})
+			local op = add(game_list, {p:dirname(), p:basename()})
 			trav"exit" -- don't allow 
 		end
 	end
