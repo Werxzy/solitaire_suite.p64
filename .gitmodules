@@ -1,0 +1,3 @@
+[submodule "louie_chapman"]
+	path = card_games/louie_chapman
+	url = https://github.com/LouieChapm/picotron_solitaire_suite
