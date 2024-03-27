@@ -1,8 +1,9 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-26 21:14:05",revision=3211]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-27 01:22:52",revision=3538]]
 --[[
 
 0.1.0	
 
+move save data into appdata/**/saves
 move card api to it's own repository
 have louie move his games to their own repository
 
@@ -30,6 +31,7 @@ Add script dedicated to card sprite generation.
 		focusing on 41x56 pixels in the center being the normal sprite
 		
 stack on_highlight rule function
+	hover is a shorter name
 	per card and per 
 	
 stack highlight_check function
@@ -38,6 +40,7 @@ stack highlight_check function
 
 (highlight rule and check are going to be used for managing a hand)
 
+coroutine queue instead of single instance
 
 
 

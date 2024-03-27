@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-26 23:23:21",revision=3125]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-27 01:22:52",revision=3446]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -11,29 +11,12 @@ include "cards_api/card_gen.lua"
 card_width = 45
 card_height = 60
 
-available_suits = 4
+total_sets = 5
 available_decks = 1
+total_ranks = 13 -- king
 
-available_rows = 6
+available_rows = 8
 
-all_ranks = {
-	"1",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"",
-	"",
-	"",
-}
-
-all_face_sprites = {
-	[10] = {67,68,69,70,71}
-}
 	
 cards_api_clear()
 cards_api_shadows_enable(true)
@@ -44,12 +27,13 @@ function game_setup()
 		wins = 0
 	}	
 	
-	local card_sprites = card_gen_standard(4, 10, nil, all_ranks, nil, all_face_sprites)
-	
-	for suit = 1,available_suits do
-		for rank = 1,#all_ranks do		
-			local c = card_new(card_sprites[suit][min(rank, 10)], 240,100)
-			c.suit = suit
+	-- just one suit for now
+	current_card_sprites = card_gen_standard(5)
+	local s = rnd(5)\1 + 1
+	for sets = 1,total_sets do
+		for rank = 1,total_ranks do		
+			local c = card_new(current_card_sprites[s][rank], 240,100)
+			c.suit = 1
 			c.rank = rank
 		end
 	end
@@ -66,7 +50,7 @@ function game_setup()
 	for i = 1,available_rows do
 		add(stacks_supply, stack_new(
 			{5},
-			i*(card_width + card_gap*2) + card_gap + 40, card_gap + 10, 
+			i*(card_width + card_gap*2) + card_gap, card_gap, 
 			stack_repose_normal(),
 			true, stack_can_rule, 
 			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))	
@@ -74,19 +58,17 @@ function game_setup()
 	
 	
 	deck_stack = stack_new(
-		{5},
-		card_gap+10, card_gap + 10,
+		{5,31},
+		card_gap, card_gap,
 		stack_repose_static(-0.16),
-		true, stack_can_on_deck, stack_on_click_reveal)
-	
-	--[[
-	deck_playable = stack_new(
-		{5},
-		card_gap + 10, card_height + card_gap*3 + 10,
-		stack_repose_static(2),
-		true, stack_can_on_deck, stack_on_click_unstack(card_is_top), stack_on_double_goal)
-	]]--
-	
+		true, stack_cant, stack_on_click_reveal)
+		
+	stack_goal = stack_new(
+		{5,31},
+		card_gap, card_gap * 3 + card_height,
+		stack_repose_static(-0.16),
+		true, stack_cant, stack_cant
+		)
 
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -130,10 +112,13 @@ function game_setup_anim()
 	pause_frames(30)
 	for i = 1,5 do	
 		for s in all(stacks_supply) do
-			local c = get_top_card(deck_stack)
-			stack_add_card(s, c)
-			c.a_to = 0
-			pause_frames(3)
+			-- ensure that the last click on the deck of cards places a card on each middle stack
+			if i ~= 5 or #deck_stack.cards % #stacks_supply ~= 0 then
+				local c = get_top_card(deck_stack)
+				stack_add_card(s, c)
+				c.a_to = 0.5
+				pause_frames(3)
+			end
 		end
 		pause_frames(5)
 	end
@@ -143,7 +128,7 @@ end
 
 -- places all the cards back onto the main deck
 function game_reset_anim()
-	for a in all{stacks_supply, stack_goals, {deck_playable}} do
+	for a in all{stacks_supply, {stack_goal}} do
 		for s in all(a) do
 			while #s.cards > 0 do
 				local c = get_top_card(s)
@@ -156,6 +141,13 @@ function game_reset_anim()
 	
 	pause_frames(35)
 	
+	-- randomizes the cards' art
+	current_card_sprites = card_gen_standard(5)
+	local s = rnd(5)\1 + 1
+	for c in all(cards_all) do
+		c.sprite = current_card_sprites[s][c.rank]
+	end
+
 	game_shuffle_anim()
 	game_shuffle_anim()
 	game_shuffle_anim()
@@ -187,61 +179,6 @@ function game_shuffle_anim()
 	pause_frames(20)
 end
 
--- goes through each card and plays a card where it expects
--- easier than double clicking each card
-function game_auto_place_anim()
-	local found = true
-	
-	local function find_placement(stack)
-		-- create temp stack with top card
-		local card = get_top_card(stack)
-		if not card then
-			return
-		end
-		local temp_stack = unstack_cards(card)
-	
-		-- check with each goal stack if card can be placed
-		for g in all(stack_goals) do
-			if g:can_stack(temp_stack) then
-				found = true
-				stack_cards(g, temp_stack)
-				break
-			end
-		end
-		
-		-- return card to original stack
-		if not found then
-			stack_cards(stack, temp_stack)
-		end
-	end
-	
-	while found do
-		found = false
-		for i = #stacks_supply, 1, -1 do
-			find_placement(stacks_supply[i])
-			if found then
-				break
-			end
-		end
-		if not found then
-			find_placement(deck_playable)
-		end
-		pause_frames(6)
-	end
-end
-
-function stack_can_on_deck(stack, stack2)
-	if #stack.cards>=1 then 
-		return false
-	end
-
-	if #stack2.cards>1 then 
-		return false
-	end
-
-	return true
-end
-
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
 function stack_can_rule(stack, stack2)
@@ -256,43 +193,16 @@ function stack_can_rule(stack, stack2)
 	local c2 = stack2.cards[1]
 	
 	if c1.suit == c2.suit then
-		if c1.rank - 1 == c2.rank or c1.rank>9 or c2.rank>9 then
+		if c1.rank - 1 == c2.rank then
 			return true
 		end
 	end	
 end
 
--- expects to be stacked from ace to king with the same suit
-function stack_can_goal(stack, stack2)
-	if stack == held_stack then
-		return false
-	end
-	--
-	if #stack2.cards ~= 1 then
-		return false
-	end
-	
-	local c1 = stack.cards[#stack.cards]
-	local c2 = stack2.cards[1] 
-	
-	if #stack.cards ~= 0 and c2.rank == 1 then
-		return true
-	end
-	
-	
-	if #stack.cards > 0 and c1.suit == c2.suit then
-		if c1.rank + 1 == c2.rank then
-			return true
-		end
-	end		
-end
-
 function stack_on_click_reveal(card)
-    if #deck_stack.cards>1 then
-        cards_coroutine = cocreate(deck_draw_anim)
-    elseif card then
-      held_stack = unstack_cards(card)
-    end
+	if #deck_stack.cards>0 then
+		cards_coroutine = cocreate(deck_draw_anim)
+	end
 end
 
 function deck_draw_anim()
@@ -338,30 +248,17 @@ function unstack_rule_decending(card)
 	local s = card.stack.cards
 	local i = has(s, card)
 	
-	local current_rank = card.rank
-
 	-- goes through each card above clicked card to see if it fits the rule
 	for j = i+1, #s do
 		local next_card = s[j]
 		
-		-- either rank matches, not decending by 1
-		if next_card.suit ~= card.suit then 
+		if next_card.a_to == 0.5 -- must face up
+		or next_card.suit ~= card.suit -- must match suit
+		or next_card.rank+1 ~= card.rank then -- must decrease in rank
 			return false
-		end	
-	
-		if next_card.rank<=9 then
-			if next_card.rank+1 ~= current_rank and current_rank<=9 then
-				return false
-			end
-		else
-			
 		end
-	
+				
 		card = next_card -- current card becomes previous card
-		
-		if next_card.rank<=9 then
-			current_rank = card.rank
-		end
 	end
 	
 	return true
@@ -387,6 +284,42 @@ end
 
 
 
+function game_action_resolved()
+	for stack in all(stacks_supply) do
+		local i = #stack.cards
+		local card = stack.cards[i]
+		i -= 1 -- prepare next card
+
+		-- for every king found
+		if card and card.rank == 1 then
+			local suit = card.suit
+			local r = card.rank+1 -- start by searching for queen
+			
+			while i > 0 -- haven't reached end of stack
+			and stack.cards[i].rank == r -- card has expected rank
+			and stack.cards[i].suit == suit -- card has same suit
+			and r <= total_ranks do -- haven't haven't checked rank 1 yet
+				r += 1 -- 1 rank lower, ignore Aces
+				i -= 1 -- next card
+			end
+			
+			-- if all the ranks found
+			if r > total_ranks then
+				i += 1
+				cards_coroutine = cocreate(function()
+					while stack.cards[i] do
+						stack_cards(stack_goal, unstack_cards(stack.cards[#stack.cards]))
+						pause_frames(3)
+					end
+				end)
+				
+			end
+		end
+		if card and not held_stack then
+			card.a_to = 0
+		end
+	end
+end
 
 -- winning things
 function game_win_anim()
@@ -396,42 +329,7 @@ function game_win_anim()
 end
 
 function game_win_condition()
-	local stack_count = 0
-
-	for stack in all(stacks_supply) do
-		local i, len = 1, #stack.cards
-		while i <= len do
-			local card = stack.cards[i]
-			i += 1 -- prepare next card
-
-			-- for every 9 found
-			if card.rank == 9 then
-				local suit = card.suit
-				local r = 8 -- start by searching for 8
-				
-				while i <= len -- haven't reached end of stack
-				and (stack.cards[i].rank == r -- card has expected rank
-					or stack.cards[i].rank > 9) -- or an Ace
-				and stack.cards[i].suit == suit -- card has same suit
-				and r > 0 do -- haven't haven't checked rank 1 yet
-				
-					if stack.cards[i].rank <= 9 then
-						r -= 1 -- 1 rank lower, ignore Aces
-					end
-					i += 1 -- next card
-				end
-				
-				-- failed to find all the ranks
-				if(r > 0) return false
-				
-				-- increase found count
-				stack_count += 1
-			end
-		end
-	end
-	
-	-- if count is at (or somehow above) the expected value
-	return stack_count >= available_suits * available_decks
+	return #cards_all == #stack_goal.cards
 end
 
 function game_count_win()
