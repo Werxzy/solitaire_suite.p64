@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-27 01:22:52",revision=7967]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-27 02:28:13",revision=8035]]
 
 include"cards_api/rule_cards.lua"
 
@@ -133,7 +133,7 @@ function game_setup()
 	end
 	
 	local third = game_mode_buttons[3]
-	x_offset("pos", 240 - third.sprite:width()/2 - third.x_old)
+	x_offset("pos", 240 - third.sprite:width() - 5 - third.x_old)
 	
 	set_draw_target(userdata("u8", 1, 1)) -- TEMP : draw target isn't initialized? print doesn't return any values
 	
