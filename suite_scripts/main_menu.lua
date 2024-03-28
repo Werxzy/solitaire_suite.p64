@@ -1,8 +1,8 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-28 20:19:00",revision=8468]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-28 23:38:23",revision=8507]]
 
 include"suite_scripts/rule_cards.lua"
 
-cards_api_save_folder = "/appdata/solitaire_collection"
+cards_api_save_folder = "/appdata/solitaire_suite"
 game_version = "0.1.0"
 api_version_expected = 1
 

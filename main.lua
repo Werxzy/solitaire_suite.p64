@@ -1,12 +1,8 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-28 20:19:00",revision=13405]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-28 23:38:23",revision=13446]]
 
 include"cards_api/cards_base.lua"
-include"suite_scripts/main_menu.lua"
--- needed?
 
 function _init()
-	cards_api_save_folder = "/appdata/solitaire_collection"
-
 	cards_api_load_game"suite_scripts/main_menu.lua"
 end
 
