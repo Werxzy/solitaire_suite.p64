@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-27 23:35:40",revision=2004]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-28 02:00:12",revision=2383]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -52,40 +52,57 @@ function get_info()
 			sprite = 26, artist = "Werxzy", id = 8,
 			lore = "Pico-8 Icon"
 		},
-		card_back_animated(camera_card_back, {
-			artist = "You", id = 9,
+		{
+			sprite = camera_card_back, artist = "You", id = 9,
 			lore = "Ever feel like you're being watched?"
-		})
+		}
 	}
 end
 
--- init is true when the userdata needs to be reinitialized, either from first init or by card size change
+-- when init is true, the card art will need to be recreated reguardless
+-- card_art_width and card_art_height are given to help know the art's bounds
+-- camera and clip are used around this function, so be careful
 -- data is the card back sprite info
--- data.sprite will need to be assigned
 function camera_card_back(init, data)
-	if init or not data.sprite then
-		data.sprite = userdata("u8", card_width, card_height)
-	end
-
-	camera()
+	-- get mouse position
 	local mx, my = mouse()
-	local disp = get_display()
-	mx = mid(mx - card_width\2+1, 480-card_width)
-	my = mid(my - card_height\2+1, 270-card_height)
+	mx = mid(mx - card_art_width\2+1, 480-card_art_height)
+	my = mid(my - card_art_width\2+1, 270-card_art_height)
 	
-	set_draw_target(data.sprite)
-	rectfill(2, 2, card_width-3, card_height-3,1)
-	sspr(disp, mx, my, card_width-4, card_height-4, 2, 2)
-	rectfill(2, 2, card_width-3, card_height-3, 32)
-	if(time() % 1.5 < 0.75) circfill(7, 7, 2, 8 )circ(7, 7, 2, 32)
+	rectfill(0, 0, card_art_width-1, card_art_height-1, 1) -- base (prevent transparent pixels
+	sspr(get_display(), mx, my, card_art_width, card_art_height, 0, 0) -- screen
+	rectfill(0, 0, card_art_width-1, card_art_height-1, 32) -- darken
+	if(time() % 1.5 < 0.75) circfill(5, 5, 2, 8) circ(5, 5, 2, 32) -- red dot
 	
-	fillp(0xf0f0f0f0f0f0f0f0)
-	--fillp(0xf0f0f0f0f0f0f0f0 >> (flicker and 4 or 0))
-	--flicker = not flicker
-	
-	rectfill(2, 2, card_width-4, card_height-4, 32)
+	-- scanlines
+	fillp(0xf0f0f0f0f0f0f0f0)	
+	rectfill(0, 0, card_art_width-1, card_art_height-1, 32)
 	fillp()
-	nine_slice(25, 0, 0, card_width, card_height, 0)
-	set_draw_target()
+	
+	return true
+end
+
+function random_card_back(init, data)
+	if init then
+		rectfill(0, 0, card_art_width-1, card_art_height-1, 5)
+		color(32)
+	--[[
+		for i = 1,40 do
+			line(rnd(card_art_width)/2, rnd(card_art_height)/2)
+		end
+		local w, h = card_art_width\2, card_art_height\2
+		sspr(data.sprite, 0, 0, w, h+3, w-1, -2, w, h+3, true, false)
+		sspr(data.sprite, 0, 0, card_width, h, -2, h-1, card_width, h, false, true)
+	]]
+		local w, h = card_art_width/2, card_art_height/2
+		local r = w * 0.6
+		local ph = rnd(10)+2
+		for i = 1,140 do
+			local r2 = sin(i/ph)*6
+			line(sin(i/20) * (r + r2) + w, cos(i/20) * (r+r2) + h)
+		end
+
+		return true	
+	end
 end
 

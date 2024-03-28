@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-27 23:36:00",revision=8083]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-28 02:00:12",revision=8337]]
 
 include"cards_api/rule_cards.lua"
 
@@ -9,6 +9,10 @@ api_version_expected = 1
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
 function game_load() -- similar to game_load, but we always want this available
+
+cards_api_clear()
+cards_api_shadows_enable(true)
+main_menu_selected = nil
 
 mkdir(cards_api_save_folder .. "/card_games")
 mkdir(cards_api_save_folder .. "/card_backs")
@@ -35,16 +39,18 @@ for loc in all{"card_backs", cards_api_save_folder .. "/card_backs"} do
 		for cb in all(ls(p)) do
 			include(p .. "/" .. cb)
 			for info in all(get_info()) do
+				
+				if type(info.sprite) == "function" then
+					info = card_back_animated(info.sprite, info)
+					info.update(true)
+				end
+				
 				add(all_card_back_info, info)
-				if(info.update) info.update(true)
 			end
 		end
 	end
 end
 
-cards_api_clear()
-cards_api_shadows_enable(true)
-main_menu_selected = nil
 
 local x_offset = smooth_val(0, 0.5, 0.1)
 
