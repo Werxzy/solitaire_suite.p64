@@ -1,10 +1,10 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-26 01:02:08",revision=1674]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-28 20:19:00",revision=1714]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
 
-include "cards_api/rolling_score.lua"
-include "cards_api/confetti.lua"
+include "suite_scripts/rolling_score.lua"
+include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
 
 -- updates card size if it changed

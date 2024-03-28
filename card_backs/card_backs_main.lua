@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-28 02:00:12",revision=2383]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-28 03:40:41",revision=2450]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -79,6 +79,7 @@ function camera_card_back(init, data)
 	rectfill(0, 0, card_art_width-1, card_art_height-1, 32)
 	fillp()
 	
+	-- returns if the art has been updated (here is always true)
 	return true
 end
 
@@ -106,3 +107,34 @@ function random_card_back(init, data)
 	end
 end
 
+
+--[[
+
+function get_info()
+    return {
+        {
+            sprite = card_back_art, -- sprite_id, userdata, or function
+            artist = "Artist", -- who made the art
+            id = 14141414232, -- consistent, but unique id
+            lore = "info about the art or whatever you want"
+        }
+    }
+end
+
+function card_back_art(init, data)
+  -- if you only need to generate the art once, use init
+  -- data has the table returned by get_info(), just in case you need to get the sprite itself or if you want to store extra data
+  
+  -- camera, clip, and set_render_target() are used outside of this function to help simplify the process
+  
+  -- card_art_width and _height are created to help you know the exact size of your art
+  -- this is different from card_width/height
+  circfill(card_art_width/2, card_art_height/2, card_art_width/2, 10)
+  
+  -- color 32 is special, and can be used for darkening colors (for stuff like shadows)
+
+  -- return true if the card art has been updated (this adds the card border or makes cuts to the art)
+  return true
+end
+
+]]
