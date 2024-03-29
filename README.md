@@ -1,6 +1,6 @@
 # Picotron Solitaire Suite
 
-Here I'm only showing Picotron Solitaire Suite specific functions. To see the main list, check out the api readme : https://github.com/Werxzy/cards_api/blob/main/README.md
+Here I'm only showing Picotron Solitaire Suite specific functions. To see the main list, check out the api readme (https://github.com/Werxzy/cards_api/blob/main/README.md).
 A lot of this is subject to change, so I'll try to keep incremental changes from breaking any main versions. While having major changes require a version check for each game.
 
 ## Setup
