@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-29 07:31:42",revision=2538]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-29 09:24:15",revision=2619]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -70,8 +70,8 @@ end
 function camera_card_back(init, data)
 	-- get mouse position
 	local mx, my = mouse()
-	mx = mid(mx - card_art_width\2+1, 480-card_art_height)
-	my = mid(my - card_art_width\2+1, 270-card_art_height)
+	mx = mid(mx - card_width\2+1, 480-card_width)
+	my = mid(my - card_height\2+2, 270-card_height)
 	
 	rectfill(0, 0, card_art_width-1, card_art_height-1, 1) -- base (prevent transparent pixels
 	sspr(get_display(), mx, my, card_art_width, card_art_height, 0, 0) -- screen

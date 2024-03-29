@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 07:31:42",revision=8670]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 09:24:15",revision=8750]]
 
 include"suite_scripts/rule_cards.lua"
 
@@ -244,7 +244,7 @@ function game_draw(layer)
 	if layer == 0 then
 	
 		for c in all(cards_all) do -- update all card_backs
-			if c.sprite.update and c.sprite ~= c.card_back then
+			if c.sprite.update and c.sprite ~= card_back then
 				c.sprite.update()
 			end
 		end	

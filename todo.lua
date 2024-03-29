@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-29 07:31:42",revision=3950]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-29 09:24:15",revision=4026]]
 --[[
 
 0.1.0	
@@ -7,8 +7,7 @@ prepare comment for post
 	explaining 0.2 and how to add new game types
 	also allow collaboration for music
 add a readme to cards api explaining
-determine and add license to cards api
-	remember .txt
+add 0.1.0 tag on git repository
 
 0.1.?
 

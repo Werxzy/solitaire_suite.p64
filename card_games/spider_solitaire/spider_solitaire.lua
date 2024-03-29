@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-28 21:49:59",revision=3592]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-29 09:24:15",revision=3660]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -307,6 +307,7 @@ function game_action_resolved()
 			if r > total_ranks then
 				i += 1
 				cards_coroutine = cocreate(function()
+					pause_frames(15)
 					while stack.cards[i] do
 						stack_cards(stack_goal, unstack_cards(stack.cards[#stack.cards]))
 						pause_frames(3)
