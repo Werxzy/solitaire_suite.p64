@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-28 03:40:41",revision=2450]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-29 05:09:01",revision=2474]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -55,7 +55,11 @@ function get_info()
 		{
 			sprite = camera_card_back, artist = "You", id = 9,
 			lore = "Ever feel like you're being watched?"
-		}
+		},
+		{ 
+			sprite = 11, artist = "Werxzy", id = "vox",
+			lore = "Voxatron Icon"
+		},
 	}
 end
 
