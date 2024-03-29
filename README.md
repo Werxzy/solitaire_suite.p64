@@ -1,6 +1,7 @@
 # Picotron Solitaire Suite
 
 Here I'm only showing Picotron Solitaire Suite specific functions. To see the main list, check out the api readme : https://github.com/Werxzy/cards_api/blob/main/README.md
+A lot of this is subject to change, so I'll try to keep incremental changes from breaking any main versions. While having major changes require a version check for each game.
 
 ## Setup
 
@@ -36,14 +37,46 @@ function game_info()
 end
 ```
 
-## Suite Functions
-```
+### GAMENAME.lua
 
--- called 
+Inside the primary lua file, you should have something similar to this.
+
+```lua
+function game_load()
+-- everything must be contained inside game_load() to prevent overwriting specific functions at the wrong time
+-- though this might get removed in the future, as it was originally intended for game_info
+
+-- called right after game_load(), mostly for ease of use like _init() 
+function game_setup()
+	-- create any stacks, cards, or other objects here
+end
+
+-- called when the game is about to exit a game variant
 function game_on_exit()
 end
 
-suite_load_save()
+-- functions detailed in the Card API
+function game_update() end
+function game_draw() end
+function game_win_condition() end
+function game_count_win() end
+
+end -- end of game_load
+```
+
+## Suite Functions
+```
+
+-- called to exit a game
+-- currently doesn't do much, but will be important later
+suite_exit_game()
+
+-- gets save data as a table (with "or defaults" if one doesn't exits)
+-- automatically manage save location
+local save_info = suite_load_save() or { wins = 0 }
+
+-- stores save data
+suit_store_save(save_info)
 
 ```
 
