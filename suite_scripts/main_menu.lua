@@ -1,10 +1,7 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 02:01:47",revision=8519]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 03:58:34",revision=8560]]
 
 include"suite_scripts/rule_cards.lua"
 
-cards_api_save_folder = "/appdata/solitaire_suite"
-game_version = "0.1.0"
-api_version_expected = 1
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
@@ -14,12 +11,12 @@ cards_api_clear()
 cards_api_shadows_enable(true)
 main_menu_selected = nil
 
-mkdir(cards_api_save_folder .. "/card_games")
-mkdir(cards_api_save_folder .. "/card_backs")
+mkdir(suite_save_folder .. "/card_games")
+mkdir(suite_save_folder .. "/card_backs")
 
 -- initializes the list of game variant folders
 game_list = {}
-for loc in all{"card_games", cards_api_save_folder .. "/card_games"} do
+for loc in all{"card_games", suite_save_folder .. "/card_games"} do
 	local trav = folder_traversal(loc)
 	for p in trav do
 		-- find any game info files
@@ -33,7 +30,7 @@ end
 
 all_card_back_info = {}
 
-for loc in all{"card_backs", cards_api_save_folder .. "/card_backs"} do 
+for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do 
 	local trav = folder_traversal(loc)
 	for p in trav do
 		for cb in all(ls(p)) do
@@ -82,12 +79,12 @@ function set_card_back(info)
 	card_back = info
 	assert(info)
 	settings_data.card_back_id = info.id
-	cards_api_save(settings_data)
+	suite_store_save(settings_data)
 end
 
 function game_setup()
 
-	settings_data = cards_api_load() or {
+	settings_data = suite_load_save() or {
 		card_back_id = 1
 	}
 
@@ -107,10 +104,13 @@ function game_setup()
 		
 		local info_path = p .. "/" .. n .. "/game_info.lua"
 		if include(info_path) then
-			local op = add(all_info, game_info())	
-			op.order = op.order or 999999
-			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
-			op.info_path = info_path
+			local info = game_info()
+			if info.api_version == api_version_expected then
+				local op = add(all_info, info)	
+				op.order = op.order or 999999
+				op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
+				op.info_path = info_path
+			end
 		end
 	end
 	
@@ -148,7 +148,7 @@ function game_setup()
 			if main_menu_selected then
 				rule_cards = nil
 				include(main_menu_selected.info_path)
-				cards_api_load_game(main_menu_selected.game)
+				suite_load_game(main_menu_selected.game)
 			end
 		end))
 	
@@ -289,7 +289,7 @@ function game_draw(layer)
 end
 
 function cards_game_exiting()
-	cards_api_load_game"suite_scripts/main_menu.lua"
+	suite_load_game"suite_scripts/main_menu.lua"
 end
 
 end -- end of load

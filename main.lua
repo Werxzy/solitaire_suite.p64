@@ -1,9 +1,8 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-29 02:05:10",revision=13472]]
-
-include"cards_api/cards_base.lua"
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-29 03:58:34",revision=13522]]
+include"suite_scripts/suite_util.lua"
 
 function _init()
-	cards_api_load_game"suite_scripts/main_menu.lua"
+	suite_load_game"suite_scripts/main_menu.lua"
 end
 
 function _update()

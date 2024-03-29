@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-25 02:14:11",modified="2024-03-27 23:35:40",revision=601]]
+--[[pod_format="raw",created="2024-03-25 02:14:11",modified="2024-03-29 03:58:34",revision=614]]
 
 function game_info()
 	return {
@@ -11,6 +11,7 @@ function game_info()
 			"\tFace down cards cannot be picked up and will turn face up when there is no card on top of them.",
 			"\tClick on the deck to place a card on top of each stack of the 8 stacks.",
 			"\tStack cards from ranks King to Ace to transfer them to the goal stack.\n\tWin by transfering all cards to the goal stack."
-		}
+		},
+		api_version = 1
 	}
 end

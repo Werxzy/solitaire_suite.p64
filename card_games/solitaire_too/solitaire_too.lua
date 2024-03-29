@@ -19,7 +19,7 @@ cards_api_shadows_enable(true)
 function game_setup()
 
 	-- save data is based on lua file's name
-	game_save = cards_api_load() or {
+	game_save = suite_load_save() or {
 		wins = 0
 	}	
 	
@@ -87,7 +87,7 @@ function game_setup()
 	
 	button_simple_text("Exit", 6, 248, function()
 		rule_cards = nil
-		cards_api_exit()
+		suite_exit_game()
 	end).always_active = true
 	
 	-- rules cards 
@@ -248,7 +248,7 @@ end
 function game_count_win()
 	game_score.value += 1
 	game_save.wins += 1
-	cards_api_save(game_save)
+	suite_store_save(game_save)
 	cards_coroutine = cocreate(game_win_anim)
 end
 

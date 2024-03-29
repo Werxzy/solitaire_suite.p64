@@ -23,7 +23,7 @@ cards_api_shadows_enable(true)
 
 function game_setup()
 	
-	game_save = cards_api_load() or {
+	game_save = suite_load_save() or {
 		wins = 0
 	}	
 	
@@ -80,7 +80,7 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Exit", 6, 248, cards_api_exit)
+	button_simple_text("Exit", 6, 248, suite_exit_game)
 
 	-- rules cards 
 	rule_cards = rule_cards_new(135, 192, game_info(), "right")
@@ -335,7 +335,7 @@ end
 function game_count_win()
 	game_score.value += 1
 	game_save.wins += 1
-	cards_api_save(game_save)
+	suite_store_save(game_save)
 	cards_coroutine = cocreate(game_win_anim)
 end
 
