@@ -1,9 +1,14 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-03-29 07:11:37",revision=117]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-03-29 07:31:42",revision=153]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
 game_version = "0.1.0"
 api_version_expected = 1
+
+mkdir(suite_save_folder)
+mkdir(suite_save_folder .. "/card_games")
+mkdir(suite_save_folder .. "/card_backs")
+mkdir(suite_save_folder .. "/saves")
 
 function suite_load_game(game_path)
 	-- example "card_games/solitaire_basic.lua"
@@ -41,12 +46,7 @@ function suite_load_save(extra_folder)
 	
 	suite_saveloc = suite_save_folder .. "/saves/"
 		.. suite_game_name .. ".pod"
-	
-	if suite_save_folder and #suite_save_folder > 0 then
-		mkdir(suite_save_folder)
-		mkdir(suite_save_folder .. "/saves")
-	end
-	
+		
 	return fetch(suite_saveloc)
 end
 

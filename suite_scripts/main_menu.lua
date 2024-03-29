@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 07:11:37",revision=8627]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-03-29 07:31:42",revision=8670]]
 
 include"suite_scripts/rule_cards.lua"
 
@@ -10,9 +10,6 @@ function game_load() -- similar to game_load, but we always want this available
 cards_api_clear()
 cards_api_shadows_enable(true)
 main_menu_selected = nil
-
-mkdir(suite_save_folder .. "/card_games")
-mkdir(suite_save_folder .. "/card_backs")
 
 -- initializes the list of game variant folders
 game_list = {}
