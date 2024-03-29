@@ -3,4 +3,7 @@
 	url = https://github.com/LouieChapm/picotron_solitaire_suite
 [submodule "cards_api"]
 	path = cards_api
-	url = https://github.com/Werxzy/funny_cards
+	url = https://github.com/Werxzy/cards_api
+[submodule "funny_cards_api"]
+	path = funny_cards_api
+	url = https://github.com/Werxzy/funny_cards_api
