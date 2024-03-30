@@ -68,8 +68,7 @@ end -- end of game_load
 ```
 
 ## Suite Functions
-```
-
+```lua
 -- called to exit a game
 -- currently doesn't do much, but will be important later
 suite_exit_game()
@@ -80,6 +79,5 @@ local save_info = suite_load_save() or { wins = 0 }
 
 -- stores save data
 suit_store_save(save_info)
-
 ```
 
