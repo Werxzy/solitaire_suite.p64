@@ -81,3 +81,5 @@ local save_info = suite_load_save() or { wins = 0 }
 suit_store_save(save_info)
 ```
 
+There's also other lua files inside `/solitaire_suite/suite_scripts/` that can help.
+
