@@ -67,7 +67,50 @@ function game_count_win() end
 end -- end of game_load
 ```
 
+### Custom Card Backs
+
+by putting a lua file inside `/appdata/solitaire_suite/card_backs/` you can create your own card backs
+
+```lua
+function get_info()
+	return {
+		--each entry is a card back
+		{
+			sprite = card_back_art, -- sprite_id, userdata, or function
+			
+			artist = "Artist", -- who made the art
+			
+			id = 14141414232, -- consistent, but unique id
+			
+			lore = "info about the art or whatever you want"
+		}
+	}
+end
+
+-- if you're using a function try to follow this format
+function card_back_art(init, data)
+	-- if you only need to generate the art once, use init
+	-- init is true whenever the card back needs to be fully updated from stuff like size changes
+
+	-- data has the table returned by get_info(), just in case you need to get the sprite itself or if you want to store extra data
+	
+	-- camera, clip, and set_render_target() are used outside of this function to help simplify the process
+	-- !!! do NOT use the functions or cls !!!
+	
+	-- card_art_width and _height are created to help you know the exact size of your art
+	-- this is different from card_width/height
+	rectfill(0, 0, card_art_width, card_art_height, 2)
+	circfill(card_art_width/2, card_art_height/2, card_art_width/2 + sin(time()/5) * 5 , 10)
+	
+	-- color 32 is special, and can be used for darkening colors (for stuff like shadows)
+	
+	-- return true if the card art has been updated (this adds the card border or makes cuts to the art)
+	return true
+end
+```
+
 ## Suite Functions
+
 ```lua
 -- called to exit a game
 -- currently doesn't do much, but will be important later
