@@ -3,6 +3,9 @@
 Here I'm only showing Picotron Solitaire Suite specific functions. To see the main list, check out the api readme (https://github.com/Werxzy/cards_api/blob/main/README.md).
 A lot of this is subject to change, so I'll try to keep incremental changes from breaking any main versions. While having major changes require a version check for each game.
 
+It would be a good idea to look at some of the games inside the folder `solitaire_suite.p64/card_games/` or https://github.com/Werxzy/solitaire_suite.p64/tree/main/card_games to get an idea of how they are formatted. 
+LouieChapm also has his games up at https://github.com/LouieChapm/picotronSolitaireSuite_Variants.
+
 ## Setup
 
 Game files can either be placed inside `appdata/solitaire_suite/card_games/`.
