@@ -1,7 +1,14 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-29 09:24:15",revision=13675]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-30 00:16:58",revision=13775]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
+--[=[ might be used eventually?
+	window{
+		fullscreen = true,
+		icon = 
+--[[pod,pod_type="image"]]unpod("b64:bHo0ABwAAAAaAAAA8AtweHUAQyAICAQgF0A3IFcAdwAXEBcwF0A3kA==")
+}
+]=]
 	suite_load_game"suite_scripts/main_menu.lua"
 end
 

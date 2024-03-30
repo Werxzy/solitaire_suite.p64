@@ -1,13 +1,5 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-29 09:24:15",revision=4026]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-30 00:16:58",revision=4096]]
 --[[
-
-0.1.0	
-
-prepare comment for post
-	explaining 0.2 and how to add new game types
-	also allow collaboration for music
-add a readme to cards api explaining
-add 0.1.0 tag on git repository
 
 0.1.?
 

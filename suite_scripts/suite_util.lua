@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-03-29 09:24:15",revision=230]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-03-30 00:09:36",revision=301]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
@@ -41,7 +41,7 @@ end
 -- grabs the requested save file
 -- ensures that the proper folder exists
 -- returns nil if save does not exist
-function suite_load_save(extra_folder)
+function suite_load_save()
 	assert(suite_save_folder, "Save location must be specified.")
 	
 	suite_saveloc = suite_save_folder .. "/saves/"
