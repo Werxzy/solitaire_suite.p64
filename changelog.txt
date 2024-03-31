@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-03-31 22:11:44",revision=65]]
+--[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-03-31 22:50:30",revision=163]]
 
 
 
@@ -8,3 +8,6 @@
 - fixed double clicking aces in spider solitaire getting stuck.
 - fixed huntsman card positioning when shuffling for a new game after emptying the deck.
 - fixed buttons being pressable while shuffling or any animations were pllaying
+
+= api changes = 
+- added stack_collecting_anim and stack_shuffle_anim functions to simplify the reset process
