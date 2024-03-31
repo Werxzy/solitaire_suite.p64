@@ -1,9 +1,9 @@
---[[pod_format="raw",created="2024-03-29 08:45:43",modified="2024-03-29 21:50:00",revision=112]]
+--[[pod_format="raw",created="2024-03-29 08:45:43",modified="2024-03-31 21:35:44",revision=116]]
 function get_info()
     return {
         {
-            sprite = card_back_art, artist = "fletch", id = 333, -- consistent, but unique id
-            lore = "this duck has somewhere to be!",
+            sprite = card_back_art, artist = "Fletch", id = 333, -- consistent, but unique id
+            lore = "This duck has somewhere to be!",
             -- animation table
             step=0,
             steps_per_frame=6,
