@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-30 00:09:36",revision=2436]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-31 23:05:23",revision=2475]]
 
 
 function game_load() -- !!! start of game load function
@@ -124,48 +124,9 @@ end
 
 -- places all the cards back onto the main deck
 function game_reset_anim()
-	for a in all{stacks_supply, {deck_goal}} do
-		for s in all(a) do
-			while #s.cards > 0 do
-				local c = get_top_card(s)
-				stack_add_card(deck_stack, c)
-				c.a_to = 0.5
-				pause_frames(3)
-			end
-		end
-	end
-	
-	pause_frames(35)
-	
-	game_shuffle_anim()
-	game_shuffle_anim()
-	game_shuffle_anim()
+	stack_collecting_anim(deck_stack, stacks_supply, deck_goal)
 	
 	game_setup_anim()
-end
-
--- physically shuffle the cards
-function game_shuffle_anim()
-	local temp_stack = stack_new(
-		nil, deck_stack.x_to + card_width + 4, deck_stack.y_to, 
-		stack_repose_static(-0.16), 
-		false, stack_cant, stack_cant)
-		
-	for i = 1, rnd(10)-5 + #deck_stack.cards/2 do
-		stack_add_card(temp_stack, get_top_card(deck_stack))
-	end
-	
-	pause_frames(30)
-	
-	for c in all(temp_stack.cards) do
-		stack_add_card(deck_stack, c, rnd(#deck_stack.cards+1)\1+1)
-	end
-	for c in all(deck_stack.cards) do
-		card_to_top(c)
-	end
-	del(stacks_all, temp_stack)
-	
-	pause_frames(20)
 end
 
 function game_win_anim()
