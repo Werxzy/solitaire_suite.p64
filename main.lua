@@ -1,14 +1,17 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-30 00:16:58",revision=13775]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-03-31 21:32:31",revision=13945]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
---[=[ might be used eventually?
+-- I think this is okay? (still doesn't close workspace on exit though)
+--[=[
 	window{
-		fullscreen = true,
+		fullscreen = 1,
+		width = 480, 
+		height = 270,
 		icon = 
 --[[pod,pod_type="image"]]unpod("b64:bHo0ABwAAAAaAAAA8AtweHUAQyAICAQgF0A3IFcAdwAXEBcwF0A3kA==")
 }
-]=]
+-- ]=]
 	suite_load_game"suite_scripts/main_menu.lua"
 end
 

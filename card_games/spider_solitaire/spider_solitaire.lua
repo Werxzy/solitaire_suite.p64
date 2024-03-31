@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-29 21:50:00",revision=3685]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-31 21:32:31",revision=3738]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -15,7 +15,7 @@ total_sets = 5
 available_decks = 1
 total_ranks = 13 -- king
 
-available_rows = 8
+available_columns = 8
 
 	
 cards_api_clear()
@@ -47,13 +47,13 @@ function game_setup()
 	
 	
 	stacks_supply = {}
-	for i = 1,available_rows do
+	for i = 1,available_columns do
 		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
 			stack_repose_normal(),
 			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))	
+			stack_on_click_unstack(unstack_rule_decending)))	
 	end
 	
 	
