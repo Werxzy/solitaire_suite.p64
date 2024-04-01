@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-29 21:50:00",revision=3685]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-31 23:07:38",revision=3814]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -15,7 +15,7 @@ total_sets = 5
 available_decks = 1
 total_ranks = 13 -- king
 
-available_rows = 8
+available_columns = 8
 
 	
 cards_api_clear()
@@ -47,13 +47,13 @@ function game_setup()
 	
 	
 	stacks_supply = {}
-	for i = 1,available_rows do
+	for i = 1,available_columns do
 		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
 			stack_repose_normal(),
 			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))	
+			stack_on_click_unstack(unstack_rule_decending)))	
 	end
 	
 	
@@ -80,7 +80,7 @@ function game_setup()
 		cards_coroutine = cocreate(game_reset_anim)
 	end)
 	
-	button_simple_text("Exit", 6, 248, suite_exit_game)
+	button_simple_text("Exit", 6, 248, suite_exit_game).always_active = true
 
 	-- rules cards 
 	rule_cards = rule_cards_new(135, 192, game_info(), "right")
@@ -128,55 +128,9 @@ end
 
 -- places all the cards back onto the main deck
 function game_reset_anim()
-	for a in all{stacks_supply, {stack_goal}} do
-		for s in all(a) do
-			while #s.cards > 0 do
-				local c = get_top_card(s)
-				stack_add_card(deck_stack, c)
-				c.a_to = 0.5
-				pause_frames(3)
-			end
-		end
-	end
-	
-	pause_frames(35)
-	
-	-- randomizes the cards' art
-	current_card_sprites = card_gen_standard(5)
-	local s = rnd(5)\1 + 1
-	for c in all(cards_all) do
-		c.sprite = current_card_sprites[s][c.rank]
-	end
-
-	game_shuffle_anim()
-	game_shuffle_anim()
-	game_shuffle_anim()
+	stack_collecting_anim(deck_stack, stacks_supply, stack_goal)
 	
 	game_setup_anim()
-end
-
--- physically shuffle the cards
-function game_shuffle_anim()
-	local temp_stack = stack_new(
-		nil, deck_stack.x_to + card_width + 4, deck_stack.y_to, 
-		stack_repose_static(-0.16), 
-		false, stack_cant, stack_cant)
-		
-	for i = 1, rnd(10)-5 + #deck_stack.cards/2 do
-		stack_add_card(temp_stack, get_top_card(deck_stack))
-	end
-	
-	pause_frames(30)
-	
-	for c in all(temp_stack.cards) do
-		stack_add_card(deck_stack, c, rnd(#deck_stack.cards+1)\1+1)
-	end
-	for c in all(deck_stack.cards) do
-		card_to_top(c)
-	end
-	del(stacks_all, temp_stack)
-	
-	pause_frames(20)
 end
 
 -- determines if stack2 can be placed on stack
