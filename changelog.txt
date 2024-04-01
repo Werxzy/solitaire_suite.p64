@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-04-01 00:19:46",revision=326]]
+--[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-04-01 00:59:51",revision=337]]
 
 Picotron Solitaire Suite
 By Werxzy
@@ -15,12 +15,13 @@ By Werxzy
   """"""""
 === version 0.1.1 ===
 
-- fixed grammar and wording of some rules text.
-- fixed new game in trapdoor solitaire sometimes not dealing the cards.
-- fixed double clicking aces in spider solitaire getting stuck.
-- fixed huntsman card positioning when shuffling for a new game after emptying the deck.
-- fixed buttons being pressable while shuffling or any animations were playing.
+- Fixed grammar and wording of some rules text.
+- Fixed new game in trapdoor solitaire sometimes not dealing the cards.
+- Fixed double clicking aces in spider solitaire getting stuck.
+- Fixed huntsman card positioning when shuffling for a new game after emptying the deck.
+- Fixed buttons being pressable while shuffling or any animations were playing.
 
 = api changes = 
-- added stack_collecting_anim and stack_shuffle_anim functions to simplify the reset process
-- updated shuffling a bit to better randomize the cards.
+- Updated stack dropping to search a slightly wider area for which stack to place the cards on.
+- Added stack_collecting_anim and stack_shuffle_anim functions to simplify the reset process.
+- Updated shuffling a bit to better randomize the cards.

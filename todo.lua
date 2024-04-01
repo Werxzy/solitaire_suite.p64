@@ -1,13 +1,10 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-04-01 00:19:46",revision=4602]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-04-01 00:59:51",revision=4648]]
 --[[
 
 0.1.1
 
-? rect to rect collision instead of point to rect
-	instead poll the cards, resolve stack on closest true
 
 0.1.?
-
 
 switch to userdata for some of the structures (it's much faster)
 
@@ -19,8 +16,9 @@ tutorial
 		first go 5 to ace
 		then king to ace
 		
-allow for better expanding of card backs
-	currently it can't be scrolled through
+scrolling through card backs
+	currently it is a fixed size
+	this will be a problem when someone adds too many card backs
 
 rather than a held stack containing old_stack, it contains a function for undoing the unstacking operation
 	this is for returning a card to the middle of a stack
@@ -51,8 +49,11 @@ coroutine queue instead of single instance
 
 
 update label with new solitaire variants (credit pixelDub)
+	specifically when a 0.X.0 version is released
 
 
+credits section
+	list contributions when there are enough people contributing
 
 
 ]]
