@@ -1,25 +1,13 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-03-31 23:05:23",revision=4464]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-04-01 00:19:46",revision=4602]]
 --[[
 
 0.1.1
 
-
-
-better shuffling
-	select random cards initially
-	
-add to documentation
-	stack_shuffle_anim
-	stack_collecting_anim
-
-grammar/spelling issues in solitaire too (and probably others
-clarify rules a bit more
-	spider solitaire's deck slot cannot have cards placed back onto it.
+? rect to rect collision instead of point to rect
+	instead poll the cards, resolve stack on closest true
 
 0.1.?
 
-? rect to rect collision instead of point to rect
-	instead poll the cards, resolve stack on closest true
 
 switch to userdata for some of the structures (it's much faster)
 
