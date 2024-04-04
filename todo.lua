@@ -1,9 +1,19 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-04-01 01:16:06",revision=4656]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-04-04 22:38:56",revision=4729]]
 --[[
+
+before release
+
+update .p64 version number
+create pull request for main branches
+make release with new version tag
+post
 
 0.1.?
 
 switch to userdata for some of the structures (it's much faster)
+? full clean of stacks
+	assign .ty = "stack"
+	and then go through all global variables to clear out anything in memory
 
 0.2.0?
 
