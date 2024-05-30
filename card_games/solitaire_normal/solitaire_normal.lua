@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-03-31 23:05:23",revision=1866]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-05-30 01:19:48",revision=1945]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -140,6 +140,7 @@ function game_setup_anim()
 				
 				c.a_to = j == i and 0 or 0.5
 				stack_add_card(s, c)
+				--sfx(3)
 				pause_frames(3)
 			end
 		end

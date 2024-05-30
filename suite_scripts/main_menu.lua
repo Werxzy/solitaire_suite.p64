@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-04-04 22:38:56",revision=9299]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-05-30 01:19:48",revision=9531]]
 
 include"suite_scripts/rule_cards.lua"
 
@@ -149,7 +149,9 @@ function game_setup()
 			end
 		end))
 	
-	button_center(button_simple_text("Exit Game", 200, 220, exit))
+	button_center(button_simple_text("Exit Game", 200, 220, function()
+			exit()
+		end))
 	
 	button_simple_text("Back", 355, 270, 
 		function() 

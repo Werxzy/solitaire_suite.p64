@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-04-04 22:38:56",revision=14363]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-05-30 01:19:48",revision=14639]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -8,9 +8,11 @@ function _init()
 		fullscreen = 1,
 		width = 480, 
 		height = 270,
+		autoclose = true,
 		icon = 
 --[[pod,pod_type="image"]]unpod("b64:bHo0ABwAAAAaAAAA8AtweHUAQyAICAQgF0A3IFcAdwAXEBcwF0A3kA==")
 }
+	
 -- ]=]
 	suite_load_game"suite_scripts/main_menu.lua"
 end
