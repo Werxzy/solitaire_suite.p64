@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-05-30 01:19:48",revision=1945]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-05-31 22:59:20",revision=1990]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -54,7 +54,7 @@ function game_setup()
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
 			stack_repose_normal(),
 			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending), stack_on_double_goal))
+			stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), stack_on_double_goal))
 			
 	end
 	

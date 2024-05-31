@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-05-30 01:19:48",revision=4969]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-05-31 22:59:20",revision=5010]]
 --[[
 
 before release
@@ -9,9 +9,6 @@ make release with new version tag
 post
 
 0.2.0
-
-fix spider solitaire and normal solitaire can have face down cards picked up
-	double check all games
 
 !rework stack/card scripting
 	rather than a held stack containing old_stack, it contains a function for undoing the unstacking operation
