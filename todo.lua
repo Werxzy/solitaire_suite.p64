@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-01 00:48:03",revision=5322]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-01 21:51:33",revision=5621]]
 --[[
 
 before release
@@ -20,6 +20,8 @@ post
 		should be able to handle a held stack
 		
 		(highlight rule and check are going to be used for managing a hand)
+		
+	make a test game for the new hover and unresolved rules
 
 ? full clean of stacks
 	assign .ty = "stack"

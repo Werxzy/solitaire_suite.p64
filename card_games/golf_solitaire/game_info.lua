@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-25 02:11:53",modified="2024-04-01 00:15:46",revision=88]]
+--[[pod_format="raw",created="2024-03-25 02:11:53",modified="2024-06-01 21:13:35",revision=90]]
 
 function game_info()
 	return {
@@ -14,7 +14,7 @@ function game_info()
 			"\tClick the supply stack on the left to replace the top card.",
 			"\tIf you cannot place a card from anywhere onto the goal stack, you cannot win and must start a new game."
 		},
-		api_version = 1,
+		api_version = 2,
 		order = 3
 	}
 end
