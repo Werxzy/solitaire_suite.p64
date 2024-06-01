@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-05-31 22:59:20",revision=5010]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-01 00:20:28",revision=5233]]
 --[[
 
 before release
@@ -11,6 +11,7 @@ post
 0.2.0
 
 !rework stack/card scripting
+
 	rather than a held stack containing old_stack, it contains a function for undoing the unstacking operation
 		this is for returning a card to the middle of a stack
 			like a hand of cards

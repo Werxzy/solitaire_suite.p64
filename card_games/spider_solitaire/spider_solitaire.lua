@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-05-31 22:59:20",revision=3846]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-01 00:15:54",revision=3873]]
 
 function game_load() -- !!! start of game load function
 	-- this is to prevent overwriting of game modes
@@ -51,24 +51,28 @@ function game_setup()
 		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
-			stack_repose_normal(),
-			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up)))	
+			{
+				reposition = stack_repose_normal(),
+				can_stack = stack_can_rule, 
+				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up)
+			}))	
 	end
 	
 	
 	deck_stack = stack_new(
 		{5,31},
 		card_gap, card_gap,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_on_click_reveal)
+		{
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal
+		})
 		
 	stack_goal = stack_new(
 		{5,31},
 		card_gap, card_gap * 3 + card_height,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_cant
-		)
+		{
+			reposition = stack_repose_static(-0.16),
+		})
 
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)

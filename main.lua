@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-05-31 22:59:20",revision=14671]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-01 00:20:28",revision=14896]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -14,6 +14,7 @@ function _init()
 }
 	
 -- ]=]
+
 	suite_load_game"suite_scripts/main_menu.lua"
 end
 

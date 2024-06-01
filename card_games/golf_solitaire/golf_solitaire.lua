@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-03-31 23:39:08",revision=2552]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-05-31 23:39:45",revision=2629]]
 
 
 function game_load() -- !!! start of game load function
@@ -43,26 +43,31 @@ function game_setup()
 	stacks_supply = {}
 	for i = 1,7 do
 		add(stacks_supply, stack_new(
-			{5},
+			5,	
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
-			stack_repose_normal(),
-			true, stack_cant, 
-			stack_on_click_unstack(card_is_top),
-			stack_on_double_goal))
+			{
+				reposition = stack_repose_normal(),
+				on_click = stack_on_click_unstack(card_is_top),
+				on_double = stack_on_double_goal
+			}))
 			
 	end
 	
 	deck_stack = stack_new(
 		{5,23},
 		240-card_width-card_gap*2, 160,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_on_click_reveal)
+		{
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal
+		})
 	
 	deck_goal = stack_new(
 		{5,15},
 		240+card_gap*2, 160,
-		stack_repose_static(-0.16),
-		true, stack_can_goal, stack_cant)
+		{
+			reposition = stack_repose_static(-0.16),
+			can_stack = stack_can_goal
+		})
 	
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)

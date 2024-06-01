@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-05-31 22:59:20",revision=9562]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-01 00:20:28",revision=9790]]
 
 include"suite_scripts/rule_cards.lua"
 
@@ -163,31 +163,34 @@ function game_setup()
 	set_draw_target()
 	
 	card_back_edit_button = stack_new(
-		{5},
-		300, 200, 
-		stack_repose_normal(),
-		true, function() return true end, 
-		function(c)
-			stack_on_click_unstack()(c)
-			main_menu_y_to = 1
-		end)
+		{5}, 300, 200, 
+		{
+			reposition = stack_repose_normal(),
+			can_stack = function() return true end, 
+			on_click = function(c)
+				stack_on_click_unstack()(c)
+				main_menu_y_to = 1
+			end,
+			resolve_stack = swap_stacks
+		})
 		
-	card_back_edit_button.resolve_stack = swap_stacks
-	
 	stack_add_card(card_back_edit_button, card_new(card_back, 300, 200))
 	
 	card_back_options = {}
 	for cb in all(all_card_back_info) do
 		if cb.id ~= card_back.id then
 			local i = #card_back_options
-			local s = add(card_back_options, stack_new(
+			local s = stack_new(
 				{5},
-				 i*(card_width + 10)/2 + 10, 365 + i%2 * (card_height + 10), 
-				stack_repose_normal(),
-				true, function() return true end, 
-				stack_on_click_unstack()))
-			s.resolve_stack = swap_stacks
-			
+				i*(card_width + 10)/2 + 10, 365 + i%2 * (card_height + 10), 
+				{
+					reposition = stack_repose_normal(),
+					can_stack = function() return true end, 
+					on_click = stack_on_click_unstack(),
+					resolve_stack = swap_stacks
+				})
+				
+			add(card_back_options, s)
 		
 			local c = card_new(cb, s.x_to, s.y_to)
 			c.info = cb

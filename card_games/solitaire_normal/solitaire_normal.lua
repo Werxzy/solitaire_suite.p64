@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-05-31 22:59:20",revision=1990]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 00:02:42",revision=2011]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -52,9 +52,12 @@ function game_setup()
 		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
-			stack_repose_normal(),
-			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), stack_on_double_goal))
+			{
+				reposition = stack_repose_normal(),
+				can_stack = stack_can_rule, 
+				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), 
+				on_double = stack_on_double_goal
+			}))
 			
 	end
 	
@@ -64,22 +67,30 @@ function game_setup()
 			{5},
 			8*(card_width + card_gap*2) + card_gap,
 			i*(card_height + card_gap*2-1) + card_gap,
-			stack_repose_normal(0),
-			true, stack_can_goal, stack_on_click_unstack(card_is_top)))
+			{
+				reposition = stack_repose_normal(0),
+				can_stack = stack_can_goal, 
+				on_click = stack_on_click_unstack(card_is_top)
+			}))
 	end
 	
 	
 	deck_stack = stack_new(
 		{5,6},
 		card_gap, card_gap,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_on_click_reveal)
+		{
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal
+		})
 	
 	deck_playable = stack_new(
 		{5,7},
 		card_gap, card_height + card_gap*3,
-		stack_repose_top_three,
-		true, stack_cant, stack_on_click_unstack(card_is_top), stack_on_double_goal)
+		{
+			reposition = stack_repose_top_three,
+			on_click = stack_on_click_unstack(card_is_top), 
+			on_double = stack_on_double_goal
+		})
 	
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)

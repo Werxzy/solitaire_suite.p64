@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-05-31 22:59:20",revision=625]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-01 00:20:28",revision=849]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
