@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 21:51:33",revision=2168]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 22:36:47",revision=2362]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -75,8 +75,21 @@ function game_setup()
 		{
 			reposition = stack_repose_hand(),
 			--on_click = stack_on_click_unstack(), 
-			on_click = unstack_hand_card
+			on_click = unstack_hand_card,
+			
+			-- TODO?, these may be a part of stack_repose_hand
+			on_hover = function(self, card, held)
+				if card and not held then
+					card.hovered = true
+				end
+			end,
+			off_hover = function(self, card, held)
+				if card then
+					card.hovered = nil
+				end
+			end
 		})
+	-- TODO: inserting cards will require adding card specifically above another card in draw order
 		
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -287,6 +300,7 @@ function stack_repose_hand(x_delta, limit)
 		for i, c in pairs(stack.cards) do
 			c.x_to = x
 			c.y_to = stack.y_to
+			c.y_offset_to = c.hovered and -15 or 0
 			x += xd
 		end
 	end
@@ -297,6 +311,9 @@ function unstack_hand_card(card)
 	if not card then
 		return
 	end
+	
+	card.x_offset_to = 0
+	card.y_offset_to = 0
 	
 	local old_stack = card.stack
 	
