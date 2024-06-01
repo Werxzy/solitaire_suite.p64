@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-01 00:20:28",revision=5233]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-01 00:48:03",revision=5322]]
 --[[
 
 before release
@@ -11,11 +11,6 @@ post
 0.2.0
 
 !rework stack/card scripting
-
-	rather than a held stack containing old_stack, it contains a function for undoing the unstacking operation
-		this is for returning a card to the middle of a stack
-			like a hand of cards
-		or if an undo action cannot take place?
 
 	stack on_highlight rule function
 		hover is a shorter name
