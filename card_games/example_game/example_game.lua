@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 22:36:47",revision=2362]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 23:26:21",revision=2516]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -87,7 +87,8 @@ function game_setup()
 				if card then
 					card.hovered = nil
 				end
-			end
+			end,
+			unresolved_stack = stack_unresolved_return_rel_x
 		})
 	-- TODO: inserting cards will require adding card specifically above another card in draw order
 		
@@ -314,6 +315,7 @@ function unstack_hand_card(card)
 	
 	card.x_offset_to = 0
 	card.y_offset_to = 0
+	card.hovered = false
 	
 	local old_stack = card.stack
 	
@@ -323,9 +325,13 @@ function unstack_hand_card(card)
 		{
 			reposition = stack_repose_normal(10), 
 			perm = false,
-			old_stack = old_stack
+			old_stack = old_stack,
+			old_pos = has(old_stack.cards, card)
 		})
-	new_stack._unresolved = old_stack:unresolved_stack(new_stack)
+	
+	--notify(tostr(new_stack.old_pos))
+	
+	new_stack._unresolved = old_stack:unresolved_stack(new_stack, has(old_stack.cards, card))
 	
 	-- moves card to new stack
 	-- TODO: is this a function? (could be)
