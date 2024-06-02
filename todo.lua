@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 00:52:43",revision=6162]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 01:32:29",revision=6256]]
 --[[
 
 before release
@@ -18,6 +18,8 @@ post
 			function that takes in a card for where the stack should be moved relative
 			then a bool for if it's below or above
 			then apply the search
+			
+	flicker when picking up a card from a hand
 
 better variable encapsulation
 	clean up env
