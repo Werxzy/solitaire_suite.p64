@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-01 23:26:21",revision=2516]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 00:30:58",revision=2780]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -78,16 +78,8 @@ function game_setup()
 			on_click = unstack_hand_card,
 			
 			-- TODO?, these may be a part of stack_repose_hand
-			on_hover = function(self, card, held)
-				if card and not held then
-					card.hovered = true
-				end
-			end,
-			off_hover = function(self, card, held)
-				if card then
-					card.hovered = nil
-				end
-			end,
+			on_hover = hand_on_hover,
+			off_hover = hand_off_hover,
 			unresolved_stack = stack_unresolved_return_rel_x
 		})
 	-- TODO: inserting cards will require adding card specifically above another card in draw order
@@ -300,6 +292,8 @@ function stack_repose_hand(x_delta, limit)
 		local x, xd = stack.x_to, min(x_delta, limit / #stack.cards)
 		for i, c in pairs(stack.cards) do
 			c.x_to = x
+			c.x_offset_to = stack.ins_offset and stack.ins_offset <= i and x_delta/2 or 0
+			
 			c.y_to = stack.y_to
 			c.y_offset_to = c.hovered and -15 or 0
 			x += xd
@@ -313,6 +307,7 @@ function unstack_hand_card(card)
 		return
 	end
 	
+	-- TODO? would rather not have to do this
 	card.x_offset_to = 0
 	card.y_offset_to = 0
 	card.hovered = false
@@ -328,9 +323,7 @@ function unstack_hand_card(card)
 			old_stack = old_stack,
 			old_pos = has(old_stack.cards, card)
 		})
-	
-	--notify(tostr(new_stack.old_pos))
-	
+		
 	new_stack._unresolved = old_stack:unresolved_stack(new_stack, has(old_stack.cards, card))
 	
 	-- moves card to new stack
@@ -348,6 +341,30 @@ function unstack_hand_card(card)
 	--return new_stack
 end
 
+function hand_on_hover(self, card, held)
+	
+	if held then
+		-- shift cards and insert held stack into cards_all order
+		self.ins_offset = hand_find_insert_x(self, held)
+		
+	else
+		self.ins_offset = nil
+		if card then
+			card.hovered = true
+		end
+	end
+end
+
+function hand_off_hover(self, card, held)
+	if held then
+		-- shift cards and back and put held cards back on top
+		self.ins_offset = nil
+	end
+	
+	if card then
+		card.hovered = nil
+	end
+end
 
 
 end -- !!! end of game load function
