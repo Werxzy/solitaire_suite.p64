@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 01:32:29",revision=2935]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 02:32:20",revision=3078]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -82,7 +82,6 @@ function game_setup()
 			off_hover = hand_off_hover,
 			unresolved_stack = stack_unresolved_return_rel_x
 		})
-	-- TODO: inserting cards will require adding card specifically above another card in draw order
 		
 	while #unstacked_cards > 0 do
 		local c = rnd(unstacked_cards)
@@ -313,29 +312,14 @@ function unstack_hand_card(card)
 	card.hovered = false
 	
 	local old_stack = card.stack
-	
-	-- TODO: general creation function for held stack
-	local new_stack = stack_new(
-		nil, 0, 0, 
-		{
-			reposition = stack_repose_normal(10), 
-			perm = false,
-			old_stack = old_stack,
-			old_pos = has(old_stack.cards, card)
-		})
-		
+	local new_stack = stack_held_new(old_stack)
+	new_stack.old_pos = has(old_stack.cards, card)
 	new_stack._unresolved = old_stack:unresolved_stack(new_stack, has(old_stack.cards, card))
 	
 	-- moves card to new stack
-	-- TODO: is this a function? (could be)
 	add(new_stack.cards, del(old_stack.cards, card))
-	card_to_top(card) -- puts cards on top of all the others
 	card.stack = new_stack
-	
-	-- TODO: turn empty stack deletion check into function
-	if #old_stack.cards == 0 and not old_stack.perm then
-		del(stacks_all, old_stack)
-	end	
+	stack_delete_check(old_stack)
 	
 	held_stack = new_stack
 	--return new_stack

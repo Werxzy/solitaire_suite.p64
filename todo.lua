@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 01:32:29",revision=6256]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 02:32:20",revision=6377]]
 --[[
 
 before release
@@ -11,15 +11,9 @@ post
 0.2.0
 
 !rework stack/card scripting
-	
-	clean up hover events
-		make functions for duplicate lines
-		better way to reinsert cards into
-			function that takes in a card for where the stack should be moved relative
-			then a bool for if it's below or above
-			then apply the search
 			
-	flicker when picking up a card from a hand
+	fix hand not being on top when nothing is held?
+	add bool to enable shadows for cards in hand
 
 better variable encapsulation
 	clean up env
