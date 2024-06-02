@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 00:30:58",revision=6129]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 00:52:43",revision=6162]]
 --[[
 
 before release
@@ -11,21 +11,19 @@ post
 0.2.0
 
 !rework stack/card scripting
+	
+	clean up hover events
+		make functions for duplicate lines
+		better way to reinsert cards into
+			function that takes in a card for where the stack should be moved relative
+			then a bool for if it's below or above
+			then apply the search
 
-	stack on_highlight rule function
-		hover is a shorter name
-		per card and per 
-		or
-		essentially determines if the stack triggers the highlight rule
-		should be able to handle a held stack
+better variable encapsulation
+	clean up env
 		
-		(highlight rule and check are going to be used for managing a hand)
-		
-	make a test game for the new hover and unresolved rules
-
-? full clean of stacks
-	assign .ty = "stack"
-	and then go through all global variables to clear out anything in memory
+	old - ? full clean of stacks
+		and then go through all global variables to clear out anything in memory
 
 !adjuste menu/drawing
 	double click for instantly starting the game.
@@ -46,8 +44,7 @@ post
 	?switch to userdata for some of the structures (it's much faster)
 
 !prepare for example project 
-	clean up env
-	
+
 	coroutine queue instead of single instance
 	
 	better game mode sharing support

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 00:30:58",revision=2780]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 00:52:43",revision=2823]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -347,18 +347,45 @@ function hand_on_hover(self, card, held)
 		-- shift cards and insert held stack into cards_all order
 		self.ins_offset = hand_find_insert_x(self, held)
 		
+--TODO !!! clean this up
+-- change the draw order of the held cards to appear in between the hand
+
+		for c in all(held.cards) do
+			del(cards_all, c)
+		end
+		local c_ins = self.cards[self.ins_offset] 
+		if c_ins then
+			c_ins = has(cards_all, c_ins)
+		else
+			c_ins = self.cards[self.ins_offset-1]	
+			if c_ins then
+				c_ins = has(cards_all, c_ins) + 1			
+			end
+		end
+		
+		for c in all(held.cards) do
+			if c_ins then
+				add(cards_all, c, c_ins)
+				c_ins += 1
+			else
+				add(cards_all, c)
+			end
+		end
+		
 	else
 		self.ins_offset = nil
 		if card then
 			card.hovered = true
 		end
 	end
+	
 end
 
 function hand_off_hover(self, card, held)
 	if held then
 		-- shift cards and back and put held cards back on top
 		self.ins_offset = nil
+		stack_update_card_order(held)
 	end
 	
 	if card then
