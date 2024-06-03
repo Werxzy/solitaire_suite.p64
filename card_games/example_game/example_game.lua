@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-02 02:32:20",revision=3078]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-03 23:29:59",revision=3297]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -282,76 +282,6 @@ end
 
 -- new hand event functions
 -- may move to stack.lua
-
-function stack_repose_hand(x_delta, limit)
-	x_delta = x_delta or 25
-	limit = limit or 140
-	
-	return function(stack, dx)
-		local x, xd = stack.x_to, min(x_delta, limit / #stack.cards)
-		for i, c in pairs(stack.cards) do
-			c.x_to = x
-			c.x_offset_to = stack.ins_offset and stack.ins_offset <= i and x_delta/2 or 0
-			
-			c.y_to = stack.y_to
-			c.y_offset_to = c.hovered and -15 or 0
-			x += xd
-		end
-	end
-end
-
--- designed to pick up a single card
-function unstack_hand_card(card)
-	if not card then
-		return
-	end
-	
-	-- TODO? would rather not have to do this
-	card.x_offset_to = 0
-	card.y_offset_to = 0
-	card.hovered = false
-	
-	local old_stack = card.stack
-	local new_stack = stack_held_new(old_stack)
-	new_stack.old_pos = has(old_stack.cards, card)
-	new_stack._unresolved = old_stack:unresolved_stack(new_stack, has(old_stack.cards, card))
-	
-	-- moves card to new stack
-	add(new_stack.cards, del(old_stack.cards, card))
-	card.stack = new_stack
-	stack_delete_check(old_stack)
-	
-	held_stack = new_stack
-	--return new_stack
-end
-
-function hand_on_hover(self, card, held)
-	
-	if held then
-		-- shift cards and insert held stack into cards_all order
-		self.ins_offset = hand_find_insert_x(self, held)
-		cards_into_stack_order(self, held, self.ins_offset)
-
-	else
-		self.ins_offset = nil
-		if card then
-			card.hovered = true
-		end
-	end
-	
-end
-
-function hand_off_hover(self, card, held)
-	if held then
-		-- shift cards and back and put held cards back on top
-		self.ins_offset = nil
-		stack_update_card_order(held)
-	end
-	
-	if card then
-		card.hovered = nil
-	end
-end
 
 
 end -- !!! end of game load function

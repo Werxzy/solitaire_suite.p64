@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-02 02:32:20",revision=6377]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-03 23:29:59",revision=6560]]
 --[[
 
 before release
@@ -11,12 +11,18 @@ post
 0.2.0
 
 !rework stack/card scripting
-			
+	general function for making a hand stack
+	
+	insert cards into stack from elsewhere (needs to not occure from unresolved stack)
+
 	fix hand not being on top when nothing is held?
 	add bool to enable shadows for cards in hand
 
 better variable encapsulation
 	clean up env
+		probably will need to have functions for getting tables that could change outside of the scope
+		like held_stack would change, but it wouldn't be communicated to the game env
+	remove game_load() function
 		
 	old - ? full clean of stacks
 		and then go through all global variables to clear out anything in memory
