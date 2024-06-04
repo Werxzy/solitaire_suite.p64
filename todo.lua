@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-03 23:29:59",revision=6560]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-04 02:11:39",revision=6757]]
 --[[
 
 before release
@@ -9,14 +9,6 @@ make release with new version tag
 post
 
 0.2.0
-
-!rework stack/card scripting
-	general function for making a hand stack
-	
-	insert cards into stack from elsewhere (needs to not occure from unresolved stack)
-
-	fix hand not being on top when nothing is held?
-	add bool to enable shadows for cards in hand
 
 better variable encapsulation
 	clean up env
@@ -29,6 +21,8 @@ better variable encapsulation
 
 !adjuste menu/drawing
 	double click for instantly starting the game.
+	
+	new look for the menus and buttons
 	
 	scrolling through card backs
 		currently it is a fixed size
@@ -75,6 +69,7 @@ update label with new solitaire variants (credit pixelDub)
 
 credits section
 	list contributions when there are enough people contributing
-
+	
+? add bool to enable shadows for cards in hand
 
 ]]

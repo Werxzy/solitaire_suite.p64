@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-03 23:29:59",revision=3297]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-04 02:17:45",revision=3524]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -69,18 +69,11 @@ function game_setup()
 			on_click = stack_on_click_reveal, -- todo replace with drawing a card
 		})
 		
-	hand_stack = stack_new(
+	hand_stack = stack_hand_new(
 		{},
 		150, 180,
 		{
-			reposition = stack_repose_hand(),
-			--on_click = stack_on_click_unstack(), 
-			on_click = unstack_hand_card,
-			
-			-- TODO?, these may be a part of stack_repose_hand
-			on_hover = hand_on_hover,
-			off_hover = hand_off_hover,
-			unresolved_stack = stack_unresolved_return_rel_x
+			can_stack = function() return true end,
 		})
 		
 	while #unstacked_cards > 0 do
