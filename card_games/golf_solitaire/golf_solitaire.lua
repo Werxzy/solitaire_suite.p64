@@ -1,8 +1,5 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-05-31 23:39:45",revision=2629]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-04 04:53:54",revision=2631]]
 
-
-function game_load() -- !!! start of game load function
--- this is to prevent overwriting of game modes
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -213,7 +210,3 @@ function game_update()
 	confetti_update()
 	if(rule_cards) rule_cards:update()
 end
-
-
-end -- end of load
-	

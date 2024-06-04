@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-04 02:11:39",revision=6757]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-04 05:29:45",revision=7118]]
 --[[
 
 before release
@@ -10,23 +10,8 @@ post
 
 0.2.0
 
-better variable encapsulation
-	clean up env
-		probably will need to have functions for getting tables that could change outside of the scope
-		like held_stack would change, but it wouldn't be communicated to the game env
-	remove game_load() function
-		
-	old - ? full clean of stacks
-		and then go through all global variables to clear out anything in memory
-
 !adjuste menu/drawing
-	double click for instantly starting the game.
-	
 	new look for the menus and buttons
-	
-	scrolling through card backs
-		currently it is a fixed size
-		this will be a problem when someone adds too many card backs
 	
 	Add script dedicated to card sprite generation.
 		use nine_slice to generate base
@@ -34,6 +19,10 @@ better variable encapsulation
 			they should be 100x100 pixels each
 			focusing on 41x56 pixels in the center being the normal sprite
 			
+	scrolling through card backs
+		currently it is a fixed size
+		this will be a problem when someone adds too many card backs
+	
 	transition
 		use pget to sample colors and then use circfill to grow and fill the screen
 		
@@ -69,7 +58,23 @@ update label with new solitaire variants (credit pixelDub)
 
 credits section
 	list contributions when there are enough people contributing
+
+maybe ??
 	
 ? add bool to enable shadows for cards in hand
 
+??? better variable encapsulation
+	(attempted this, but it doesn't work out that well due to not planning for it from the start)
+
+	essentially, when including a new game, it should not have access to some functions, like fetch or store
+		this is more to prevent malicious code
+		but this would require some large refactoring
+
+	clean up env
+		probably will need to have functions for getting tables that could change outside of the scope
+		like held_stack would change, but it wouldn't be communicated to the game env
+
+double click for instantly starting the game.
+	
+				
 ]]

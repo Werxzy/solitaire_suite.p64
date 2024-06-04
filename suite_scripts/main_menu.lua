@@ -1,11 +1,9 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-01 21:28:48",revision=10123]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-04 05:29:45",revision=10500]]
 
 include"suite_scripts/rule_cards.lua"
 
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
-
-function game_load() -- similar to game_load, but we always want this available
 
 cards_api_clear()
 cards_api_shadows_enable(true)
@@ -294,4 +292,3 @@ function cards_game_exiting()
 	suite_load_game"suite_scripts/main_menu.lua"
 end
 
-end -- end of load
