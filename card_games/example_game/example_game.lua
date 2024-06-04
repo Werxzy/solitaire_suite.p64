@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-04 02:17:45",revision=3524]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-04 02:32:58",revision=3607]]
 
 function game_load() -- !!! start of game load function
 -- this is to prevent overwriting of game modes
@@ -73,6 +73,8 @@ function game_setup()
 		{},
 		150, 180,
 		{
+			hand_width = 200,
+			hand_max_delta = 30,
 			can_stack = function() return true end,
 		})
 		
