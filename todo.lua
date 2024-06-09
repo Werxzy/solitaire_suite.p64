@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-04 05:29:45",revision=7118]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-09 07:04:46",revision=7370]]
 --[[
 
 before release
@@ -10,23 +10,55 @@ post
 
 0.2.0
 
-!adjuste menu/drawing
-	new look for the menus and buttons
-	
+
+!adjust menu/drawing
 	Add script dedicated to card sprite generation.
-		use nine_slice to generate base
-		make a cut out of the card backs
-			they should be 100x100 pixels each
-			focusing on 41x56 pixels in the center being the normal sprite
+		remove global card_width and card_height
+			use card.width and card.height instead
+		keep a table for animated card backs to prevent generating the same size multiple times
+		
+		use card's card back instead of the global
+		add the global card back as a default
+		
+	
+	update user interface
+		buttons are a bit plain
+		
+		add menubar
+			allow adding options
+			some options can have a small window pop up
+			(also need to figure out floating buttons
 			
+		change button control of cards api to instead check for any interaction
+			maybe have a clickable priority
+			clickables = {
+				[0] = {first / topmost}
+				[1] = {default / before stacks, after cards}
+				[2] = {last / after everything else}
+			}
+			return true if click is consumed
+			if true, call the on_click function
+			
+	
 	scrolling through card backs
 		currently it is a fixed size
 		this will be a problem when someone adds too many card backs
-	
+
 	transition
 		use pget to sample colors and then use circfill to grow and fill the screen
 		
 	?switch to userdata for some of the structures (it's much faster)
+
+clean up env
+	(will want to move card_width and card_height first)
+
+	copy only functions
+	tables or important variables need get/set functions 
+		currently it's probably just 
+			held_stack
+			cards_all
+			stacks_all
+	
 
 !prepare for example project 
 
@@ -55,7 +87,7 @@ update label with new solitaire variants (credit pixelDub)
 
 
 0.?.0
-
+		
 credits section
 	list contributions when there are enough people contributing
 

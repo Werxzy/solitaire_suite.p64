@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-31 23:51:44",revision=2657]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-09 07:04:46",revision=2808]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -59,6 +59,14 @@ function get_info()
 		{ 
 			sprite = 11, artist = "Werxzy", id = "vox",
 			lore = "Voxatron Icon"
+		},
+		{ 
+			sprite = 112, artist = "Werxzy", id = "blue2",
+			lore = "test"
+		},
+		{ 
+			sprite = 113, artist = "Werxzy", id = "aaaaaa",
+			lore = "test"
 		},
 	}
 end

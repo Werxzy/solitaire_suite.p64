@@ -1,6 +1,7 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-04 05:29:45",revision=10500]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-09 07:04:46",revision=10769]]
 
 include"suite_scripts/rule_cards.lua"
+include"cards_api/card_gen.lua"
 
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
@@ -189,7 +190,11 @@ function game_setup()
 				})
 				
 			add(card_back_options, s)
-		
+			
+			if cb.sprite == 112 or cb.sprite == 113 then
+				cb.sprite = card_gen_back({sprite = cb.sprite})
+			end
+			
 			local c = card_new(cb, s.x_to, s.y_to)
 			c.info = cb
 			stack_add_card(s,  c)
