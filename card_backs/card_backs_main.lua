@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-09 07:04:46",revision=2808]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 09:05:52",revision=2828]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -20,36 +20,36 @@ function get_info()
 			-- obviously the artist
 			artist = "Werxzy",
 			-- unique identifier, should not match any other card
-			id = 1,
+			id = 113,
 			-- extra info about the card art
 			lore = "Picotron Icon"
 		},
 		{ 
-			sprite = 18, artist = "Werxzy", id = 2,
+			sprite = 119, artist = "Werxzy", id = 2,
 			lore = "(And technically Zep) \nZep's Jelpi from Pico-8"
 		},
 		{ 
-			sprite = 19, artist = "Werxzy", id = 3,
+			sprite = 114, artist = "Werxzy", id = 3,
 			lore = "Box from SokoCode by Werxzy"
 		},
 		{ 
-			sprite = 1, artist = "Werxzy", id = 4,
+			sprite = 112, artist = "Werxzy", id = 4,
 			lore = "The first card back!"
 		},
 		{ 
-			sprite = 35, artist = "Werxzy", id = 5,
+			sprite = 116, artist = "Werxzy", id = 5,
 			lore = "Card back created from there being too many blue card backs."
 		},
 		{ 
-			sprite = 36, artist = "Werxzy", id = 6,
+			sprite = 120, artist = "Werxzy", id = 6,
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 21, artist = "Werxzy", id = 7,
+			sprite = 118, artist = "Werxzy", id = 7,
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 26, artist = "Werxzy", id = 8,
+			sprite = 115, artist = "Werxzy", id = 8,
 			lore = "Pico-8 Icon"
 		},
 		{
@@ -57,16 +57,8 @@ function get_info()
 			lore = "Ever feel like you're being watched?"
 		},
 		{ 
-			sprite = 11, artist = "Werxzy", id = "vox",
+			sprite = 117, artist = "Werxzy", id = "vox",
 			lore = "Voxatron Icon"
-		},
-		{ 
-			sprite = 112, artist = "Werxzy", id = "blue2",
-			lore = "test"
-		},
-		{ 
-			sprite = 113, artist = "Werxzy", id = "aaaaaa",
-			lore = "test"
 		},
 	}
 end
@@ -75,20 +67,20 @@ end
 -- card_art_width and card_art_height are given to help know the art's bounds
 -- camera and clip are used around this function, so be careful
 -- data is the card back sprite info
-function camera_card_back(init, data)
+function camera_card_back(data, width, height)
 	-- get mouse position
 	local mx, my = mouse()
-	mx = mid(mx - card_width\2+1, 480-card_width)
-	my = mid(my - card_height\2+2, 270-card_height)
+	mx = mid(mx - width\2+1, 480-width) -- technically also use - left or -top
+	my = mid(my - height\2+2, 270-height)
 	
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 1) -- base (prevent transparent pixels
-	sspr(get_display(), mx, my, card_art_width, card_art_height, 0, 0) -- screen
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 32) -- darken
+	rectfill(0, 0, width-1, height-1, 1) -- base (prevent transparent pixels
+	sspr(get_display(), mx, my, width, height, 0, 0) -- screen
+	rectfill(0, 0, width-1, height-1, 32) -- darken
 	if(time() % 1.5 < 0.75) circfill(5, 5, 2, 8) circ(5, 5, 2, 32) -- red dot
 	
 	-- scanlines
 	fillp(0xf0f0f0f0f0f0f0f0)	
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 32)
+	rectfill(0, 0, width-1, height-1, 32)
 	fillp()
 	
 	-- returns if the art has been updated (here is always true)

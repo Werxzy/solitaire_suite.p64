@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 07:52:05",revision=11350]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 09:05:52",revision=11488]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -35,7 +35,6 @@ for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do
 				
 				if type(info.sprite) == "function" then
 					info = card_back_animated(info.sprite, info)
-					info.update(true)
 				end
 				
 				add(all_card_back_info, info)

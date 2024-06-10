@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-10 07:52:05",revision=1970]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-10 09:05:52",revision=2092]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
@@ -135,20 +135,36 @@ function suite_card_back(width, height)
 	
 	local key = tostr(width) .. "," .. tostr(height)
 	
-	if not card_back_sprites[key] then
+	local cb = card_back_sprites[key]
+
+	if not cb then
 		camera()
-		card_back_sprites[key] = card_gen_back{
-			sprite = card_back.sprite, 
-			width = width,
-			height = height
-		}
+	
+		if type(card_back_sprite) == "function" then
+			-- initializes card back and adds it to the list
+			cb = card_back_sprite(width, height)	
+			
+		else
+			cb = card_gen_back{
+				sprite = card_back.sprite, 
+				width = width,
+				height = height
+			}
+		end
+		
+		card_back_sprites[key] = cb
 	end
 	
-	return card_back_sprites[key]
+	return cb
 end
 
 function suite_card_back_set(sprite)
 	card_back_sprite = sprite
+	for c in all(card_back_sprites) do
+		if c.destroy then
+			c:destroy()
+		end
+	end
 	card_back_sprites = {}
 end
 

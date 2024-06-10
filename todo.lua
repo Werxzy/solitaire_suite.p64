@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 07:52:05",revision=7793]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 09:05:52",revision=7887]]
 --[[
 
 before release
@@ -9,7 +9,7 @@ make release with new version tag
 post
 
 0.2.0
-
+	
 
 !adjust menu/drawing
 	Add script dedicated to card sprite generation.
@@ -22,7 +22,6 @@ post
 		use card's card back instead of the global
 		add the global card back as a default
 		
-	
 	update user interface
 		buttons are a bit plain
 		
