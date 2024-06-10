@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 09:05:52",revision=2828]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 09:44:09",revision=2996]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -16,11 +16,11 @@ function get_info()
 	return {
 		{ 
 			-- either a number for the sprite id in the spritesheet, or userdata
-			sprite = 10, 
+			sprite = 113, 
 			-- obviously the artist
 			artist = "Werxzy",
 			-- unique identifier, should not match any other card
-			id = 113,
+			id = 1,
 			-- extra info about the card art
 			lore = "Picotron Icon"
 		},

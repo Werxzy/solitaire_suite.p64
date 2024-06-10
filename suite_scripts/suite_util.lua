@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-10 09:05:52",revision=2092]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-10 09:44:09",revision=2258]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
@@ -140,9 +140,9 @@ function suite_card_back(width, height)
 	if not cb then
 		camera()
 	
-		if type(card_back_sprite) == "function" then
+		if card_back_sprite.gen then
 			-- initializes card back and adds it to the list
-			cb = card_back_sprite(width, height)	
+			cb = card_back_sprite.gen(width, height)	
 			
 		else
 			cb = card_gen_back{

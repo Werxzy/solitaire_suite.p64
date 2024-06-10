@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 09:05:52",revision=11488]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 09:44:09",revision=11671]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -9,6 +9,7 @@ include"cards_api/card_gen.lua"
 cards_api_clear()
 cards_api_shadows_enable(true)
 main_menu_selected = nil
+cards_animated = {} -- clears animated card backs to prevent overflowing memory
 
 -- initializes the list of game variant folders
 game_list = {}
@@ -34,7 +35,7 @@ for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do
 			for info in all(get_info()) do
 				
 				if type(info.sprite) == "function" then
-					info = card_back_animated(info.sprite, info)
+					card_back_animated(info)
 				end
 				
 				add(all_card_back_info, info)
@@ -74,7 +75,7 @@ function set_card_back(info)
 	card_back = info
 	assert(info)
 	
-	suite_card_back_set(info.sprite)
+	suite_card_back_set(info)
 	
 	local sp = suite_card_back()
 	for c in all(cards_all) do
@@ -206,11 +207,14 @@ function game_setup()
 				
 			add(card_back_options, s)
 			
-			local front_sprite = cb.sprite
-			if type(cb.sprite) == "number"
-			or type(cb.sprite) == "userdata" then
+			local front_sprite = nil
+				
+			if cb.gen then
+				front_sprite = cb.gen(width, height)	
+			else
 				front_sprite = card_gen_back({sprite = front_sprite})
 			end
+			
 			
 			local c = card_new({
 				sprite = front_sprite,
@@ -273,12 +277,6 @@ end
 function game_draw(layer)
 	if layer == 0 then
 	
-		for c in all(cards_all) do -- update all card_backs
-			if c.sprite.update and c.sprite ~= card_back then
-				c.sprite.update()
-			end
-		end	
-
 		cls(3)
 		
 	
