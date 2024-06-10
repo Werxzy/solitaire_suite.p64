@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-10 10:11:05",revision=4449]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-10 10:39:09",revision=4546]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -26,8 +26,6 @@ function game_setup()
 	game_save = suite_load_save() or {
 		wins = 0
 	}	
-	
-	--local card_sprites = card_gen_standard(4, rank_count, nil, nil, all_suit_colors)
 	
 	local card_back = suite_card_back()
 

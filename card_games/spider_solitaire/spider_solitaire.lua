@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-04 05:17:41",revision=3934]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-10 10:39:09",revision=3955]]
 
 
 include "suite_scripts/rolling_score.lua"
@@ -25,12 +25,22 @@ function game_setup()
 		wins = 0
 	}	
 	
+	local card_back = suite_card_back()
+
 	-- just one suit for now
-	current_card_sprites = card_gen_standard(5)
+	current_card_sprites = card_gen_standard({
+		suits = 5
+	})
+	
 	local s = rnd(5)\1 + 1
 	for sets = 1,total_sets do
 		for rank = 1,total_ranks do		
-			local c = card_new(current_card_sprites[s][rank], 240,100)
+			local c = card_new({
+				sprite = current_card_sprites[s][rank], 
+				back_sprite = card_back,
+				x = 240,
+				y = 100
+			})
 			c.suit = 1
 			c.rank = rank
 		end
