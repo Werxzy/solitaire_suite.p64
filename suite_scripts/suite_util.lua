@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-04 05:29:45",revision=1420]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-10 07:52:05",revision=1970]]
 include"cards_api/cards_base.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
@@ -124,6 +124,33 @@ function suite_store_save(data)
 	store(suite_saveloc, data)
 end
 
+local card_back_sprites = {}
+
+-- gets the currently selected card back of a given size
+-- uses a simple border style
+-- ensures that card backs that are already generated will be returned
+function suite_card_back(width, height)
+	width = width or 45
+	height = height or 60
+	
+	local key = tostr(width) .. "," .. tostr(height)
+	
+	if not card_back_sprites[key] then
+		camera()
+		card_back_sprites[key] = card_gen_back{
+			sprite = card_back.sprite, 
+			width = width,
+			height = height
+		}
+	end
+	
+	return card_back_sprites[key]
+end
+
+function suite_card_back_set(sprite)
+	card_back_sprite = sprite
+	card_back_sprites = {}
+end
 
 
 --[=[

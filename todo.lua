@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-09 07:04:46",revision=7370]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 07:52:05",revision=7793]]
 --[[
 
 before release
@@ -16,6 +16,8 @@ post
 		remove global card_width and card_height
 			use card.width and card.height instead
 		keep a table for animated card backs to prevent generating the same size multiple times
+			init for first time a card back is drawn
+				will be true for each card size
 		
 		use card's card back instead of the global
 		add the global card back as a default

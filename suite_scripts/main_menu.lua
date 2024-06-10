@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-09 07:04:46",revision=10769]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 07:52:05",revision=11350]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -74,6 +74,14 @@ end
 function set_card_back(info)
 	card_back = info
 	assert(info)
+	
+	suite_card_back_set(info.sprite)
+	
+	local sp = suite_card_back()
+	for c in all(cards_all) do
+		c.back_sprite = sp
+	end
+	
 	settings_data.card_back_id = info.id
 	suite_store_save(settings_data)
 end
@@ -173,7 +181,15 @@ function game_setup()
 			resolve_stack = swap_stacks
 		})
 		
-	stack_add_card(card_back_edit_button, card_new(card_back, 300, 200))
+	local cb_sprite = suite_card_back()
+	local c = card_new({
+			sprite = cb_sprite, 
+			back_sprite = cb_sprite,
+			x = 300,
+			y = 200
+		})
+	c.info = card_back
+	stack_add_card(card_back_edit_button, c)
 	
 	card_back_options = {}
 	for cb in all(all_card_back_info) do
@@ -191,11 +207,18 @@ function game_setup()
 				
 			add(card_back_options, s)
 			
-			if cb.sprite == 112 or cb.sprite == 113 then
-				cb.sprite = card_gen_back({sprite = cb.sprite})
+			local front_sprite = cb.sprite
+			if type(cb.sprite) == "number"
+			or type(cb.sprite) == "userdata" then
+				front_sprite = card_gen_back({sprite = front_sprite})
 			end
 			
-			local c = card_new(cb, s.x_to, s.y_to)
+			local c = card_new({
+				sprite = front_sprite,
+				back_sprite = cb_sprite,
+				x = s.x_to,
+				y = s.y_to,
+			})
 			c.info = cb
 			stack_add_card(s,  c)
 		end
@@ -231,7 +254,7 @@ function swap_stacks(stack, stack2)
 		del(stacks_all, stack2)
 	end
 	
-	set_card_back(card_back_edit_button.cards[1].sprite)
+	set_card_back(card_back_edit_button.cards[1].info)
 end
 
 function game_update()
