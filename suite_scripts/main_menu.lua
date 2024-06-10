@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 09:44:09",revision=11671]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 10:11:05",revision=11766]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -76,6 +76,13 @@ function set_card_back(info)
 	assert(info)
 	
 	suite_card_back_set(info)
+	
+	if cards_all and cards_all[1] then
+		local old_sp = cards_all[1].back_sprite
+		if old_sp.destroy then
+			old_sp:destroy()
+		end
+	end
 	
 	local sp = suite_card_back()
 	for c in all(cards_all) do
@@ -182,8 +189,11 @@ function game_setup()
 		})
 		
 	local cb_sprite = suite_card_back()
+	local cb = has_key(all_card_back_info, "id", settings_data.card_back_id)
+	local cb_front = cb.gen and cb.gen() or card_gen_back({sprite = cb.sprite})
+			
 	local c = card_new({
-			sprite = cb_sprite, 
+			sprite = cb_front, 
 			back_sprite = cb_sprite,
 			x = 300,
 			y = 200
@@ -210,9 +220,9 @@ function game_setup()
 			local front_sprite = nil
 				
 			if cb.gen then
-				front_sprite = cb.gen(width, height)	
+				front_sprite = cb.gen()	
 			else
-				front_sprite = card_gen_back({sprite = front_sprite})
+				front_sprite = card_gen_back({sprite = cb.sprite})
 			end
 			
 			

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-09 07:04:46",revision=4098]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-10 10:11:05",revision=4449]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -29,6 +29,8 @@ function game_setup()
 	
 	--local card_sprites = card_gen_standard(4, rank_count, nil, nil, all_suit_colors)
 	
+	local card_back = suite_card_back()
+
 	local card_sprites = card_gen_standard{
 		suits = 4, 
 		ranks = rank_count, 
@@ -38,7 +40,12 @@ function game_setup()
 	local card_gap = 4
 	for suit = 1,4 do
 		for rank = 1,rank_count do		
-			local c = card_new(card_sprites[suit][rank], 240,100)
+			local c = card_new({
+				sprite = card_sprites[suit][rank], 
+				back_sprite = card_back,
+				x = 240,
+				y = 100
+			})
 			c.suit = suit
 			c.rank = rank
 		end
