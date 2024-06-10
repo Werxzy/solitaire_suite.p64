@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 09:05:52",revision=7887]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 11:00:49",revision=8272]]
 --[[
 
 before release
@@ -10,18 +10,11 @@ post
 
 0.2.0
 	
-
+add width and height to stacks
+	adjuste point_box to be more clear
+		it's hard to understand what overlap is needed
+		
 !adjust menu/drawing
-	Add script dedicated to card sprite generation.
-		remove global card_width and card_height
-			use card.width and card.height instead
-		keep a table for animated card backs to prevent generating the same size multiple times
-			init for first time a card back is drawn
-				will be true for each card size
-		
-		use card's card back instead of the global
-		add the global card back as a default
-		
 	update user interface
 		buttons are a bit plain
 		
@@ -60,6 +53,7 @@ clean up env
 			cards_all
 			stacks_all
 	
+
 
 !prepare for example project 
 

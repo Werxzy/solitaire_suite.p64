@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 10:11:05",revision=11766]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 11:00:49",revision=11942]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -200,6 +200,10 @@ function game_setup()
 		})
 	c.info = card_back
 	stack_add_card(card_back_edit_button, c)
+	
+
+	local card_width = 45
+	local card_height = 60 
 	
 	card_back_options = {}
 	for cb in all(all_card_back_info) do

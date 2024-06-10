@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 09:44:09",revision=2996]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 11:00:49",revision=3155]]
 
 
 -- todo, fetch cards in folder in appdata
@@ -87,19 +87,19 @@ function camera_card_back(data, width, height)
 	return true
 end
 
-function random_card_back(init, data)
+function random_card_back(data, width, height)
 	if init then
-		rectfill(0, 0, card_art_width-1, card_art_height-1, 5)
+		rectfill(0, 0, width-1, height-1, 5)
 		color(32)
 	--[[
 		for i = 1,40 do
-			line(rnd(card_art_width)/2, rnd(card_art_height)/2)
+			line(rnd(width)/2, rnd(height)/2)
 		end
-		local w, h = card_art_width\2, card_art_height\2
+		local w, h = width\2, height\2
 		sspr(data.sprite, 0, 0, w, h+3, w-1, -2, w, h+3, true, false)
-		sspr(data.sprite, 0, 0, card_width, h, -2, h-1, card_width, h, false, true)
+		sspr(data.sprite, 0, 0, width, h, -2, h-1, height, h, false, true)
 	]]
-		local w, h = card_art_width/2, card_art_height/2
+		local w, h = width/2, height/2
 		local r = w * 0.6
 		local ph = rnd(10)+2
 		for i = 1,140 do
@@ -125,15 +125,14 @@ function get_info()
     }
 end
 
-function card_back_art(init, data)
+function card_back_art(data, width, height)
   -- if you only need to generate the art once, use init
   -- data has the table returned by get_info(), just in case you need to get the sprite itself or if you want to store extra data
   
   -- camera, clip, and set_render_target() are used outside of this function to help simplify the process
   
-  -- card_art_width and _height are created to help you know the exact size of your art
-  -- this is different from card_width/height
-  circfill(card_art_width/2, card_art_height/2, card_art_width/2, 10)
+  -- width and height are created to help you know the exact size of your art
+  circfill(width/2, height/2, width/2, 10)
   
   -- color 32 is special, and can be used for darkening colors (for stuff like shadows)
 
