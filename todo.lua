@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-10 11:00:49",revision=8272]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-12 09:40:43",revision=8775]]
 --[[
 
 before release
@@ -9,11 +9,7 @@ make release with new version tag
 post
 
 0.2.0
-	
-add width and height to stacks
-	adjuste point_box to be more clear
-		it's hard to understand what overlap is needed
-		
+			
 !adjust menu/drawing
 	update user interface
 		buttons are a bit plain

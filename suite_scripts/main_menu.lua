@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-10 11:00:49",revision=11942]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-12 09:40:43",revision=12486]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -10,6 +10,12 @@ cards_api_clear()
 cards_api_shadows_enable(true)
 main_menu_selected = nil
 cards_animated = {} -- clears animated card backs to prevent overflowing memory
+
+-- TODO  !!! testing here
+suite_menuitem("TIME", {8,24,2})
+suite_menuitem("Exit", {8,24,2})
+suite_menuitem("New Game", {12, 16, 1})
+
 
 -- initializes the list of game variant folders
 game_list = {}
@@ -47,22 +53,24 @@ end
 
 local x_offset = smooth_val(0, 0.5, 0.1)
 
-function button_deckbox_draw(b)
-	
-	-- draw shadows, based on the the boxes size
-	-- 32 is the shadow applying color
-	local x1, y1, x2, y2 = b.x-3, b.y+10, b.x+b.w+2, b.y+b.h+2
-	fillp(0xa5a5a5a5)
-	rect(x1,y1,x2,y2, 32)
-	rect(x1+1,y1+1,x2-1,y2-1, 32)
-	rectfill(x1+4,y1+4,x2-4,y2-4, 32)
-	fillp()
-	rectfill(x1+2,y1+2,x2-2,y2-2, 32)
-	
-	-- interpolates the draw position
-	b.y2 = lerp(b.y2 or 0, (b.highlight and 3 or 0) + (b == main_menu_selected and 8 or 0), 0.15)
-	-- didn't want to do lerp, but it's simpler here >:(
-	spr(b.sprite, b.x, b.y - (b.y2 + 0.5)\1)
+function button_deckbox_draw(b, layer)
+	if layer == 1 then
+		-- draw shadows, based on the the boxes size
+		-- 32 is the shadow applying color
+		local x1, y1, x2, y2 = b.x-3, b.y+10, b.x+b.w+2, b.y+b.h+2
+		fillp(0xa5a5a5a5)
+		rect(x1,y1,x2,y2, 32)
+		rect(x1+1,y1+1,x2-1,y2-1, 32)
+		rectfill(x1+4,y1+4,x2-4,y2-4, 32)
+		fillp()
+		rectfill(x1+2,y1+2,x2-2,y2-2, 32)
+		
+	elseif layer == 2 then
+		-- interpolates the draw position
+		b.y2 = lerp(b.y2 or 0, (b.highlight and 3 or 0) + (b == main_menu_selected and 8 or 0), 0.15)
+		-- didn't want to do lerp, but it's simpler here >:(
+		spr(b.sprite, b.x, b.y - (b.y2 + 0.5)\1)
+	end
 end
 
 function button_deckbox_click(b)
