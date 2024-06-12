@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-12 09:40:43",revision=461]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-12 10:43:57",revision=837]]
 
 local menuitems = {}
 
@@ -25,7 +25,7 @@ local function suite_button_draw(button, layer)
 		end
 		
 	elseif layer == 2 then
-		button.t = max(button.t - 0.1)
+		button.t = max(button.t - 0.07)
 		
 		color(button.colors[button.highlight and 3 or 1])
 		
@@ -43,9 +43,23 @@ local function suite_button_draw(button, layer)
 		
 		print(button.text, 7, 3, 22)
 		print(button.text, 7, 2, 7)		
+		
+	
+		if button.value then
+			pal(2, button.colors[2])
+			sspr(61, 0, 0, button.valw, 11, button.valx, 1)
+			sspr(61, 43, 0, 8, 11, button.valx+button.valw, 1)
+			pal(2,2)
+			print(button.value, button.valx+4, 3, 16)
+		end
 	end
 	
 	camera(ox, oy)
+end
+
+function suite_button_set_value(button, value)
+	button.value = value
+	-- TODO update layout to fit the new string
 end
 
 function suite_menuitem(text, colors, on_click, value)
@@ -54,23 +68,47 @@ function suite_menuitem(text, colors, on_click, value)
 	local w = print_size(text) + 10
 	
 	local b = button_new(x, 255, w, 15, suite_button_draw, 
-		function(b)
+		on_click and function(b)
 			b.t = 1
-			if on_click then
-				on_click(b)
-			end
+			on_click(b)
 		end)
-		
-	-- force button to be on the bottom of the list (to ensure correct draw order)
-	del(buttons_all, b)
-	add(buttons_all, b, 1)
 	
 	b.t = 0
 	b.text = text
 	b.colors = colors
 	b.on_destroy = suite_button_on_destroy
+	b.set_value = suite_button_set_value
 	b.left = #menuitems == 0 and -4 or 0
 	
-	add(menuitems, b)
+	if not text or #tostr(text) == 0 then
+		b.w -= 4
+	end
+
+	if value then
+		local valw = print_size(value)
+			
+		b.value = value
+		b.valw = valw
+		b.valx = b.w - 2
+		b.w += valw + 7
+	end
+	
+	-- force button to be on the bottom of the list (to ensure correct draw order)
+	del(buttons_all, b)
+	add(buttons_all, b, 1)
+
+	return add(menuitems, b)
 end
 
+function suite_menuitem_update_sizes()
+	-- TODO
+end
+
+function suite_menuitem_init()
+	suite_menuitem("", {27,3,19}, nil, "\fc12\fg\-f:\-e\fc00")
+	suite_menuitem("Exit", {8,24,2},
+		function()
+			rule_cards = nil -- TODO remove?
+			suite_exit_game()
+		end).always_active = true
+end

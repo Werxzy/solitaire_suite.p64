@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-10 10:39:09",revision=4546]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-12 10:43:57",revision=5488]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -92,14 +92,12 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
-	button_simple_text("New Game", 40, 248, function()
-		cards_coroutine = cocreate(game_reset_anim)
-	end)
-	
-	button_simple_text("Exit", 6, 248, function()
-		rule_cards = nil
-		suite_exit_game()
-	end).always_active = true
+	-- TODO  !!! testing here
+	suite_menuitem_init()
+	suite_menuitem("New Game", {12, 16, 1}, 
+		function()
+			cards_coroutine = cocreate(game_reset_anim)
+		end)
 	
 	-- rules cards 
 	rule_cards = rule_cards_new(135, 192, game_info(), "right")
@@ -111,9 +109,20 @@ function game_setup()
 		old_update(rc)
 	end
 	
-	button_simple_text("Rules", 97, 248, function()
-		rule_cards.on_off = not rule_cards.on_off
-	end).always_active = true
+	suite_menuitem("Rules", {4, 20, 21}, 
+		function()
+			rule_cards.on_off = not rule_cards.on_off
+		end).always_active = true
+		
+	local v = 1
+	suite_menuitem("Wins", {4, 20, 21}, 
+		function(b)
+			v += 1
+			local s = "\fc"..tostr(v)
+			while(#s < 6) s = "0".. s
+			b:set_value(s)
+		end, 
+		"000\fc1")	
 	
 	cards_coroutine = cocreate(game_setup_anim)
 	

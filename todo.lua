@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-12 09:40:43",revision=8775]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-12 10:43:57",revision=9095]]
 --[[
 
 before release
@@ -15,9 +15,14 @@ post
 		buttons are a bit plain
 		
 		add menubar
-			allow adding options
 			some options can have a small window pop up
-			(also need to figure out floating buttons
+		
+		in example game
+			add new rules card system
+			fix win count button
+			add auto place button
+				will require floating buttons
+		
 			
 		change button control of cards api to instead check for any interaction
 			maybe have a clickable priority
@@ -30,6 +35,8 @@ post
 			if true, call the on_click function
 			
 	
+	functions for cocreate animations
+
 	scrolling through card backs
 		currently it is a fixed size
 		this will be a problem when someone adds too many card backs

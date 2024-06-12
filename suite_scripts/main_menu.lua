@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-12 09:40:43",revision=12486]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-12 10:43:57",revision=12840]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -11,10 +11,6 @@ cards_api_shadows_enable(true)
 main_menu_selected = nil
 cards_animated = {} -- clears animated card backs to prevent overflowing memory
 
--- TODO  !!! testing here
-suite_menuitem("TIME", {8,24,2})
-suite_menuitem("Exit", {8,24,2})
-suite_menuitem("New Game", {12, 16, 1})
 
 
 -- initializes the list of game variant folders
