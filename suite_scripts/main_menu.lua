@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-14 11:06:15",revision=13283]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-14 12:21:47",revision=13555]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -236,23 +236,33 @@ function game_setup()
 	local card_width = 45
 	local card_height = 60 
 	
+	local function create_card_back_stack(i)
+		local s = stack_new(
+			{9},
+			(i\2)*(60) + 7, 365 + i%2 * (card_height + 10) + 17, 
+			{
+				reposition = stack_repose_normal(),
+				can_stack = function(stack) 
+					if #card_back_edit_button.cards == 0 then
+						return #stack.cards == 1
+					end
+					return true
+				end, 
+				on_click = stack_on_click_unstack(),
+				resolve_stack = swap_stacks,
+				x_off = -7,
+				y_off = -4,
+			})
+		s.base_x = s.x_to
+			
+		return add(card_back_options, s)
+	end
+
+-- adds card back options
 	card_back_options = {}
 	for cb in all(all_card_back_info) do
 		if cb.id ~= card_back.id then
-			local i = #card_back_options
-			local s = stack_new(
-				{9},
-				(i\2)*(60) + 7, 365 + i%2 * (card_height + 10) + 17, 
-				{
-					reposition = stack_repose_normal(),
-					can_stack = function() return true end, 
-					on_click = stack_on_click_unstack(),
-					resolve_stack = swap_stacks,
-					x_off = -7,
-					y_off = -4,
-				})
-				
-			add(card_back_options, s)
+			local s = create_card_back_stack(#card_back_options)
 			
 			local front_sprite = nil
 				
@@ -273,8 +283,46 @@ function game_setup()
 			stack_add_card(s,  c)
 		end
 	end
-		
 	
+-- adds extra card back slots for looks
+	local extra = 0
+	while #card_back_options < 16 
+	or #card_back_options % 4 ~= 0
+	or extra < 4 do
+		extra += 1
+		create_card_back_stack(#card_back_options)
+	end
+	card_back_scroll_max = min(480 - #card_back_options \ 2 * 60)
+	for i = -4,-1 do
+		create_card_back_stack(i)
+	end
+	
+-- adds card back scrolling buttons
+	card_back_scroll_to = 0
+	card_back_scroll = smooth_val(0, 0.8, 0.023, 0.00001)
+
+	local function scroll(x)
+		return function (b)
+			b.t = 1
+			card_back_scroll_to = mid(120, card_back_scroll_to + x, card_back_scroll_max)
+		end
+	end
+	
+	local function draw_button(b, l)
+		if l == 2 then
+			b.t = max(b.t - 0.07)
+			local y = ((b.t*2-1)^2 * 2.5 - 1.5) \ 1
+			local h = 20 + y
+			spr(2, b.x-4, b.y-2)
+			sspr(b.highlight and 4 or 3, 0, 0, 21, h, b.x, b.y-y, 21, h, b.fl)
+		end
+	end
+
+	local b = button_new(215, 335, 20, 21, draw_button, scroll(120))
+	b.t = 0
+	b.fl = true
+	local b = button_new(245, 335, 20, 21, draw_button, scroll(-120))
+	b.t = 0
 end
 
 -- also updates the card back
@@ -319,6 +367,19 @@ function game_update()
 	main_menu_y(main_menu_y_to)
 	
 	card_back_edit_button.y_to = lerp(196.5, 281.5, main_menu_y())
+	
+	
+	local sc = card_back_scroll(card_back_scroll_to)\1
+
+	for s in all(card_back_options) do
+		local newx = s.base_x + sc
+		local dx = newx - s.x_to
+		s.x_to = newx
+		
+		for c in all(s.cards) do
+			c.x("pos", c.x() + dx)
+		end
+	end
 end
 
 function game_draw(layer)
@@ -366,8 +427,11 @@ function game_draw(layer)
 			spr(12, i, 364)
 			spr(12, i, 520)
 		end
-		for i = -1, 479,78  do
-			spr(11, i, 372)
+			
+		local sc = card_back_scroll()\1
+		local i2 = sc - sc % 78
+		for i = -78-i2, 479-i2,78  do
+			spr(11, i+sc, 372)
 		end
 		
 	elseif layer == 1 then

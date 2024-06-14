@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 11:06:15",revision=9370]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 12:21:47",revision=9542]]
 --[[
 
 before release
@@ -14,32 +14,22 @@ post
 	update user interface
 		buttons are a bit plain
 		
-		add menubar
-			some options can have a small window pop up
-		
 		in example game
 			add new rules card system
+				some options can have a small window pop up
 			fix win count button
-			add auto place button
-				will require floating buttons
+		
+		update other games to use the same system
 		
 			
-		change button control of cards api to instead check for any interaction
-			maybe have a clickable priority
-			clickables = {
-				[0] = {first / topmost}
-				[1] = {default / before stacks, after cards}
-				[2] = {last / after everything else}
-			}
-			return true if click is consumed
-			if true, call the on_click function
-			
-	scrolling through card backs
-		currently it is a fixed size
-		this will be a problem when someone adds too many card backs
-		
+		? add auto place button
+			will require floating buttons	
+				
+		new frame for the card back description
+		new frame for the main screen rules text
+			instead just display the description, title, and author
+					
 	functions for cocreate animations
-
 
 	transition
 		use pget to sample colors and then use circfill to grow and fill the screen
@@ -90,6 +80,16 @@ credits section
 	list contributions when there are enough people contributing
 
 maybe ??
+
+change button control of cards api to instead check for any interaction
+	maybe have a clickable priority
+	clickables = {
+		[0] = {first / topmost}
+		[1] = {default / before stacks, after cards}
+		[2] = {last / after everything else}
+	}
+	return true if click is consumed
+	if true, call the on_click function
 	
 ? add bool to enable shadows for cards in hand
 
