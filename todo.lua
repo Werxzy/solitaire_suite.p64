@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-12 10:43:57",revision=9095]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 11:06:15",revision=9370]]
 --[[
 
 before release
@@ -34,12 +34,12 @@ post
 			return true if click is consumed
 			if true, call the on_click function
 			
-	
-	functions for cocreate animations
-
 	scrolling through card backs
 		currently it is a fixed size
 		this will be a problem when someone adds too many card backs
+		
+	functions for cocreate animations
+
 
 	transition
 		use pget to sample colors and then use circfill to grow and fill the screen
