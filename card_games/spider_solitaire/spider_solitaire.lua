@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-10 10:39:09",revision=3955]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-14 12:47:35",revision=4004]]
 
 
 include "suite_scripts/rolling_score.lua"
@@ -32,11 +32,12 @@ function game_setup()
 		suits = 5
 	})
 	
-	local s = rnd(5)\1 + 1
+	current_suit = rnd({1,2,3,4,5})
+
 	for sets = 1,total_sets do
 		for rank = 1,total_ranks do		
 			local c = card_new({
-				sprite = current_card_sprites[s][rank], 
+				sprite = current_card_sprites[current_suit][rank], 
 				back_sprite = card_back,
 				x = 240,
 				y = 100
@@ -141,6 +142,14 @@ end
 -- places all the cards back onto the main deck
 function game_reset_anim()
 	stack_collecting_anim(deck_stack, stacks_supply, stack_goal)
+	
+	local op = {1,2,3,4,5}
+	del(op, current_suit)
+	current_suit = rnd(op)
+	
+	for c in all(deck_stack.cards) do
+		c.sprite =  current_card_sprites[current_suit][c.rank]
+	end
 	
 	game_setup_anim()
 end

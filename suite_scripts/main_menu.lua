@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-14 12:21:47",revision=13555]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-14 12:47:35",revision=13675]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -299,7 +299,7 @@ function game_setup()
 	
 -- adds card back scrolling buttons
 	card_back_scroll_to = 0
-	card_back_scroll = smooth_val(0, 0.8, 0.023, 0.00001)
+	card_back_scroll = smooth_val(0, 0.7, 0.04, 0.05)
 
 	local function scroll(x)
 		return function (b)

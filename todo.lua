@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 12:21:47",revision=9542]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 12:47:35",revision=9646]]
 --[[
 
 before release
@@ -17,7 +17,6 @@ post
 		in example game
 			add new rules card system
 				some options can have a small window pop up
-			fix win count button
 		
 		update other games to use the same system
 		
@@ -45,8 +44,7 @@ clean up env
 			held_stack
 			cards_all
 			stacks_all
-	
-
+			
 
 !prepare for example project 
 
