@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 11:35:56",revision=10129]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 13:51:46",revision=10520]]
 --[[
 
 before release
@@ -57,7 +57,8 @@ clean up env
 consistent naming
 	always use .width and not .w
 	double check .x_to
-	.text vs .str?			
+	.text vs .str?	
+	bn vs b in buttons	
 
 !prepare for example project 
 

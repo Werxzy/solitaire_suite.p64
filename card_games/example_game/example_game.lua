@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-17 11:32:14",revision=6339]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-17 13:51:46",revision=6792]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -93,12 +93,17 @@ function game_setup()
 	end
 	
 	suite_menuitem_init()
-	suite_menuitem("New Game", {12, 16, 1}, 
-		function()
+	suite_menuitem({
+		text = "New Game",
+		colors = {12, 16, 1}, 
+		on_click = function()
 			cards_coroutine = cocreate(game_reset_anim)
-		end)
+		end
+	})
 	
-	-- rules cards TODO update
+	suite_menuitem_rules()
+	--[[
+	-- rules cards TODO update (and remove this)
 	rule_cards = rule_cards_new(135, 192, game_info(), "right")
 	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
 	rule_cards.on_off = false
@@ -107,13 +112,12 @@ function game_setup()
 		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
 		old_update(rc)
 	end
+	]]
 	
-	suite_menuitem("Rules", {4, 20, 21}, 
-		function()
-			rule_cards.on_off = not rule_cards.on_off
-		end).always_active = true
-		
-	wins_button = suite_menuitem("Wins", {4, 20, 21}, nil, "0000")
+	wins_button = suite_menuitem({
+		text = "Wins", 
+		value = "0000"
+	})
 	wins_button.update_val = function(b)
 		local s = "\fc"..tostr(game_save.wins)
 		while(#s < 6) s = "0".. s
@@ -121,7 +125,7 @@ function game_setup()
 	end	
 	wins_button:update_val()
 	
-	suite_button_simple("Test Button", 200, 200)
+	suite_button_simple("Test Button", 300, 200)
 	
 	cards_coroutine = cocreate(game_setup_anim)
 end
@@ -264,7 +268,7 @@ function game_draw(layer)
 		cls(3)
 	
 	elseif layer == 1 then
-		if(rule_cards) rule_cards:draw()
+	--	if(rule_cards) rule_cards:draw()
 		
 	elseif layer == 2 then
 		confetti_draw()
@@ -273,6 +277,6 @@ end
 
 function game_update()
 	confetti_update()
-	if(rule_cards) rule_cards:update()
+--	if(rule_cards) rule_cards:update()
 end
 

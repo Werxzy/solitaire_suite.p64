@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-17 10:09:48",revision=14003]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-17 13:51:46",revision=14668]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -282,7 +282,7 @@ function game_setup()
 			sprite = cb_front, 
 			back_sprite = cb_sprite,
 			x = 300,
-			y = 200
+			y = 190
 		})
 	c.info = card_back
 	stack_add_card(card_back_edit_button, c)
@@ -421,7 +421,12 @@ function game_update()
 	
 	main_menu_y(main_menu_y_to)
 	
-	card_back_edit_button.y_to = lerp(196.5, 281.5, main_menu_y())
+	local new_to = lerp(196.5, 281.5, main_menu_y())\1
+	local d_to = new_to - card_back_edit_button.y_to
+	card_back_edit_button.y_to = new_to
+	for c in all(card_back_edit_button.cards) do
+		c.y("pos", c.y() + d_to)
+	end
 	
 	
 	local sc = card_back_scroll(card_back_scroll_to)\1
@@ -501,4 +506,3 @@ end
 function cards_game_exiting()
 	suite_load_game"suite_scripts/main_menu.lua"
 end
-

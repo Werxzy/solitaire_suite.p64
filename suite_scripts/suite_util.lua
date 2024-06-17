@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-17 10:09:48",revision=3857]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-17 13:51:46",revision=4084]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 
@@ -32,6 +32,17 @@ function suite_get_game_name(game_path)
 	return path[1]
 end
 
+local function suite_draw_wrapper()
+	local old_draw = game_draw
+	function game_draw(layer)
+		old_draw(layer)
+		
+		if layer == 0 then
+			suite_menuitem_draw_pages()
+		end
+	end
+end
+
 function suite_load_game(game_path)
 	-- example "card_games/solitaire_basic.lua"
 	suite_game_name = suite_get_game_name(game_path)
@@ -52,6 +63,7 @@ function suite_load_game(game_path)
 -- prepare the game
 	include(game_path)
 	game_setup()
+	suite_draw_wrapper()
 	
 -- prepares cleanup for next phase if there is anything left over
 -- done by looking for new values that were created during include and setup
