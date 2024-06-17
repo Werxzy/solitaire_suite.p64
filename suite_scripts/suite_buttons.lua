@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-12 10:43:57",revision=837]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-17 11:32:14",revision=1810]]
 
 local menuitems = {}
 
@@ -111,4 +111,61 @@ function suite_menuitem_init()
 			rule_cards = nil -- TODO remove?
 			suite_exit_game()
 		end).always_active = true
+end
+
+local function suite_button_simple_draw(b, layer)
+	
+	if layer == 1 then
+		pal(12, b.col[1])	
+		pal(16, b.col[2])
+		pal(1, b.col[3])
+		spr(b.spr1, b.x-3, b.y)
+		
+	elseif layer == 2 then
+		pal(12, b.highlight and b.col[3] or b.col[1])	
+		pal(16, b.col[2])
+		pal(1, b.col[3])
+		
+		b.ct = max(b.ct - 0.07)
+		local click_y = b.y - ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
+		
+		clip(b.x, b.y, b.w, b.h)
+		spr(b.spr2, b.y, click_y) 
+		clip()		
+	end
+	
+	pal(12, 12)	
+	pal(16, 16)
+	pal(1, 1)	
+end
+
+function suite_button_simple(t, x, y, on_click, colors)
+	local w, h = print_size(t)
+	w += 9
+	h += 4
+	
+	local bn = button_new(x, y, w, h, suite_button_simple_draw, 
+		function (b)
+			b.ct = 1
+			if on_click then
+				on_click(b)
+			end
+		end)
+	bn.col = colors or {27,3,19}
+	bn.ct = 0	
+	bn.text = t
+	
+	bn.spr1 = userdata("u8", bn.w + 6, bn.h + 4)
+	set_draw_target(bn.spr1)
+	nine_slice(17, 0, 0, bn.spr1:width(), bn.spr1:height())
+	
+	bn.spr2 = userdata("u8", bn.w, bn.h)
+	set_draw_target(bn.spr2)
+	nine_slice(18, 0, 0, bn.spr2:width(), bn.spr2:height())
+	print(t, 5, 3, 22)
+	print(t, 5, 2, 7)
+	
+	set_draw_target()
+	
+	return bn
 end

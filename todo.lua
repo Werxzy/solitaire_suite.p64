@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 10:09:48",revision=9871]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 11:35:56",revision=10129]]
 --[[
 
 before release
@@ -21,11 +21,8 @@ post
 				some options can have a small window pop up
 		
 		update other games to use the same system
-		
-			
-		? add auto place button
-			will require floating buttons	
-				
+			also the new button ( suite_button_simple() )
+							
 		new frame for the card back description
 					
 	functions for cocreate animations
@@ -54,6 +51,13 @@ clean up env
 			cards_all
 			stacks_all
 			
+	add graphics from 1.gfx in game folder	
+	maybe 1.sfx and 1.map as well?	
+
+consistent naming
+	always use .width and not .w
+	double check .x_to
+	.text vs .str?			
 
 !prepare for example project 
 

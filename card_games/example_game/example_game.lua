@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-14 12:47:35",revision=6045]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-17 11:32:14",revision=6339]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -120,6 +120,8 @@ function game_setup()
 		b:set_value(s)
 	end	
 	wins_button:update_val()
+	
+	suite_button_simple("Test Button", 200, 200)
 	
 	cards_coroutine = cocreate(game_setup_anim)
 end
