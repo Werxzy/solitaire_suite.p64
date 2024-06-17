@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-25 02:13:51",modified="2024-06-01 21:14:30",revision=70]]
+--[[pod_format="raw",created="2024-03-25 02:13:51",modified="2024-06-17 10:00:05",revision=72]]
 
 function game_info()
 	return {
@@ -12,6 +12,10 @@ function game_info()
 			"\tClick the deck to reveal a new card. Revealed cards can be moved one at a time and can't be stacked on.",
 			"\tWhen the deck is out of cards, click the refresh button in the top left to move all the revealed cards back.",
 			"\tIf you believe you have reached a state in which you cannot progress further, you will have to start a new game."
+		},
+		desc_score = {
+			format = "Wins : %i",
+			param = {"wins"}
 		},
 		api_version = 2,
 		order = 2

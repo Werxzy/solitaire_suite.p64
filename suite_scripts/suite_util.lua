@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-12 09:40:43",revision=2871]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-17 10:09:48",revision=3857]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 
@@ -22,15 +22,19 @@ game_win_anim
 ]], "\n", false)
 old_env = {}
 
-function suite_load_game(game_path)
-	-- example "card_games/solitaire_basic.lua"
+function suite_get_game_name(game_path)
 	local path = split(game_path, "/")
 	path = path[#path]
 	path = split(path, ".")
 	
 	assert(path[2] == "lua")
 	
-	suite_game_name = path[1]
+	return path[1]
+end
+
+function suite_load_game(game_path)
+	-- example "card_games/solitaire_basic.lua"
+	suite_game_name = suite_get_game_name(game_path)
 
 -- [[
 -- slight cleanup step

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-14 12:47:35",revision=9646]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 10:09:48",revision=9871]]
 --[[
 
 before release
@@ -14,6 +14,8 @@ post
 	update user interface
 		buttons are a bit plain
 		
+		fix card back moving on loading solitaire suite
+		
 		in example game
 			add new rules card system
 				some options can have a small window pop up
@@ -25,8 +27,6 @@ post
 			will require floating buttons	
 				
 		new frame for the card back description
-		new frame for the main screen rules text
-			instead just display the description, title, and author
 					
 	functions for cocreate animations
 
@@ -34,6 +34,15 @@ post
 		use pget to sample colors and then use circfill to grow and fill the screen
 		
 	?switch to userdata for some of the structures (it's much faster)
+			
+	setting menu?
+		probably a menu that pops up
+		maybe save display and then prevent interaction with anything else
+		maybe have button priorities
+		maybe have a button priority limit to prevent interacting with buttons or cards outisde of the settings menu
+	
+	button disable for a half second when clicking the return button on card back selection
+		able to click exit game button by accident				
 
 clean up env
 	(will want to move card_width and card_height first)

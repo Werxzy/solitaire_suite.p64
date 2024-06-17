@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-14 12:47:35",revision=13675]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-17 10:09:48",revision=14003]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -74,9 +74,64 @@ end
 
 function button_deckbox_click(b)
 	main_menu_selected = b
-	rule_cards.info = b.info
-	rule_cards.page = 0
+	--rule_cards.info = b.info
+	--rule_cards.page = 0
+	
+	local s = get_spr(21)
+	local w, h = s:width(), s:height()
+	game_description = userdata("u8", w, h)	
+	set_draw_target(game_description)
+	
+	rectfill(3, 3, w-3, h-3, 7)
+	
+	-- give info
+	if b and b.info then
+		local info = b.info
+		
+		local x = print_size(info.name)
+		double_print(info.name, 179/2-x/2+4, 7, 2)
+		
+		local by = "\nBy " .. info.author
+		local x = print_size(by)
+		double_print(by, 179/2-x/2+4, 7, 1)
+		
+		local s =  "\n\n" .. info.description
+		local lw, lh, loreprint = print_wrap_prep(s, 175)
+		double_print(loreprint, 6, 7, 1)
+		
+		if info.desc_score then
+			local sc = info.desc_score
+			
+			local vals = {}
+			local save = fetch(suite_save_folder .. "/saves/"
+				.. suite_get_game_name(info.game) .. ".pod") or {}
+	
+			for p in all(sc.param) do
+				add(vals, save[p] or 0)
+			end
+						
+			local s = string.format(sc.format, unpack(vals))
+			double_print(s, 6, 64, 1)
+			
+			fillp(0xa5a5a5a5a5a5a5a5)
+			rect(1,61,w,61,32)
+			fillp()
+		end
+		
+	-- say click to get description
+	else
+		local s =  "Click a deck box to see information about it."
+		local lw, lh, loreprint = print_wrap_prep(s, 175)
+		double_print(loreprint, 6, 7, 1)
+	end
+	
+	rect(4,5,w-5,h-2, 32)
+	spr(21)
+	
+	set_draw_target()
 end
+
+button_deckbox_click()
 
 function set_card_back(info)
 	card_back = info
@@ -201,7 +256,7 @@ function game_setup()
 			main_menu_y_to = 0
 		end, -30)
 	
-	rule_cards = rule_cards_new(22, 186)
+	--rule_cards = rule_cards_new(22, 186)
 	
 	set_draw_target()
 	
@@ -419,7 +474,8 @@ function game_draw(layer)
 		
 
 	-- game info
-		rule_cards:draw()
+		--rule_cards:draw()
+		spr(game_description, 8, 182)
 		
 	-- card back selection details
 		rectfill(0, 530, 480, 540, 21)
