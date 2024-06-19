@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 12:25:10",revision=14834]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 14:20:20",revision=14946]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -60,16 +60,13 @@ function box_shadow(x1, y1, x2, y2)
 	rectfill(x1+2,y1+2,x2-2,y2-2)
 end
 
-function button_deckbox_draw(b, layer)
-	if layer == 1 then
-		box_shadow(b.x-3, b.y+10, b.x+b.w+2, b.y+b.h+2)
-		
-	elseif layer == 2 then
-		-- interpolates the draw position
-		b.y2 = lerp(b.y2 or 0, (b.highlight and 3 or 0) + (b == main_menu_selected and 8 or 0), 0.15)
-		-- didn't want to do lerp, but it's simpler here >:(
-		spr(b.sprite, b.x, b.y - (b.y2 + 0.5)\1)
-	end
+function button_deckbox_draw(b)
+	box_shadow(b.x-3, b.y+10, b.x+b.w+2, b.y+b.h+2)
+	
+	-- interpolates the draw position
+	b.y2 = lerp(b.y2 or 0, (b.highlight and 3 or 0) + (b == main_menu_selected and 8 or 0), 0.15)
+	-- didn't want to do lerp, but it's simpler here >:(
+	spr(b.sprite, b.x, b.y - (b.y2 + 0.5)\1)
 end
 
 function button_deckbox_click(b)
@@ -155,14 +152,11 @@ function set_card_back(info)
 	suite_store_save(settings_data)
 end
 
-local function card_button_draw(button, layer)
-	if layer == 2 then
-		local left = button.highlight and 6 or 0
-		button.t = lerp(button.t, left, 0.2)
-		nine_slice(8, button.x + button.t, button.y + button.off, button.w, 45)
-		double_print(button.str, button.x2 + button.t, button.y+3, button.col)
-		
-	end
+local function card_button_draw(button)
+	local left = button.highlight and 6 or 0
+	button.t = lerp(button.t, left, 0.2)
+	nine_slice(8, button.x + button.t, button.y + button.off, button.w, 45)
+	double_print(button.str, button.x2 + button.t, button.y+3, button.col)
 end
 
 local function card_button_new(str, col, y, on_click, offset)
@@ -371,14 +365,12 @@ function game_setup()
 		end
 	end
 	
-	local function draw_button(b, l)
-		if l == 2 then
-			b.t = max(b.t - 0.07)
-			local y = ((b.t*2-1)^2 * 2.5 - 1.5) \ 1
-			local h = 20 + y
-			spr(2, b.x-4, b.y-2)
-			sspr(b.highlight and 4 or 3, 0, 0, 21, h, b.x, b.y-y, 21, h, b.fl)
-		end
+	local function draw_button(b)
+		b.t = max(b.t - 0.07)
+		local y = ((b.t*2-1)^2 * 2.5 - 1.5) \ 1
+		local h = 20 + y
+		spr(2, b.x-4, b.y-2)
+		sspr(b.highlight and 4 or 3, 0, 0, 21, h, b.x, b.y-y, 21, h, b.fl)
 	end
 
 	local b = button_new({

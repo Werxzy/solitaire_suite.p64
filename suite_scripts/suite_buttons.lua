@@ -1,60 +1,74 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 12:25:10",revision=2525]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 14:20:20",revision=2941]]
 
 local menuitems = {}
+local pages_buttons = {}
+
+local suite_page_number = 1
+local suite_openned_pages = nil
+local suite_next_pages = nil
+local suite_pages_t = 0
+local suite_pages_x = smooth_val(0, 0.5, 0.1, 0.0001)
 
 local function suite_button_on_destroy(button)
 	del(menuitems, button)
 end
 
-local function suite_button_draw(button, layer)
+local function suite_pages_on_destory(button)
+	del(pages_buttons, button)
+end
+
+local function suite_button_draw(button)
 	local x, y = button.x, button.y
 	local w = button.w
 	local l = button.left
 	
-	y -= (button.t*2-1)^2 * 2.5 - 2.5
+	
+
 	local ox, oy = camera(-x, -y)
+	color(button.colors[2])
 	
-	if layer == 1 then
-		color(button.colors[2])
-		
-		rectfill(4 + l, 13, button.w+3, 15)
-		
-		for i = 0, 3 do
-			local y = 2 + i * 3
-			rectfill(i, y, i, y+2) 
-		end
-		
-	elseif layer == 2 then
-		button.t = max(button.t - 0.07)
-		
-		color(button.colors[button.highlight and 3 or 1])
-		
-		w -= 2
-		rectfill(l, 0, w, 1)
-		rectfill(l+1, 2, w+1, 4)
-		rectfill(l+2, 5, w+2, 7)
-		rectfill(l+3, 8, w+3, 10)
-		rectfill(l+4, 11, w+4, 12)
-		
-		color(button.colors[2])
-		for i = 1, 13 do
-			pset((i+1)\3 + w+1, i) 
-		end
-		
-		print(button.text, 7, 3, 22)
-		print(button.text, 7, 2, 7)		
-		
+	rectfill(4 + l, 13, button.w+3, 15)
 	
-		if button.value then
-			pal(2, button.colors[2])
-			sspr(61, 0, 0, button.valw, 11, button.valx, 1)
-			sspr(61, 43, 0, 8, 11, button.valx+button.valw, 1)
-			pal(2,2)
-			print(button.value, button.valx+4, 3, 16)
-		end
+	for i = 0, 3 do
+		local y = 2 + i * 3
+		rectfill(i, y, i, y+2) 
+	end
+	camera(ox, oy)
+	
+
+	y -= (button.t*2-1)^2 * 2.5 - 2.5
+	camera(-x, -y)
+	
+	button.t = max(button.t - 0.07)
+	
+	color(button.colors[button.highlight and 3 or 1])
+	
+	w -= 2
+	rectfill(l, 0, w, 1)
+	rectfill(l+1, 2, w+1, 4)
+	rectfill(l+2, 5, w+2, 7)
+	rectfill(l+3, 8, w+3, 10)
+	rectfill(l+4, 11, w+4, 12)
+	
+	color(button.colors[2])
+	for i = 1, 12 do
+		pset((i+1)\3 + w+1, i) 
 	end
 	
+	print(button.text, 7, 3, 22)
+	print(button.text, 7, 2, 7)		
+	
+
+	if button.value then
+		pal(2, button.colors[2])
+		sspr(61, 0, 0, button.valw, 11, button.valx, 1)
+		sspr(61, 43, 0, 8, 11, button.valx+button.valw, 1)
+		pal(2,2)
+		print(button.value, button.valx+4, 3, 16)
+	end
 	camera(ox, oy)
+	
+	
 end
 
 function suite_button_set_value(button, value)
@@ -65,6 +79,7 @@ end
 --function suite_menuitem(text, colors, on_click, value)
 function suite_menuitem(param, too_many)
 	assert(not too_many, "instead use a single table as the first parameter")
+	
 	local text = param.text or ""
 	local on_click = param.on_click
 	local value = param.value
@@ -114,6 +129,39 @@ function suite_menuitem(param, too_many)
 	return add(menuitems, b)
 end
 
+-- specifically for setting up pages
+local function suite_pages_button(param)	
+	local text = param.text or ""
+	local on_click = param.on_click
+		
+	local w = print_size(text) + 10
+	
+	local b = button_new({
+		x = -100, y = 0, 
+		w = w, h = 15, 
+		draw = suite_button_draw, 
+		on_click = on_click and function(b)
+			b.t = 1
+			on_click(b)
+		end,
+		bottom = true,
+		group = 2,
+	})
+	
+	b.t = 0
+	b.text = text
+	b.colors = {4, 20, 21}
+	b.left = param.left or 0
+	b.always_active = true
+	b.on_destroy = suite_pages_on_destory
+	
+	if not text or #tostr(text) == 0 then
+		b.w -= 4
+	end
+		
+	return add(pages_buttons, b, 1)
+end
+
 function suite_menuitem_update_sizes()
 	-- TODO
 end
@@ -133,6 +181,35 @@ function suite_menuitem_init()
 		end,
 		always_active = true
 	})
+	
+	suite_pages_button({
+		text = "   ",
+		left = -400
+	})	
+	suite_pages_button({
+		text = "\^:63773e1c3e776300", 
+		on_click = suite_menuitem_close_pages
+	})
+	suite_pages_button({
+		text = ""
+	})
+	suite_pages_button({
+		text = " \^:60787e7f7e786000 ", 
+		on_click = function()
+			if suite_openned_pages then
+				suite_page_number = max(suite_page_number - 1, 1)
+			end
+		end
+	})
+	suite_pages_button({
+		text = " \^:030f3f7f3f0f0300 ", 
+		on_click = function()
+			if suite_openned_pages then
+				suite_page_number = min(suite_page_number + 1, #suite_openned_pages.pages.content)
+			end
+		end
+	})
+	
 end
 
 -- quick way of getting a rules page done
@@ -140,7 +217,7 @@ function suite_menuitem_rules()
 	return suite_menuitem({
 		text = "Rules", 
 		pages = {
-			width = 100,
+			width = 200,
 			height = 100,
 			content = game_info().rules,
 		},
@@ -148,24 +225,21 @@ function suite_menuitem_rules()
 	})
 end
 
-local function suite_button_simple_draw(b, layer)
+local function suite_button_simple_draw(b)
 	pal(16, b.col[2])
 	pal(1, b.col[3])
+	pal(12, b.col[1])
 	
-	if layer == 1 then
-		pal(12, b.col[1])
-		spr(b.spr1, b.x-3, b.y)
-		
-	elseif layer == 2 then
-		pal(12, b.highlight and b.col[3] or b.col[1])	
-		
-		b.ct = max(b.ct - 0.07)
-		local click_y = b.y - ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
-		
-		clip(b.x, b.y, b.w, b.h)
-		spr(b.spr2, b.x, click_y) 
-		clip()		
-	end
+	spr(b.spr1, b.x-3, b.y)
+	
+	pal(12, b.highlight and b.col[3] or b.col[1])	
+	
+	b.ct = max(b.ct - 0.07)
+	local click_y = b.y - ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
+	
+	clip(b.x, b.y, b.w, b.h)
+	spr(b.spr2, b.x, click_y) 
+	clip()		
 	
 	pal(12, 12)	
 	pal(16, 16)
@@ -209,16 +283,41 @@ end
 
 -- page display functions
 
--- TODO: figure out how to remove the detail when leaving a game
--- either watch a button's on_destroy or on a game load
-local suite_openned_pages = nil
-
 function suite_menuitem_draw_pages()
+
+	if suite_next_pages then
+		local x = suite_pages_x(0)
+		
+		-- next page group
+		if x <= 0 then
+			suite_page_number = 1
+			suite_pages_t = 1
+			suite_openned_pages = suite_next_pages
+			suite_next_pages = nil
+		end
+	
+	elseif suite_openned_pages then
+		local x = suite_pages_x(suite_pages_t)
+		
+		if x <= 0 and suite_pages_t == 0 then
+			suite_openned_pages = nil
+		end
+	end
+
 	if not suite_openned_pages then
-		return
+		return 
 	end
 	
+	local pos = suite_pages_x"pos"
 	local p = suite_openned_pages.pages
+	
+	pos = (1 - pos) * (p.width + 10)
+	local oldx, oldy = camera(pos, 0)
+	for i, b in pairs(pages_buttons) do
+		pos += b.w
+		b.x = p.width  - pos - 1
+		b.y = 270 - p.height - 37 -- test
+	end
 	
 	-- TODO: clear this up and add proper graphics
 	local y = 270-15-p.height - 6
@@ -228,7 +327,7 @@ function suite_menuitem_draw_pages()
 	rectfill(x, y, x+w-1, y+h-1, 7)
 	rect(x-1, y, x+w-1, y+h, 32)
 	
-	local c = p.content[1]
+	local c = p.content[suite_page_number]
 	local ty = type(c)
 	
 	if ty == "string" then
@@ -239,36 +338,37 @@ function suite_menuitem_draw_pages()
 	end
 	
 	
-	rectfill(x, y-2, x+w+2, y-1, 20)
+--	rectfill(x, y-2, x+w+2, y-1, 20)
 	
-	rectfill(x, y-12, x+w-46, y-3, 4)
-	rectfill(x, y-11, x+w-42, y-3, 4) -- VERY temp
-	pset(x+w-45, y-11, 20) -- VERY VERY temp
+--	rectfill(x, y-12, x+w-46, y-3, 4)
+--	rectfill(x, y-11, x+w-42, y-3, 4) -- VERY temp
+--	pset(x+w-45, y-11, 20) -- VERY VERY temp
 	
-	spr(19, x+w-22, y-12)
-	spr(20, x+w-44, y-12)
+--	spr(19, x+w-22, y-12)
+--	spr(20, x+w-44, y-12)
 	
 	rectfill(x+w, y-1, x+w+2, y+h-1, 4)
 	rectfill(x, y+h, x+w+2, y+h+2, 4)
 	rectfill(x, y+h+3, x+w+2, y+h+4, 20)
+	
+	camera(oldx, oldy)
 end
 
 function suite_menuitem_display_pages(button)
-	suite_menuitem_close_pages()
 	
 	if button == suite_openned_pages then
-		suite_openned_pages = nil
-		return
+		suite_pages_t = 1 - suite_pages_t
+	else
+		suite_next_pages = button
 	end
-	suite_openned_pages = button
-	
-	-- TODO open animation
 end
 
 function suite_menuitem_close_pages()
-	-- TODO close animation
+	suite_pages_t = 0
 end
 
 function suite_menuitem_remove_pages()
 	suite_openned_pages = nil
+	suite_pages_t = 0
+	suite_pages_x("pos", 0)
 end
