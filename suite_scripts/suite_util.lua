@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-17 13:51:46",revision=4084]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-19 12:25:10",revision=4243]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 
@@ -37,7 +37,7 @@ local function suite_draw_wrapper()
 	function game_draw(layer)
 		old_draw(layer)
 		
-		if layer == 0 then
+		if layer == 2 then
 			suite_menuitem_draw_pages()
 		end
 	end
@@ -122,6 +122,8 @@ function suite_exit_game()
 	else
 		exit()
 	end
+	
+	suite_menuitem_remove_pages()
 end
 
 -- grabs the requested save file

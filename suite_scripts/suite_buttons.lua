@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-17 13:51:46",revision=2364]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 12:25:10",revision=2525]]
 
 local menuitems = {}
 
@@ -77,11 +77,17 @@ function suite_menuitem(param, too_many)
 	local x = last and last.x+last.w or 0
 	local w = print_size(text) + 10
 	
-	local b = button_new(x, 255, w, 15, suite_button_draw, 
-		on_click and function(b)
+	local b = button_new({
+		x = x, y = 255, 
+		w = w, h = 15, 
+		draw = suite_button_draw, 
+		on_click = on_click and function(b)
 			b.t = 1
 			on_click(b)
-		end)
+		end,
+		bottom = true,
+		group = 2,
+	})
 	
 	b.pages = param.pages
 	b.t = 0
@@ -105,10 +111,6 @@ function suite_menuitem(param, too_many)
 		b.w += valw + 7
 	end
 	
-	-- force button to be on the bottom of the list (to ensure correct draw order)
-	del(buttons_all, b)
-	add(buttons_all, b, 1)
-
 	return add(menuitems, b)
 end
 
@@ -175,13 +177,17 @@ function suite_button_simple(t, x, y, on_click, colors)
 	w += 9
 	h += 4
 	
-	local bn = button_new(x, y, w, h, suite_button_simple_draw, 
-		function (b)
+	local bn = button_new({
+		x = x, y = y, 
+		w = w, h = h, 
+		draw = suite_button_simple_draw, 
+		on_click = function (b)
 			b.ct = 1
 			if on_click then
 				on_click(b)
 			end
-		end)
+		end
+	})
 	bn.col = colors or {27,3,19}
 	bn.ct = 0	
 	bn.text = t
@@ -261,4 +267,8 @@ end
 
 function suite_menuitem_close_pages()
 	-- TODO close animation
+end
+
+function suite_menuitem_remove_pages()
+	suite_openned_pages = nil
 end

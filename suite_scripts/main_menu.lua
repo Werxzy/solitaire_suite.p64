@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-17 13:51:46",revision=14668]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 12:25:10",revision=14834]]
 
 include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
@@ -166,7 +166,12 @@ local function card_button_draw(button, layer)
 end
 
 local function card_button_new(str, col, y, on_click, offset)
-	local b = button_new(205, y, 65, 13, card_button_draw, on_click)
+	local b = button_new({
+		x = 205, y = y, 
+		w = 65, h = 13, 
+		draw = card_button_draw, 
+		on_click = on_click
+	})
 	b.str = str
 	b.col = col
 	b.x2 = b.x + (b.w - print_size(str)) \ 2
@@ -215,11 +220,14 @@ function game_setup()
 		end
 		
 		local b = add(game_mode_buttons, 
-			button_new(bx, 100, 
-				info.sprite:width(), info.sprite:height(), 
-				button_deckbox_draw, 
-				button_deckbox_click)
-			)
+			button_new({
+				x = bx, y = 100, 
+				w = info.sprite:width(), 
+				h = info.sprite:height(),
+				draw = button_deckbox_draw, 
+				on_click = button_deckbox_click
+			})
+		)
 			
 		b.sprite = info.sprite
 		b.game = info.game
@@ -373,10 +381,21 @@ function game_setup()
 		end
 	end
 
-	local b = button_new(215, 335, 20, 21, draw_button, scroll(120))
+	local b = button_new({
+		x = 215, y = 335, 
+		w = 20, h = 21, 
+		draw = draw_button, 
+		on_click = scroll(120)
+	})
 	b.t = 0
 	b.fl = true
-	local b = button_new(245, 335, 20, 21, draw_button, scroll(-120))
+	
+	local b = button_new({
+		x = 245, y = 335, 
+		w = 20, h = 21, 
+		draw = draw_button, 
+		on_click = scroll(-120)
+	})
 	b.t = 0
 end
 

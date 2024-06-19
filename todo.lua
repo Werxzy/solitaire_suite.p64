@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-17 13:51:46",revision=10520]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 12:25:10",revision=10672]]
 --[[
 
 before release
@@ -81,6 +81,9 @@ tutorial
 	teach ranks 
 		first go 5 to ace
 		then king to ace
+		
+last played card game is automatically selected on the main menu
+	only when exiting from that game
 		
 update label with new solitaire variants (credit pixelDub)
 	specifically when a 0.X.0 version is released
