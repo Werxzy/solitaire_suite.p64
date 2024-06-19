@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 14:20:20",revision=2941]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 15:44:45",revision=3157]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -167,10 +167,15 @@ function suite_menuitem_update_sizes()
 end
 
 function suite_menuitem_init()
-	suite_menuitem({
+	local clock = suite_menuitem({
 		colors = {27,3,19}, 
 		value = "\fc12\fg\-f:\-e\fc00"
 	})
+	local old_draw = clock.draw
+	clock.draw = function(b)
+		b.value = date("\fc%H\fg\-f:\-e\fc%M")
+		old_draw(b)
+	end
 	
 	suite_menuitem({
 		text = "Exit", 
@@ -213,12 +218,12 @@ function suite_menuitem_init()
 end
 
 -- quick way of getting a rules page done
-function suite_menuitem_rules()
+function suite_menuitem_rules(width, height)
 	return suite_menuitem({
 		text = "Rules", 
 		pages = {
-			width = 200,
-			height = 100,
+			width = width or 175,
+			height = height or 75,
 			content = game_info().rules,
 		},
 		always_active = true
@@ -331,6 +336,7 @@ function suite_menuitem_draw_pages()
 	local ty = type(c)
 	
 	if ty == "string" then
+		local _, _, c = print_wrap_prep(c, p.width-4)
 		double_print(c, x+2, y+2, 1)
 		
 	elseif ty == "userdata" or ty == "number" then

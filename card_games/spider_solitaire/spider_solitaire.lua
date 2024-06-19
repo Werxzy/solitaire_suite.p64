@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-14 12:47:35",revision=4004]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-19 15:43:27",revision=4062]]
 
 
 include "suite_scripts/rolling_score.lua"
@@ -89,35 +89,29 @@ function game_setup()
 		c.a_to = 0.5
 	end
 	
-	button_simple_text("New Game", 40, 248, function()
-		cards_coroutine = cocreate(game_reset_anim)
-	end)
+	suite_menuitem_init()
+	suite_menuitem({
+		text = "New Game",
+		colors = {12, 16, 1}, 
+		on_click = function()
+			cards_coroutine = cocreate(game_reset_anim)
+		end
+	})
 	
-	button_simple_text("Exit", 6, 248, suite_exit_game).always_active = true
-
-	-- rules cards 
-	rule_cards = rule_cards_new(135, 192, game_info(), "right")
-	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
-	rule_cards.on_off = false
-	local old_update = rule_cards.update
-	rule_cards.update = function(rc)
-		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
-		old_update(rc)
-	end
+	suite_menuitem_rules()
 	
-	button_simple_text("Rules", 97, 248, function()
-		rule_cards.on_off = not rule_cards.on_off
-	end).always_active = true
+	wins_button = suite_menuitem({
+		text = "Wins", 
+		value = "0000"
+	})
+	wins_button.update_val = function(b)
+		local s = "\fc"..tostr(game_save.wins)
+		while(#s < 6) s = "0".. s
+		b:set_value(s)
+	end	
+	wins_button:update_val()
+	
 	cards_coroutine = cocreate(game_setup_anim)
-
-	game_score = rolling_score_new(6, 220, 3, 3, 21, 16, 16, 4, 49, function(s, x, y)
-			-- shadows
-			spr(52, x, y)
-			spr(51, x, y) -- a bit overkill, could use sspr or rectfill
-			-- case
-			spr(50, x, y)
-	end)
-	game_score.value = game_save.wins
 end
 
 -- deals the cards out
@@ -242,18 +236,12 @@ end
 function game_draw(layer)
 	if layer == 0 then
 		cls(3)
-	elseif layer == 1 then
-		spr(58, 7, 207) -- wins label
-		game_score:draw()
-		rule_cards:draw()
 	elseif layer == 2 then
 		confetti_draw()
 	end
 end
 
 function game_update()
-	game_score:update()
-	rule_cards:update()
 	confetti_update()
 end
 
@@ -309,8 +297,8 @@ function game_win_condition()
 end
 
 function game_count_win()
-	game_score.value += 1
 	game_save.wins += 1
+	wins_button:update_val()
 	suite_store_save(game_save)
 	cards_coroutine = cocreate(game_win_anim)
 end

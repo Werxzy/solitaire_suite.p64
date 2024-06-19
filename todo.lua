@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 12:25:10",revision=10672]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 15:44:45",revision=11169]]
 --[[
 
 before release
@@ -11,18 +11,7 @@ post
 0.2.0
 			
 !adjust menu/drawing
-	update user interface
-		buttons are a bit plain
-		
-		fix card back moving on loading solitaire suite
-		
-		in example game
-			add new rules card system
-				some options can have a small window pop up
-		
-		update other games to use the same system
-			also the new button ( suite_button_simple() )
-							
+	update user interface		
 		new frame for the card back description
 					
 	functions for cocreate animations

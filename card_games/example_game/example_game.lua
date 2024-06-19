@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-17 13:51:46",revision=6792]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-19 15:44:45",revision=7458]]
 
 include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
@@ -102,17 +102,6 @@ function game_setup()
 	})
 	
 	suite_menuitem_rules()
-	--[[
-	-- rules cards TODO update (and remove this)
-	rule_cards = rule_cards_new(135, 192, game_info(), "right")
-	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
-	rule_cards.on_off = false
-	local old_update = rule_cards.update
-	rule_cards.update = function(rc)
-		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
-		old_update(rc)
-	end
-	]]
 	
 	wins_button = suite_menuitem({
 		text = "Wins", 
@@ -266,10 +255,7 @@ end
 function game_draw(layer)
 	if layer == 0 then
 		cls(3)
-	
-	elseif layer == 1 then
-	--	if(rule_cards) rule_cards:draw()
-		
+			
 	elseif layer == 2 then
 		confetti_draw()
 	end
@@ -277,6 +263,5 @@ end
 
 function game_update()
 	confetti_update()
---	if(rule_cards) rule_cards:update()
 end
 
