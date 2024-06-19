@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 15:44:45",revision=11169]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 16:55:07",revision=11342]]
 --[[
 
 before release
@@ -10,10 +10,7 @@ post
 
 0.2.0
 			
-!adjust menu/drawing
-	update user interface		
-		new frame for the card back description
-					
+!adjust menu/drawing					
 	functions for cocreate animations
 
 	transition
@@ -25,10 +22,7 @@ post
 		probably a menu that pops up
 		maybe save display and then prevent interaction with anything else
 		maybe have button priorities
-		maybe have a button priority limit to prevent interacting with buttons or cards outisde of the settings menu
-	
-	button disable for a half second when clicking the return button on card back selection
-		able to click exit game button by accident				
+		maybe have a button priority limit to prevent interacting with buttons or cards outisde of the settings menu	
 
 clean up env
 	(will want to move card_width and card_height first)
@@ -64,6 +58,10 @@ consistent naming
 			similar to the load idea, just replacing files
 			
 		wait, some way to update the base cart's scripts?
+
+message zep about using fetch to gather carts
+
+manage mods list
 
 tutorial
 	some clicking and dragging of cards

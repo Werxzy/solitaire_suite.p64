@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 15:44:45",revision=3157]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 16:48:00",revision=3327]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -181,7 +181,6 @@ function suite_menuitem_init()
 		text = "Exit", 
 		colors = {8,24,2},
 		on_click = function()
-			rule_cards = nil -- TODO remove?
 			suite_exit_game()
 		end,
 		always_active = true

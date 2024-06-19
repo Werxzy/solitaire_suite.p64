@@ -1,6 +1,5 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 14:20:20",revision=14946]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 16:48:00",revision=15238]]
 
-include"suite_scripts/rule_cards.lua"
 include"cards_api/card_gen.lua"
 
 
@@ -76,7 +75,9 @@ function button_deckbox_click(b)
 	
 	local s = get_spr(21)
 	local w, h = s:width(), s:height()
-	game_description = userdata("u8", w, h)	
+	game_description = userdata("u8", w, h)
+	
+	local old_x, old_y = camera()	
 	set_draw_target(game_description)
 	
 	rectfill(3, 3, w-3, h-3, 7)
@@ -126,6 +127,7 @@ function button_deckbox_click(b)
 	spr(21)
 	
 	set_draw_target()
+	camera(old_x, old_y)	
 end
 
 button_deckbox_click()
@@ -250,6 +252,15 @@ function game_setup()
 		{"Exit Game", 25, exit},
 	}
 	for i, d in pairs(cb) do
+		local f = d[3]
+		
+		-- prevent buttons from being clicked when the camera is moving
+		d[3] = function(...)
+			if abs(main_menu_y"vel") < 0.01 then
+				f(...)
+			end
+		end
+		
 		card_button_new(d[1], d[2], 185 + (i-1)*13, d[3])
 	end
 			
@@ -257,8 +268,6 @@ function game_setup()
 		function() 
 			main_menu_y_to = 0
 		end, -30)
-	
-	--rule_cards = rule_cards_new(22, 186)
 	
 	set_draw_target()
 	
@@ -467,30 +476,23 @@ function game_draw(layer)
 		print("Mostly by Werxzy", 399, 261)
 		
 	-- card back info
+		local full_w = 187 - 12
+		local x, y = 10, 283
+		
 		local s = "Artist : " .. card_back.artist
+		local w = print_size(s)
+		local lw, lh, loreprint = print_wrap_prep(card_back.lore, full_w)
 		
-		local x = print(s, 0, -1000) 
-		local w = x + 10
+		rectfill(x + 2, y + 2, x + 185, y + 76, 7)
 		
-		local x1, y1, x2, y2 = 100 - w/2, 290, 140 + w/2, 308
-		local truew = x2-x1
-		local lw, lh, loreprint = print_wrap_prep(card_back.lore, truew-5)
-		nine_slice(8, x1, y1, x2-x1, y2-y1 + lh)
-		--rectfill(x1, y1, x2, y2, 7)
+		double_print(s, full_w/2 + x + 6 - w/2, y + 12, 1)
+		double_print(loreprint, full_w/2 + x + 6 - lw/2, y + 28, 1)
 		
-		
-		double_print(s, 120 - x/2, 295, 1)
-		
-		double_print(loreprint, x1+4 + (truew-lw-5)/2, y1+16, 1)
-		
-		--nine_slice(8, 275, 345, 97, 15)
-		--double_print("Selected Card Back", 280, 348, 1)
-		
-		
+		rect(x + 4, y + 5, x + 182, y + 76, 32)	
+		spr(21, 10, y)	
 		
 
 	-- game info
-		--rule_cards:draw()
 		spr(game_description, 8, 182)
 		
 	-- card back selection details

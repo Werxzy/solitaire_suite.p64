@@ -1,7 +1,6 @@
 --[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-19 15:43:15",revision=2791]]
 
 
-include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
 
