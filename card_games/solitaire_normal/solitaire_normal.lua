@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-19 15:44:45",revision=2317]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-20 15:33:02",revision=2344]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -131,8 +131,13 @@ function game_setup()
 	suite_button_simple("Auto Place ->", 340, 248, function()
 		cards_api_coroutine_add(cocreate(game_auto_place_anim))
 	end)
-
+	
+	-- extra delay to wait for the transition
+	cards_api_coroutine_add(cocreate(
+		function() pause_frames(50) end
+	))
 	cards_api_coroutine_add(cocreate(game_setup_anim))
+	card_position_reset_all()
 end
 
 -- deals the cards out

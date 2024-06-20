@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-19 12:25:10",revision=4243]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-20 15:50:58",revision=4978]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 
@@ -22,6 +22,8 @@ game_win_anim
 ]], "\n", false)
 old_env = {}
 
+suite_transition_t = 0
+
 function suite_get_game_name(game_path)
 	local path = split(game_path, "/")
 	path = path[#path]
@@ -32,6 +34,7 @@ function suite_get_game_name(game_path)
 	return path[1]
 end
 
+
 local function suite_draw_wrapper()
 	local old_draw = game_draw
 	function game_draw(layer)
@@ -39,7 +42,80 @@ local function suite_draw_wrapper()
 		
 		if layer == 2 then
 			suite_menuitem_draw_pages()
-		end
+		
+		elseif layer == 3 then
+			if suite_transition_t > 0 then
+			
+				--[[
+				if suite_transition_t > 0.5 then
+					spr(suite_transition_screen)
+				end
+				suite_transition_t -= 0.01
+				local r = sin(suite_transition_t/2) * 8
+				for d in all(suite_transition_dots) do
+					rectfill(d[1]-r, d[2]-r, d[1]+r, d[2]+r, d[3])
+				end
+				]]
+				
+				--[[ attempt 1
+				suite_transition_t -= 0.012
+				local t = suite_transition_t
+				t *= t * (3 - 2 * t)
+				t *= t * (3 - 2 * t)
+				local w, h = suite_transition_screen:width(), suite_transition_screen:height()
+				w *= t
+				w = (w - 30) / 480 * (480 + 60)
+				
+				--[=[
+				set_draw_target(suite_transition_screen)
+				for i = 1,1000 do
+					local x, y = rnd(w), rnd(h)
+					circfill(x, y, 2, pget(x, y))
+				end
+				set_draw_target()	
+				--]=]
+				
+				--[=[
+				set_draw_target(suite_transition_screen)
+				for i = 1,100 do
+					local x, y = w - rnd(40)-1, rnd(h)
+					--circfill(x, y, 4, pget(x, y))
+					rectfill(x-4, y-4, x+4, y+4, pget(x,y))
+				end
+				set_draw_target()	
+				--]=]
+				
+			
+		
+				
+				sspr(suite_transition_screen, 0, 0, 
+					w, h, 
+					0, 0)
+					
+				rectfill(w-2, 0, w+2, h, 32)
+				rectfill(w-5, 0, w+5, h, 32)
+				rectfill(w-9, 0, w+9, h, 32)
+				rectfill(w-15, 0, w+15, h, 32)
+				rectfill(w-23, 0, w+23, h, 32)
+				--]]
+				
+				suite_transition_t -= 0.012
+				local t = suite_transition_t
+				t *= t * (3 - 2 * t)
+				t *= t * (3 - 2 * t)
+				
+				set_draw_target(suite_transition_screen)
+				poke(0x550b, 0x00)
+				circfill(480/2, 270/2, (1-t) * 300-1, 0)
+				poke(0x550b, 0x3f)
+				set_draw_target()
+					
+			
+				spr(suite_transition_screen, 0, 0)
+				
+			end
+	
+		end	
 	end
 end
 
@@ -64,6 +140,7 @@ function suite_load_game(game_path)
 	include(game_path)
 	game_setup()
 	suite_draw_wrapper()
+	suite_prepare_transition()
 	
 -- prepares cleanup for next phase if there is anything left over
 -- done by looking for new values that were created during include and setup
@@ -185,6 +262,14 @@ function suite_card_back_set(sprite)
 		end
 	end
 	card_back_sprites = {}
+end
+
+function suite_prepare_transition()
+	local d = get_display()
+	if d then
+		suite_transition_screen = get_display():copy()
+		suite_transition_t = 0.9
+	end
 end
 
 

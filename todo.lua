@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-20 13:43:42",revision=11452]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-20 15:50:58",revision=11903]]
 --[[
 
 before release
@@ -11,10 +11,6 @@ post
 0.2.0
 	
 !adjust menu/drawing					
-	transition
-		use pget to sample colors and then use circfill to grow and fill the screen
-		
-	?switch to userdata for some of the structures (it's much faster)
 			
 	setting menu?
 		probably a menu that pops up
@@ -40,6 +36,9 @@ consistent naming
 	double check .x_to
 	.text vs .str?	
 	bn vs b in buttons	
+	
+change transition to be controllable by the game
+	if no transition is started, then apply the default one and add an coroutine for delay
 
 !prepare for example project 
 
@@ -72,9 +71,11 @@ last played card game is automatically selected on the main menu
 		
 update label with new solitaire variants (credit pixelDub)
 	specifically when a 0.X.0 version is released
-
+	
 
 0.?.0
+	
+?switch to userdata for some of the structures (it's much faster)
 		
 credits section
 	list contributions when there are enough people contributing
