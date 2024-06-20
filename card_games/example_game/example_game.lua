@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-19 16:48:00",revision=7624]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-20 13:43:42",revision=7741]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -96,7 +96,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_coroutine = cocreate(game_reset_anim)
+			cards_api_coroutine_add(cocreate(game_reset_anim))
 		end
 	})
 	
@@ -115,7 +115,7 @@ function game_setup()
 	
 	suite_button_simple("Test Button", 300, 200)
 	
-	cards_coroutine = cocreate(game_setup_anim)
+	cards_api_coroutine_add(cocreate(game_setup_anim))
 end
 
 -- deals the cards out
@@ -168,7 +168,7 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_coroutine = cocreate(game_win_anim)
+	cards_api_coroutine_add(cocreate(game_win_anim))
 end
 
 -- reposition calculation that has fixed positions

@@ -111,7 +111,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_coroutine = cocreate(game_reset_anim)
+			cards_api_coroutine_add(cocreate(game_reset_anim))
 		end
 	})
 	
@@ -129,12 +129,10 @@ function game_setup()
 	wins_button:update_val()
 	
 	suite_button_simple("Auto Place ->", 340, 248, function()
-		if not cards_coroutine then
-			cards_coroutine = cocreate(game_auto_place_anim)
-		end
+		cards_api_coroutine_add(cocreate(game_auto_place_anim))
 	end)
 
-	cards_coroutine = cocreate(game_setup_anim)
+	cards_api_coroutine_add(cocreate(game_setup_anim))
 end
 
 -- deals the cards out
@@ -241,7 +239,7 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_coroutine = cocreate(game_win_anim)
+	cards_api_coroutine_add(cocreate(game_win_anim))
 end
 
 -- reposition calculation that has fixed positions
@@ -300,7 +298,7 @@ function stack_on_click_reveal()
 	
 	-- draw 3 cards
 	if #s > 0 then
-		cards_coroutine = cocreate(function()
+		cards_api_coroutine_add(cocreate(function()
 			for i = 1, 3 do
 				if #s > 0 then
 					local c = s[#s]
@@ -309,7 +307,7 @@ function stack_on_click_reveal()
 					pause_frames(10)
 				end
 			end
-		end)
+		end))
 		
 	-- put stack of cards back
 	else

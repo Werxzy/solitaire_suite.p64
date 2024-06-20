@@ -86,7 +86,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_coroutine = cocreate(game_reset_anim)
+			cards_api_coroutine_add(cocreate(game_reset_anim))
 		end
 	})
 	
@@ -103,7 +103,7 @@ function game_setup()
 	end	
 	wins_button:update_val()	
 	
-	cards_coroutine = cocreate(game_setup_anim)
+	cards_api_coroutine_add(cocreate(game_setup_anim))
 	
 end
 
@@ -147,7 +147,7 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_coroutine = cocreate(game_win_anim)
+	cards_api_coroutine_add(cocreate(game_win_anim))
 end
 
 

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-19 16:55:07",revision=11342]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-20 13:43:42",revision=11452]]
 --[[
 
 before release
@@ -9,10 +9,8 @@ make release with new version tag
 post
 
 0.2.0
-			
+	
 !adjust menu/drawing					
-	functions for cocreate animations
-
 	transition
 		use pget to sample colors and then use circfill to grow and fill the screen
 		
