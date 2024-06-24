@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-20 15:33:02",revision=10184]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-24 17:51:12",revision=10241]]
 
 
 include "suite_scripts/confetti.lua"
@@ -42,6 +42,7 @@ function game_setup()
 	end
 
 	local unstacked_cards = {}
+	local cards_all = get_all_cards()
 	for c in all(cards_all) do
 		add(unstacked_cards, c)
 	end

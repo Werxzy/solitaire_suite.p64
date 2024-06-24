@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-20 15:33:02",revision=2836]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-24 17:20:23",revision=2868]]
 
 
 include "suite_scripts/confetti.lua"
@@ -42,6 +42,7 @@ function game_setup()
 	end
 	
 	local unstacked_cards = {}
+	local cards_all = get_all_cards()
 	for c in all(cards_all) do
 		add(unstacked_cards, c)
 	end
@@ -144,6 +145,7 @@ function game_win_anim()
 end
 
 function game_win_condition()
+	local cards_all = get_all_cards()
 	return #deck_goal.cards == #cards_all
 end
 

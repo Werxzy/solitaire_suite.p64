@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 16:21:08",revision=12705]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 18:19:40",revision=13127]]
 --[[
 
 before release
@@ -10,17 +10,11 @@ post
 
 == 0.2.0 ==
 
-clean up env
-	(will want to move card_width and card_height first)
-
-	copy only functions
-	tables or important variables need get/set functions 
-		currently it's probably just 
-			held_stack
-			cards_all
-			stacks_all
-			
+clean up env		
 	add graphics from 1.gfx in game folder	
+	
+			
+
 	maybe 1.sfx and 1.map as well?	
 
 update settings menu
@@ -56,6 +50,10 @@ change transition to be controllable by the game
 message zep about using fetch to gather carts
 
 manage mods list
+
+enforce cards to always have a stack?
+	inside init
+double check trapdoor solitaire the stored card gets properly flipped faced downs
 
 tutorial
 	some clicking and dragging of cards

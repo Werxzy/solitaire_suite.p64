@@ -45,11 +45,7 @@ end
 Inside the primary lua file, you should have something similar to this.
 
 ```lua
-function game_load()
--- everything must be contained inside game_load() to prevent overwriting specific functions at the wrong time
--- though this might get removed in the future, as it was originally intended for game_info
-
--- called right after game_load(), mostly for ease of use like _init() 
+-- mostly for ease of use like _init() 
 function game_setup()
 	-- create any stacks, cards, or other objects here
 end

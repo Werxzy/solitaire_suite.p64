@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 16:32:46",revision=6044]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 18:19:40",revision=6490]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_settings.lua"
@@ -12,16 +12,23 @@ mkdir(suite_save_folder .. "/card_games")
 mkdir(suite_save_folder .. "/card_backs")
 mkdir(suite_save_folder .. "/saves")
 
-clean_env = split([[
+banned_env =	split([[
+store
+fetch
+]], "\n", false)
+
+copied_env = split([[
 game_setup
-game_update
 game_draw
+game_update
+game_action_resolved
 game_on_exit
+
 game_count_win
 game_win_condition
 game_win_anim
+
 ]], "\n", false)
-old_env = {}
 
 suite_transition_t = 0
 
@@ -62,12 +69,10 @@ local function suite_draw_wrapper()
 				circfill(480/2, 270/2, (1-t) * 300-1, 0)
 				poke(0x550b, 0x3f)
 				set_draw_target()
-					
 			
 				spr(suite_transition_screen, 0, 0)
 				
 			end
-	
 		end	
 	end
 end
@@ -75,51 +80,24 @@ end
 function suite_load_game(game_path)
 	-- example "card_games/solitaire_basic.lua"
 	suite_game_name = suite_get_game_name(game_path)
-
--- [[
--- slight cleanup step
-	for c in all(clean_env) do
-		_ENV[c] = nil
-	end
-	for c in all(old_env) do
-		_ENV[c] = nil
-	end
-	local _e = {}
-	for k,v in pairs(_ENV) do
-		_e[k] = v
-	end
-
--- prepare the game
-	include(game_path)
-	game_setup()
-	suite_draw_wrapper()
-	suite_prepare_transition()
 	
--- prepares cleanup for next phase if there is anything left over
--- done by looking for new values that were created during include and setup
-	if game_path != "suite_scripts/main_menu.lua" then
-		old_env = {}
-		for k,v in pairs(_ENV) do
-			if _e[k] == nil then
-				add(old_env, k)
-			end
-		end
-	end
---]]
-
-	
---[[ attempt at encapsulating the game environment
+-- attempt at encapsulating the game environment
 
 	if game_path ~= "suite_scripts/main_menu.lua" then
-		
 		game_env = {}
 		for k,v in pairs(_ENV) do
-			game_env[k] = v
+			if type(v) == "function" then
+				game_env[k] = v
+			end
 		end
-	
+		
+		for c in all(copied_env2) do
+			game_env[c] = nil
+		end
 		for b in all(banned_env) do
-		--	game_env[b] = nil
+			game_env[b] = nil
 		end
+		
 		game_env.include = cap_include(game_env)
 		--local func,err = load(src, "@"..filename, "t", _ENV)
 		local func, err = load(fetch(game_path), "@".. fullpath(game_path), "t", game_env)
@@ -133,13 +111,13 @@ function suite_load_game(game_path)
 		
 		game_setup()
 		
-		--get_held_stack()
-	else
-		
+	else	
 		include(game_path)
 		game_setup()
 	end
---]]
+	
+	suite_draw_wrapper()
+	suite_prepare_transition()
 end
 
 function suite_exit_game()
@@ -226,28 +204,7 @@ function suite_prepare_transition()
 end
 
 
---[=[
-banned_env =	split([[
-banned_env
-game_env
-store
-fetch
-]], "\n", false)
-
-copied_env = split([[
-game_on_exit
-
-game_load
-game_setup
-
-game_draw
-game_update
-cards_game_exiting
-
-]], "\n", false)
-]=]
-
---[[
+-- copied from include
 function cap_include(new_env)
 	return function(filename)
 		local filename = fullpath(filename)
@@ -281,5 +238,4 @@ function cap_include(new_env)
 		return true -- ok, no error including
 	end
 end
-]]
 

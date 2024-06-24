@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-20 15:33:02",revision=2344]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 17:51:12",revision=2434]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -49,6 +49,7 @@ function game_setup()
 	end
 	
 	local unstacked_cards = {}
+	local cards_all = get_all_cards()
 	for c in all(cards_all) do
 		add(unstacked_cards, c)
 	end
@@ -215,7 +216,7 @@ function game_auto_place_anim()
 end
 
 function game_action_resolved()
-	if not held_stack then
+	if not get_held_stack() then
 		for s in all(stacks_supply) do
 			local c = get_top_card(s)
 			if(c) c.a_to = 0
