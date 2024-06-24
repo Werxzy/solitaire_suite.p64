@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-19 16:48:00",revision=15238]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-24 16:21:08",revision=16616]]
 
 include"cards_api/card_gen.lua"
 
@@ -248,7 +248,7 @@ function game_setup()
 			end
 		},
 		{"Manage Mods", 16, function()end},
-		{"Settings", 27, function()end},
+		{"Settings", 27, suite_open_settings},
 		{"Exit Game", 25, exit},
 	}
 	for i, d in pairs(cb) do
@@ -512,6 +512,7 @@ function game_draw(layer)
 		box_shadow(203, 241-3, 203+73, 241+12)
 		box_shadow(203-3, 260, 203+73+3, 309)
 		spr(1, 203, 241)
+		
 	end
 end
 

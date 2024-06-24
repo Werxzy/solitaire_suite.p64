@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-20 15:50:58",revision=4978]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 16:21:08",revision=5984]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 
@@ -23,6 +23,10 @@ game_win_anim
 old_env = {}
 
 suite_transition_t = 0
+suite_settings_to = -0.1
+suite_settings_t = smooth_val(0, 0.87, 0.02, 0.00003)
+suite_settings_buttons = {}
+suite_settings_width, suite_settings_height = 300, 200
 
 function suite_get_game_name(game_path)
 	local path = split(game_path, "/")
@@ -40,64 +44,51 @@ local function suite_draw_wrapper()
 	function game_draw(layer)
 		old_draw(layer)
 		
+		local sett_x, sett_y = (480 - suite_settings_width) / 2, (270 - suite_settings_height) / 2
+
 		if layer == 2 then
 			suite_menuitem_draw_pages()
-		
-		elseif layer == 3 then
-			if suite_transition_t > 0 then
 			
+			local y = (1 - suite_settings_t(suite_settings_to)) * 270 + sett_y
+			y \= 1
+			for b in all(suite_settings_buttons) do
+				b.x = b.base_x + sett_x
+				b.y = b.base_y + y
+			end
+			
+			
+		elseif layer == 3 then -- reserved for menus like settings
+			local y = suite_settings_t"pos"
+			if y > 0 then
+				y = (1-y)*270 + sett_y
+				y \= 1
+				
+				--rectfill(0,0,480*x,270,32)
 				--[[
-				if suite_transition_t > 0.5 then
-					spr(suite_transition_screen)
-				end
-				suite_transition_t -= 0.01
-				local r = sin(suite_transition_t/2) * 8
-				for d in all(suite_transition_dots) do
-					rectfill(d[1]-r, d[2]-r, d[1]+r, d[2]+r, d[3])
+				local sx = x * 300
+				rectfill(240-sx, 135-sx, 241+sx, 136+sx, 32)
+				
+				local sx = x * 150 \ 1
+				local sy = (x - suite_settings_t"vel" * 6) * 100 \ 1
+				
+				if sx > 0 and sy > 0 then
+					rectfill(240-sx, 136+sy, 241+sx, 136+sy + 15, 32)
+					
+					rectfill(240-sx, 135-sy, 241+sx, 136+sy, 7)
 				end
 				]]
 				
-				--[[ attempt 1
-				suite_transition_t -= 0.012
-				local t = suite_transition_t
-				t *= t * (3 - 2 * t)
-				t *= t * (3 - 2 * t)
-				local w, h = suite_transition_screen:width(), suite_transition_screen:height()
-				w *= t
-				w = (w - 30) / 480 * (480 + 60)
-				
-				--[=[
-				set_draw_target(suite_transition_screen)
-				for i = 1,1000 do
-					local x, y = rnd(w), rnd(h)
-					circfill(x, y, 2, pget(x, y))
-				end
-				set_draw_target()	
-				--]=]
-				
-				--[=[
-				set_draw_target(suite_transition_screen)
-				for i = 1,100 do
-					local x, y = w - rnd(40)-1, rnd(h)
-					--circfill(x, y, 4, pget(x, y))
-					rectfill(x-4, y-4, x+4, y+4, pget(x,y))
-				end
-				set_draw_target()	
-				--]=]
-				
+				local cx, cy = camera(-sett_x, -y)
+				rectfill(0,suite_settings_height,
+					suite_settings_width-1,suite_settings_height+10, 32)
+				rectfill(0,0,
+					suite_settings_width-1,suite_settings_height-1, 7)
+				camera(cx, cy)
+			end
 			
 		
-				
-				sspr(suite_transition_screen, 0, 0, 
-					w, h, 
-					0, 0)
-					
-				rectfill(w-2, 0, w+2, h, 32)
-				rectfill(w-5, 0, w+5, h, 32)
-				rectfill(w-9, 0, w+9, h, 32)
-				rectfill(w-15, 0, w+15, h, 32)
-				rectfill(w-23, 0, w+23, h, 32)
-				--]]
+		elseif layer == 4 then
+			if suite_transition_t > 0 then
 				
 				suite_transition_t -= 0.012
 				local t = suite_transition_t
@@ -329,3 +320,91 @@ function cap_include(new_env)
 	end
 end
 ]]
+
+
+
+-- settings functions
+
+local suite_setting_layout_y = 10
+
+function suite_open_settings()
+	-- clear old buttons
+	for b in all(suite_settings_buttons) do
+		b:destroy()
+	end
+	suite_settings_buttons = {}
+	suite_setting_layout_y = 10
+	suite_settings_to = 1
+	
+	-- interaction blocker
+	suite_settings_blocker = button_new({
+		x = -1000, y = -1000, 
+		w = 3000, h = 3000, 
+		draw = function() end, 
+		group = 3
+	})
+	
+	-- TODO fill with more things
+	-- allow for the base to be used by other menus
+	
+	if(game_settings_opened) game_settings_opened()
+	
+	suite_settings_add_button("Exit Settings", suite_close_settings, true)
+
+	-- change height of settings menu to fit the buttons
+	suite_settings_height = suite_setting_layout_y + 10
+end
+
+function suite_close_settings()
+	suite_settings_to = -0.1
+	suite_settings_blocker:destroy()
+	suite_settings_blocker = nil
+	
+	if(game_settings_closed) game_settings_closed()
+end
+
+function suite_settings_button_add(button)
+	add(suite_settings_buttons, button)
+	button.on_click = suite_settings_button_check(button.on_click)
+	button.base_x = button.base_x or button.x
+	button.base_y = button.base_y or button.y
+end
+
+-- prevents button from being pressed unless the menu is open
+function suite_settings_button_check(func)
+	return function(button)
+		if suite_settings_to >= 1 then
+			func(button)
+		end
+	end
+end
+
+
+-- available button types to add to the settings menu
+
+function suite_settings_add_button(name, func, right_side)
+	local b = suite_button_simple(name, 10, suite_setting_layout_y, func, nil, 3)
+	if right_side then
+		b.x = suite_settings_width - b.w - 10
+	end
+			
+	suite_settings_button_add(b)
+	
+	suite_setting_layout_y += 20
+end
+
+function suite_settings_add_options(name, func, ops, current)
+	
+	-- TODO
+
+	suite_setting_layout_y += 20
+end
+
+function suite_settings_add_range(name, func, min, max, current)
+	
+	
+
+	suite_setting_layout_y += 20
+end
+
+-- TODO other potential ui elements for the settings menu

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-20 15:50:58",revision=11903]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 16:21:08",revision=12705]]
 --[[
 
 before release
@@ -8,15 +8,7 @@ create pull request for main branches
 make release with new version tag
 post
 
-0.2.0
-	
-!adjust menu/drawing					
-			
-	setting menu?
-		probably a menu that pops up
-		maybe save display and then prevent interaction with anything else
-		maybe have button priorities
-		maybe have a button priority limit to prevent interacting with buttons or cards outisde of the settings menu	
+== 0.2.0 ==
 
 clean up env
 	(will want to move card_width and card_height first)
@@ -30,6 +22,11 @@ clean up env
 			
 	add graphics from 1.gfx in game folder	
 	maybe 1.sfx and 1.map as well?	
+
+update settings menu
+	finish other buttons
+	adjust look of settings
+	allow for custom menu
 
 consistent naming
 	always use .width and not .w
@@ -73,14 +70,21 @@ update label with new solitaire variants (credit pixelDub)
 	specifically when a 0.X.0 version is released
 	
 
-0.?.0
+== 0.?.0 ==
 	
 ?switch to userdata for some of the structures (it's much faster)
 		
 credits section
 	list contributions when there are enough people contributing
 
-maybe ??
+== maybe ?? ==
+
+transition draw mode?
+	(probably more named a disable drawing mode or something)
+	prevents drawing or updating elements like the cards or stack sprites
+	then when the transition is happening, store the first frame when drawing the new level
+		and draw the transition using only the 2 stored screen sprites
+	would require disabling input during the transition
 
 change button control of cards api to instead check for any interaction
 	maybe have a clickable priority

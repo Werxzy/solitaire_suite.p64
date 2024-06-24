@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-19 16:48:00",revision=3327]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-24 16:21:08",revision=4695]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -239,18 +239,19 @@ local function suite_button_simple_draw(b)
 	pal(12, b.highlight and b.col[3] or b.col[1])	
 	
 	b.ct = max(b.ct - 0.07)
-	local click_y = b.y - ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
+	local click_y =  ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
 	
-	clip(b.x, b.y, b.w, b.h)
-	spr(b.spr2, b.x, click_y) 
-	clip()		
+	sspr(b.spr2, 
+		0,0, 
+		b.w,b.h+click_y, 
+		b.x,b.y-click_y) 
 	
 	pal(12, 12)	
 	pal(16, 16)
 	pal(1, 1)	
 end
 
-function suite_button_simple(t, x, y, on_click, colors)
+function suite_button_simple(t, x, y, on_click, colors, group)
 	local w, h = print_size(t)
 	w += 9
 	h += 4
@@ -264,12 +265,15 @@ function suite_button_simple(t, x, y, on_click, colors)
 			if on_click then
 				on_click(b)
 			end
-		end
+		end,
+		group = group
 	})
 	bn.col = colors or {27,3,19}
 	bn.ct = 0	
 	bn.text = t
 	
+	local cx, cy = camera()
+
 	bn.spr1 = userdata("u8", bn.w + 6, bn.h + 4)
 	set_draw_target(bn.spr1)
 	nine_slice(17, 0, 0, bn.spr1:width(), bn.spr1:height())
@@ -281,6 +285,7 @@ function suite_button_simple(t, x, y, on_click, colors)
 	print(t, 5, 2, 7)
 	
 	set_draw_target()
+	camera(cx, cy)
 	
 	return bn
 end
