@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-06-17 09:59:56",revision=222]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-06-24 19:55:31",revision=224]]
 
 function game_info()
 	return {
-		sprite = 24,
 		name = "Solitaire",
 		author = "Werxzy",
 		description = "The game you know and love/hate.",

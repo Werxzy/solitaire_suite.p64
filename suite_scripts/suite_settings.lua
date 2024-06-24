@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-24 16:32:46",revision=44]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-24 16:34:04",revision=49]]
 
 suite_settings_to = -0.1
 suite_settings_t = smooth_val(0, 0.87, 0.02, 0.00003)

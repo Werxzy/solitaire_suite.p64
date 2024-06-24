@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-24 16:21:08",revision=16616]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-24 20:02:32",revision=16873]]
 
 include"cards_api/card_gen.lua"
 
@@ -210,7 +210,18 @@ function game_setup()
 	quicksort(all_info, "order")
 
 	for info in all(all_info) do
-				
+		
+		-- grab sprite 0 from 1.gfx if there is one for the game
+		if not info.sprite then
+			local extra_sprite = fetch(info.info_path:dirname() .. "/1.gfx")
+			if extra_sprite then
+				info.sprite = extra_sprite[0].bmp
+			else
+				info.sprite = 32
+			end
+		end
+		
+		-- if a number is provided for the sprite, use get_spr to allow for :width()
 		if type(info.sprite) == "number" then
 			info.sprite = get_spr(info.sprite)
 		end

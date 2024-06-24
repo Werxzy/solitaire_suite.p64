@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 19:36:17",revision=13364]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 20:02:32",revision=13448]]
 --[[
 
 before release
@@ -9,9 +9,6 @@ make release with new version tag
 post
 
 == 0.2.0 ==
-
-clean up env		
-	move card box to 1.gfx
 		
 update settings menu
 	finish other buttons

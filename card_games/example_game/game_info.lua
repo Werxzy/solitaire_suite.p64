@@ -1,8 +1,8 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-06-19 12:46:00",revision=1269]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-06-24 19:58:31",revision=1285]]
 
 function game_info()
 	return {
-		sprite = 32,
+--		sprite = can be userdata
 		name = "Example Project",
 		author = "Your Name Here",
 		description = "Example project to be used as a base.",

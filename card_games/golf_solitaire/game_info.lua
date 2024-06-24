@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-25 02:11:53",modified="2024-06-17 09:59:24",revision=95]]
+--[[pod_format="raw",created="2024-03-25 02:11:53",modified="2024-06-24 19:50:57",revision=106]]
 
 function game_info()
 	return {
-		sprite = 48,
 		name = "Golf Solitaire",
 		author = "Werxzy",
 		description = "Return all cards to the goal stack. Neighboring ranks only.",

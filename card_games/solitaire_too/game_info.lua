@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-25 02:13:51",modified="2024-06-17 10:00:05",revision=72]]
+--[[pod_format="raw",created="2024-03-25 02:13:51",modified="2024-06-24 19:55:23",revision=74]]
 
 function game_info()
 	return {
-		sprite = 40,
 		name = "Solitaire Too",
 		author = "Werxzy",
 		description = "Similar to standard solitaire, but can alternate between any suit.",
