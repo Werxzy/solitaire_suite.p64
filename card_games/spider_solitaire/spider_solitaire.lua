@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-24 18:19:40",revision=4268]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-24 19:36:17",revision=4532]]
 
 
 include "suite_scripts/confetti.lua"
@@ -14,8 +14,6 @@ total_ranks = 13 -- king
 
 available_columns = 8
 
-	
-cards_api_clear()
 cards_api_shadows_enable(true)
 
 function game_setup()
@@ -69,7 +67,7 @@ function game_setup()
 	
 	
 	deck_stack = stack_new(
-		{5,31},
+		{5,257},
 		card_gap, card_gap,
 		{
 			reposition = stack_repose_static(-0.16),
@@ -77,7 +75,7 @@ function game_setup()
 		})
 		
 	stack_goal = stack_new(
-		{5,31},
+		{5,257},
 		card_gap, card_gap * 3 + card_height,
 		{
 			reposition = stack_repose_static(-0.16),

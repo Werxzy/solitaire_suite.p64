@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 18:19:40",revision=13127]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 19:36:17",revision=13364]]
 --[[
 
 before release
@@ -11,12 +11,8 @@ post
 == 0.2.0 ==
 
 clean up env		
-	add graphics from 1.gfx in game folder	
-	
-			
-
-	maybe 1.sfx and 1.map as well?	
-
+	move card box to 1.gfx
+		
 update settings menu
 	finish other buttons
 	adjust look of settings
@@ -51,6 +47,8 @@ message zep about using fetch to gather carts
 
 manage mods list
 
+remove card_shadow enable/disable on variants, force shadows to be on?
+
 enforce cards to always have a stack?
 	inside init
 double check trapdoor solitaire the stored card gets properly flipped faced downs
@@ -76,6 +74,8 @@ credits section
 	list contributions when there are enough people contributing
 
 == maybe ?? ==
+
+include 1.map or 1.sfx in the future
 
 transition draw mode?
 	(probably more named a disable drawing mode or something)

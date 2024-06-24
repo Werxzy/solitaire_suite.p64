@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 18:19:40",revision=6490]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 19:36:17",revision=6802]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_settings.lua"
@@ -31,6 +31,7 @@ game_win_anim
 ]], "\n", false)
 
 suite_transition_t = 0
+first_load = true
 
 function suite_get_game_name(game_path)
 	local path = split(game_path, "/")
@@ -78,9 +79,31 @@ local function suite_draw_wrapper()
 end
 
 function suite_load_game(game_path)
+	cards_api_clear()
+	
+	cards_api_coroutine_add(cocreate(function()
 	-- example "card_games/solitaire_basic.lua"
 	suite_game_name = suite_get_game_name(game_path)
 	
+	yield()
+	local file_n = 1 
+	local start = stat(1)
+	while true do
+		local extra_sprites = fetch(game_path:dirname() .. "/" .. tostr(file_n) .. ".gfx")
+		
+		if extra_sprites then
+			local j = file_n * 256
+			for i = 0,#extra_sprites do
+				set_spr(j+i, extra_sprites[i].bmp, extra_sprites[i].flags or 0)
+			end
+			file_n += 1
+			
+		else
+			break
+		end
+	end
+	yield()	
+
 -- attempt at encapsulating the game environment
 
 	if game_path ~= "suite_scripts/main_menu.lua" then
@@ -91,7 +114,7 @@ function suite_load_game(game_path)
 			end
 		end
 		
-		for c in all(copied_env2) do
+		for c in all(copied_env) do
 			game_env[c] = nil
 		end
 		for b in all(banned_env) do
@@ -117,7 +140,11 @@ function suite_load_game(game_path)
 	end
 	
 	suite_draw_wrapper()
-	suite_prepare_transition()
+	if not first_load then
+		suite_prepare_transition()
+	end
+	first_load = false
+	end))
 end
 
 function suite_exit_game()

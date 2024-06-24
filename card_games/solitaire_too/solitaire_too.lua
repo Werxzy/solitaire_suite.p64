@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-24 17:51:12",revision=10241]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-24 19:26:47",revision=10244]]
 
 
 include "suite_scripts/confetti.lua"
@@ -10,7 +10,6 @@ card_height = 60
 
 rank_count = 13 -- adjustable
 
-cards_api_clear()
 cards_api_shadows_enable(true)
 
 function game_setup()

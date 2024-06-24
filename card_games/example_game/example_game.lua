@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 17:51:12",revision=9310]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 19:25:36",revision=9312]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -16,7 +16,6 @@ all_suit_colors = {
 
 rank_count = 13 -- adjustable
 
-cards_api_clear()
 cards_api_shadows_enable(true)
 
 function game_setup()

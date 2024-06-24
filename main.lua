@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-10 05:55:07",revision=16817]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-24 19:36:17",revision=18097]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -30,4 +30,5 @@ function _draw()
 	
 --	?stat_up2 - stat_up, 111, 220, 6
 --	?stat(1)-stat_up2
+--	?stat(7)
 end

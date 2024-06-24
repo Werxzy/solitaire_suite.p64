@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-24 17:20:23",revision=2868]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-24 19:25:46",revision=2983]]
 
 
 include "suite_scripts/confetti.lua"
@@ -10,7 +10,6 @@ card_height = 60
 
 rank_count = 13 -- adjustable
 
-cards_api_clear()
 cards_api_shadows_enable(true)
 
 function game_setup()
@@ -61,7 +60,7 @@ function game_setup()
 	end
 	
 	deck_stack = stack_new(
-		{5,23},
+		{5,257},
 		240-card_width-card_gap*2, 160,
 		{
 			reposition = stack_repose_static(-0.16),
@@ -69,7 +68,7 @@ function game_setup()
 		})
 	
 	deck_goal = stack_new(
-		{5,15},
+		{5,258},
 		240+card_gap*2, 160,
 		{
 			reposition = stack_repose_static(-0.16),
