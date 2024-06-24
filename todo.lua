@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 20:02:32",revision=13448]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 20:36:13",revision=13569]]
 --[[
 
 before release
@@ -48,7 +48,6 @@ remove card_shadow enable/disable on variants, force shadows to be on?
 
 enforce cards to always have a stack?
 	inside init
-double check trapdoor solitaire the stored card gets properly flipped faced downs
 
 tutorial
 	some clicking and dragging of cards
@@ -71,6 +70,8 @@ credits section
 	list contributions when there are enough people contributing
 
 == maybe ?? ==
+
+? better error handling for solitaire variants
 
 include 1.map or 1.sfx in the future
 

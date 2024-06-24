@@ -1,7 +1,10 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 19:25:36",revision=9312]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 20:36:13",revision=9408]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
+include "game/test_include.lua"
+-- including or fetching files next to the main file should include
+-- "/game/" or "game/" at the start of the path
 
 -- updates card size if it changed
 card_width = 45

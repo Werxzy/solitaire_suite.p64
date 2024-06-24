@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 20:02:32",revision=6884]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 20:36:13",revision=7041]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_settings.lua"
@@ -121,12 +121,14 @@ function suite_load_game(game_path)
 			game_env[b] = nil
 		end
 		
-		game_env.include = cap_include(game_env)
+		game_env.include = cap_include(game_path:dirname(), game_env)
+		game_env.fetch = cap_fetch(game_path:dirname())
+		
 		--local func,err = load(src, "@"..filename, "t", _ENV)
 		local func, err = load(fetch(game_path), "@".. fullpath(game_path), "t", game_env)
 		--local ok = pcall(func)
 		func()
-
+		
 	--	if(not ok) stop()
 		for c in all(copied_env) do
 			_ENV[c] = game_env[c]
@@ -232,9 +234,9 @@ end
 
 
 -- copied from include
-function cap_include(new_env)
+function cap_include(base, new_env)
 	return function(filename)
-		local filename = fullpath(filename)
+		local filename = fullpath(correct_path(base, filename))
 		local src = fetch(filename)
 	
 		if (type(src) ~= "string") then 
@@ -266,3 +268,23 @@ function cap_include(new_env)
 	end
 end
 
+function cap_fetch(base)
+	return function(str)
+		return fetch(fullpath(correct_path(base, str)))
+	end
+end
+
+function correct_path(base, path)
+	local cut = sub(path, 1,6) == "/game/" and 6 
+		or sub(path, 1,5) == "game/" and 5 
+		or 0
+		
+	
+	if cut ~= 0 then
+		
+		path = base .. sub(path, cut)
+		
+	end
+
+	return path
+end
