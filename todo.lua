@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-24 20:36:13",revision=13569]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-25 20:38:22",revision=14259]]
 --[[
 
 before release
@@ -11,7 +11,6 @@ post
 == 0.2.0 ==
 		
 update settings menu
-	finish other buttons
 	adjust look of settings
 	allow for custom menu
 

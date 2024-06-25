@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-24 16:48:13",revision=4783]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-25 20:30:49",revision=4828]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -236,9 +236,9 @@ local function suite_button_simple_draw(b)
 	
 	spr(b.spr1, b.x-3, b.y)
 	
-	pal(12, b.highlight and b.col[3] or b.col[1])	
+	pal(12, (b.highlight or b.selected) and b.col[3] or b.col[1])	
 	
-	b.ct = max(b.ct - 0.07)
+	b.ct += mid((b.selected and 0.5 or 0) - b.ct, -0.07, 0.07)
 	local click_y =  ((b.ct*2-1)^2 * 2.5 - 2.5) \ 1
 	
 	sspr(b.spr2, 

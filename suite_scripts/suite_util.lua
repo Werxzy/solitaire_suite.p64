@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-24 20:36:13",revision=7041]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-25 20:38:22",revision=7731]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_settings.lua"
@@ -275,15 +275,12 @@ function cap_fetch(base)
 end
 
 function correct_path(base, path)
-	local cut = sub(path, 1,6) == "/game/" and 6 
-		or sub(path, 1,5) == "game/" and 5 
+	local cut = sub(path, 1, 6) == "/game/" and 6 
+		or sub(path, 1, 5) == "game/" and 5 
 		or 0
 		
-	
 	if cut ~= 0 then
-		
 		path = base .. sub(path, cut)
-		
 	end
 
 	return path

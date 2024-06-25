@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-24 20:02:32",revision=18178]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-25 20:38:22",revision=18618]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -28,7 +28,7 @@ end
 function _draw()
 	cards_api_draw()
 	
---	?stat_up2 - stat_up, 111, 220, 6
+--	?stat_up2 - stat_up, 111, 220, 8
 --	?stat(1)-stat_up2
 --	?stat(7)
 end
