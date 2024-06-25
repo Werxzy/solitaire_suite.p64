@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-25 20:38:22",revision=14259]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-25 21:51:16",revision=14432]]
 --[[
 
 before release
@@ -11,7 +11,6 @@ post
 == 0.2.0 ==
 		
 update settings menu
-	adjust look of settings
 	allow for custom menu
 
 consistent naming
@@ -67,6 +66,11 @@ update label with new solitaire variants (credit pixelDub)
 		
 credits section
 	list contributions when there are enough people contributing
+
+visual tutorial sequence for a each game
+	walk though different steps and display speech bubbles pointing a different game elements
+	if a sequence isn't provided for game, don't display the option to view a tutorial
+	
 
 == maybe ?? ==
 
