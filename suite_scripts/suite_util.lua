@@ -1,7 +1,8 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 15:55:31",revision=8151]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 16:50:53",revision=8381]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
+include"suite_scripts/suite_transition.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
 game_version = "0.2.0 DEV"
@@ -14,7 +15,6 @@ mkdir(suite_save_folder .. "/saves")
 
 banned_env =	split([[
 store
-fetch
 ]], "\n", false)
 
 copied_env = split([[
@@ -24,6 +24,10 @@ game_update
 game_action_resolved
 game_on_exit
 
+game_transition_init
+game_transition_draw
+game_transition_update
+
 game_settings_opened
 
 game_count_win
@@ -32,7 +36,6 @@ game_win_anim
 
 ]], "\n", false)
 
-suite_transition_t = 0
 first_load = true
 
 function suite_get_game_name(game_path)
@@ -45,11 +48,13 @@ function suite_get_game_name(game_path)
 	return path[1]
 end
 
-
-local function suite_draw_wrapper()
+-- wraps the draw and update functions with suite specific scripts
+local function suite_function_wrapper()
 	local old_draw = game_draw
 	function game_draw(layer)
-		old_draw(layer)
+		if old_draw then
+			old_draw(layer)
+		end
 		
 		suite_window_draw(layer)
 		
@@ -60,23 +65,18 @@ local function suite_draw_wrapper()
 		
 		
 		elseif layer == 4 then
-			if suite_transition_t > 0 then
-				
-				suite_transition_t -= 0.012
-				local t = suite_transition_t
-				t *= t * (3 - 2 * t)
-				t *= t * (3 - 2 * t)
-				
-				set_draw_target(suite_transition_screen)
-				poke(0x550b, 0x00)
-				circfill(480/2, 270/2, (1-t) * 300-1, 0)
-				poke(0x550b, 0x3f)
-				set_draw_target()
-			
-				spr(suite_transition_screen, 0, 0)
-				
-			end
+			suite_transition_draw()
 		end	
+	end
+	
+	local old_update = game_update
+	
+	function game_update()
+		if old_update then
+			old_update()
+		end
+		
+		suite_transition_update()
 	end
 end
 
@@ -137,16 +137,24 @@ function suite_load_game(game_path)
 			_ENV[c] = game_env[c]
 		end
 		
+		suite_transition_prepare_1()
+		
 		game_setup()
 		
 	else	
 		include(game_path)
+		
+		if not first_load then
+			suite_transition_prepare_1()
+		end
+		
 		game_setup()
 	end
 	
-	suite_draw_wrapper()
+	suite_function_wrapper()
+	
 	if not first_load then
-		suite_prepare_transition()
+		suite_transition_prepare_2()
 	end
 	first_load = false
 	end))
@@ -227,13 +235,6 @@ function suite_card_back_set(sprite)
 	card_back_sprites = {}
 end
 
-function suite_prepare_transition()
-	local d = get_display()
-	if d then
-		suite_transition_screen = get_display():copy()
-		suite_transition_t = 0.9
-	end
-end
 
 
 -- copied from include

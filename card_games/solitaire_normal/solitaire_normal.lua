@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 15:32:36",revision=2612]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 16:50:53",revision=2715]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -42,7 +42,6 @@ function game_setup()
 	}	
 	
 	local card_back = suite_card_back()
-	
 	local card_sprites = get_card_sprite()
 
 	local card_gap = 4
@@ -144,10 +143,6 @@ function game_setup()
 		cards_api_coroutine_add(cocreate(game_auto_place_anim))
 	end)
 	
-	-- extra delay to wait for the transition
-	cards_api_coroutine_add(cocreate(
-		function() pause_frames(50) end
-	))
 	cards_api_coroutine_add(cocreate(game_setup_anim))
 	card_position_reset_all()
 end

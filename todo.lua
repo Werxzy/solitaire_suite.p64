@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 15:55:31",revision=14670]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 16:47:17",revision=14852]]
 --[[
 
 before release
@@ -9,18 +9,12 @@ make release with new version tag
 post
 
 == 0.2.0 ==
-		
-update settings menu
-	allow for custom menu
-
+			
 consistent naming
 	always use .width and not .w
 	double check .x_to
 	.text vs .str?	
 	bn vs b in buttons	
-	
-change transition to be controllable by the game
-	if no transition is started, then apply the default one and add an coroutine for delay
 
 !prepare for example project 
 

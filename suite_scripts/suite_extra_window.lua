@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:55:31",revision=1418]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 16:04:23",revision=1453]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -6,10 +6,25 @@ suite_window_buttons = {}
 suite_window_elements = {}
 suite_window_width, suite_window_height = 300, 200
 suite_window_title = "\^w\^tSettings"
+local suite_window_layout_y = 10
 
 -- TODO: page control?
+-- TODO: better control for custom elements?
 
-local suite_window_layout_y = 10
+
+-- extra functions for windows with custom elements in custom games
+function get_suite_window_layout_y()
+	return suite_window_layout_y
+end
+function set_suite_window_layout_y(y)
+	suite_window_layout_y = y
+end
+function suite_window_add_element(el)
+	add(suite_window_elements, el)
+end
+function suite_window_add_button(button)
+	add(suite_window_buttons, button)
+end
 
 function suite_window_init(name, width)
 	-- clear old buttons and draw elements
