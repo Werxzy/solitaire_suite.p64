@@ -336,7 +336,6 @@ function suite_menuitem_draw_pages()
 		b.y = 270 - p.height - 37 -- test
 	end
 	
-	-- TODO: clear this up and add proper graphics
 	local y = 270-15-p.height - 6
 	local x = 0
 	local w, h = p.width, p.height

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:46:00",revision=1414]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:55:31",revision=1418]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -331,4 +331,4 @@ function suite_window_add_mulibutton(y, ops, right_side)
 	return x, op_buttons
 end
 
--- TODO other potential ui elements for the settings menu
+-- other potential ui elements for the settings menu
