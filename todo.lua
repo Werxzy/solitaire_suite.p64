@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-25 21:51:16",revision=14432]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 15:46:00",revision=14666]]
 --[[
 
 before release
@@ -61,6 +61,8 @@ update label with new solitaire variants (credit pixelDub)
 	
 
 == 0.?.0 ==
+
+page control or scrolling for the suite_window
 	
 ?switch to userdata for some of the structures (it's much faster)
 		

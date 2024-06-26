@@ -1,6 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:27:25",revision=1354]]
-
--- TODO: likely be renamed to something other than settings
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:46:00",revision=1414]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -9,7 +7,42 @@ suite_window_elements = {}
 suite_window_width, suite_window_height = 300, 200
 suite_window_title = "\^w\^tSettings"
 
+-- TODO: page control?
+
 local suite_window_layout_y = 10
+
+function suite_window_init(name, width)
+	-- clear old buttons and draw elements
+	for b in all(suite_window_buttons) do
+		b:destroy()
+	end
+	suite_window_buttons = {}
+	suite_window_elements = {}
+	suite_window_layout_y = 9
+	suite_window_to = 1
+	suite_window_width = width or 300
+	suite_window_title = "\^w\^t" .. name
+	
+	-- interaction blocker
+	suite_window_blocker = button_new({
+		x = -1000, y = -1000, 
+		w = 3000, h = 3000, 
+		draw = function() end, 
+		group = 3
+	})
+end
+
+function suite_window_footer(exit_text)
+	if #suite_window_buttons > 0 or #suite_window_elements > 0 then
+		suite_window_add_divider(5, 6)
+	end
+
+	-- forced-ish exit button
+	suite_window_add_buttons({{exit_text or "Exit", suite_close_settings}}, true)
+
+	-- change height of settings menu to fit the buttons
+	suite_window_height = suite_window_layout_y + 7
+end
 
 function suite_window_draw(layer)
 	local sett_x, sett_y = (480 - suite_window_width) / 2, (270 - suite_window_height) / 2
@@ -68,25 +101,7 @@ function suite_window_draw(layer)
 end
 
 function suite_open_settings()
-	-- clear old buttons
-	for b in all(suite_window_buttons) do
-		b:destroy()
-	end
-	suite_window_buttons = {}
-	suite_window_elements = {}
-	suite_window_layout_y = 9
-	suite_window_to = 1
-	
-	-- interaction blocker
-	suite_window_blocker = button_new({
-		x = -1000, y = -1000, 
-		w = 3000, h = 3000, 
-		draw = function() end, 
-		group = 3
-	})
-	
-	-- TODO fill with more things
-	-- allow for the base to be used by other menus
+	suite_window_init("Settings")
 	
 	if(game_settings_opened) game_settings_opened()
 	
@@ -94,22 +109,17 @@ function suite_open_settings()
 		suite_window_add_divider(5, 6)
 	end
 	
-
+	-- TODO fill with more things
+	-- probably volume control or others
+	
 -- [[
 	-- TEMP options for testing out ui functions
 	local function pr()end
-	
 	suite_window_add_options("TODO: more settings", pr, {"Okay", "Ok", "K"}, 1)
-	
 	suite_window_add_range("Volume?", pr, "%i%%", 0, 100, 10, 50)
-
-	suite_window_add_divider(5, 6)
 --]]
-	
-	suite_window_add_buttons({{"Exit Settings", suite_close_settings}}, true)
 
-	-- change height of settings menu to fit the buttons
-	suite_window_height = suite_window_layout_y + 7
+	suite_window_footer("Exit Settings")
 end
 
 function suite_close_settings()
@@ -197,10 +207,12 @@ function suite_window_add_range(name, func, format, t0, t1, inc, current, inc_wi
 		current = mid(current + inc, t0, t1)
 		func(current)
 	end, nil, 3)
+	b2.always_active = true
 	local b1 = suite_button_simple("-", suite_window_width - 130, y, function()
 		current = mid(current - inc, t0, t1)
 		func(current)
 	end, nil, 3)
+	b1.always_active = true
 	
 	-- calculates number of marks
 	local i1 = (t1-t0) \ inc
@@ -287,7 +299,8 @@ function suite_window_add_mulibutton(y, ops, right_side)
 	-- creates a button for each option
 	local op_buttons = {}
 	for o in all(ops) do
-		add(op_buttons, suite_button_simple(o[1], 0, y, o[2], nil, 3))
+		local b = add(op_buttons, suite_button_simple(o[1], 0, y, o[2], nil, 3))
+		b.always_active = true
 	end
 	
 	local x = 10
