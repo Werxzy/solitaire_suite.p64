@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-25 20:38:22",revision=7731]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 15:04:19",revision=8040]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_settings.lua"
@@ -23,6 +23,8 @@ game_draw
 game_update
 game_action_resolved
 game_on_exit
+
+game_settings_opened
 
 game_count_win
 game_win_condition
@@ -127,6 +129,7 @@ function suite_load_game(game_path)
 		--local func,err = load(src, "@"..filename, "t", _ENV)
 		local func, err = load(fetch(game_path), "@".. fullpath(game_path), "t", game_env)
 		--local ok = pcall(func)
+		assert(func, err)
 		func()
 		
 	--	if(not ok) stop()

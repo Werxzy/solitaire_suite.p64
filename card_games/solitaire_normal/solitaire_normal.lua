@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-24 19:26:46",revision=2439]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 15:04:19",revision=2565]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -14,6 +14,22 @@ all_suit_colors = {
 	{25, 4,25,9}
 }
 
+-- alternate color settings that have spades/clubs and hearts/diamonds match
+all_suit_colors_matching = {
+	{1, 1,16,12},
+	{8, 24,8,14},
+	{1, 1,16,12},
+	{8, 24,8,14}
+}
+
+function get_card_sprite()
+	return card_gen_standard({
+		suits = 4, 
+		ranks = rank_count, 
+		suit_colors = game_save.suit_colors and all_suit_colors_matching or all_suit_colors
+	})
+end
+
 rank_count = 13 -- adjustable
 
 cards_api_shadows_enable(true)
@@ -22,16 +38,12 @@ function game_setup()
 
 	-- save data is based on lua file's name
 	game_save = suite_load_save() or {
-		wins = 0
+		wins = 0, suit_colors = false
 	}	
 	
 	local card_back = suite_card_back()
 	
-	local card_sprites = card_gen_standard({
-		suits = 4, 
-		ranks = rank_count, 
-		suit_colors = all_suit_colors
-	})
+	local card_sprites = get_card_sprite()
 
 	local card_gap = 4
 	for suit = 1,4 do
@@ -379,3 +391,20 @@ end
 function game_update()
 	confetti_update()
 end
+
+function game_settings_opened()
+	suite_settings_add_options("Suit Colors", function(op)
+		game_save.suit_colors = op == 2
+		reset_card_suit_colors()
+		suite_store_save(game_save)
+	end, {"4 Colors", "2 Colors"}, game_save.suit_colors and 2 or 1)
+end
+
+function reset_card_suit_colors()
+	local card_sprites = get_card_sprite()
+	
+	for c in all(get_all_cards()) do
+		c.sprite = card_sprites[c.suit][c.rank]
+	end
+end
+

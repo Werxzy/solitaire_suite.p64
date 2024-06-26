@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-25 21:48:47",revision=1146]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:04:19",revision=1302]]
 
 -- TODO: likely be renamed to something other than settings
 
@@ -9,7 +9,7 @@ suite_settings_elements = {}
 suite_settings_width, suite_settings_height = 300, 200
 suite_settings_title = "\^w\^tSettings"
 
-local suite_setting_layout_y = 10
+local suite_settings_layout_y = 10
 
 function suite_settings_draw(layer)
 	local sett_x, sett_y = (480 - suite_settings_width) / 2, (270 - suite_settings_height) / 2
@@ -53,8 +53,8 @@ function suite_settings_draw(layer)
 			rectfill(0,0,
 				suite_settings_width-1,suite_settings_height-1, 7)
 			--]]
-			rectfill(-10,suite_settings_height, 
-				suite_settings_width+9,suite_settings_height+30, 32)
+			rectfill(0, 10, 
+				suite_settings_width+19,suite_settings_height+30, 32)
 			nine_slice(33, -10, -10, 
 				suite_settings_width+20, suite_settings_height+20, 7)
 				
@@ -74,7 +74,7 @@ function suite_open_settings()
 	end
 	suite_settings_buttons = {}
 	suite_settings_elements = {}
-	suite_setting_layout_y = 9
+	suite_settings_layout_y = 9
 	suite_settings_to = 1
 	
 	-- interaction blocker
@@ -89,6 +89,10 @@ function suite_open_settings()
 	-- allow for the base to be used by other menus
 	
 	if(game_settings_opened) game_settings_opened()
+	
+	if #suite_settings_buttons > 0 or #suite_settings_elements > 0 then
+		suite_settings_add_divider(5, 6)
+	end
 	
 
 -- [[
@@ -107,7 +111,7 @@ function suite_open_settings()
 	suite_settings_add_buttons({{"Exit Settings", suite_close_settings}}, true)
 
 	-- change height of settings menu to fit the buttons
-	suite_settings_height = suite_setting_layout_y + 7
+	suite_settings_height = suite_settings_layout_y + 7
 end
 
 function suite_close_settings()
@@ -142,14 +146,14 @@ end
 -- adds multiple buttons in a row, each with their own function to call
 -- ops = {{name, func}, {...}, ...}
 function suite_settings_add_buttons(ops, right_side)
-	suite_settings_add_mulibutton(suite_setting_layout_y, ops, right_side)	
-	suite_setting_layout_y += 20
+	suite_settings_add_mulibutton(suite_settings_layout_y, ops, right_side)	
+	suite_settings_layout_y += 20
 end
 
 -- adds multiple buttons, but only one should be selected at a time
 function suite_settings_add_options(name, func, ops, current)
 
-	local y = suite_setting_layout_y
+	local y = suite_settings_layout_y
 	
 	-- updates the selected status of a button
 	local x, buttons = nil
@@ -179,12 +183,12 @@ function suite_settings_add_options(name, func, ops, current)
 	-- adds text label
 	suite_settings_add_text_part(name, x-8, y)
 
-	suite_setting_layout_y += 20
+	suite_settings_layout_y += 20
 end
 
 function suite_settings_add_range(name, func, t0, t1, inc, current, inc_width)
 
-	local y = suite_setting_layout_y
+	local y = suite_settings_layout_y
 	inc_width = inc_width or 6
 	
 	-- increment buttons
@@ -245,18 +249,18 @@ function suite_settings_add_range(name, func, t0, t1, inc, current, inc_width)
 	suite_settings_button_add(b1)
 	suite_settings_button_add(b2)
 	
-	suite_setting_layout_y += 20
+	suite_settings_layout_y += 20
 end
 
 -- adds a simple divider to separate elements
 function suite_settings_add_divider(edge, col)
-	local y = suite_setting_layout_y + 2
+	local y = suite_settings_layout_y + 2
 	
 	add(suite_settings_elements, function()
 		rect(edge, y, suite_settings_width - edge - 1, y, col) 
 	end)
 	
-	suite_setting_layout_y += 5
+	suite_settings_layout_y += 5
 end
 
 -- ui helper that adds a text label to a row

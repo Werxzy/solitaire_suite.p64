@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-25 20:30:49",revision=4828]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-26 14:56:52",revision=4878]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -183,6 +183,14 @@ function suite_menuitem_init()
 		on_click = function()
 			suite_exit_game()
 		end,
+		always_active = true
+	})
+	
+	suite_menuitem({
+		--text = "\^:7f00007f00007f00",
+		text = "\^:1f00003e00007c00\-a\^:1f00003e00007c00",
+		colors = {27,3,19},
+		on_click = suite_open_settings,
 		always_active = true
 	})
 	
