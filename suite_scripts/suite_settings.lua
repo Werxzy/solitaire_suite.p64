@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:04:19",revision=1302]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 15:23:39",revision=1347]]
 
 -- TODO: likely be renamed to something other than settings
 
@@ -97,13 +97,11 @@ function suite_open_settings()
 
 -- [[
 	-- TEMP options for testing out ui functions
-	local function pr(p)
-		notify(tostr(p))
-	end
+	local function pr()end
 	
-	suite_settings_add_options("test options", pr, {"yes", "no", "maybe"}, 1)
+	suite_settings_add_options("TODO: more settings", pr, {"Okay", "Ok", "K"}, 1)
 	
-	suite_settings_add_range("test range", pr, 0, 100, 10, 50)
+	suite_settings_add_range("Volume?", pr, "%i%%", 0, 100, 10, 50)
 
 	suite_settings_add_divider(5, 6)
 --]]
@@ -186,10 +184,13 @@ function suite_settings_add_options(name, func, ops, current)
 	suite_settings_layout_y += 20
 end
 
-function suite_settings_add_range(name, func, t0, t1, inc, current, inc_width)
+function suite_settings_add_range(name, func, format, t0, t1, inc, current, inc_width)
 
 	local y = suite_settings_layout_y
 	inc_width = inc_width or 6
+	if type(format) == "string" and #format == 0 then
+		format = nil
+	end
 	
 	-- increment buttons
 	local b2 = suite_button_simple("+", suite_settings_width - 23, y, function()
@@ -240,9 +241,12 @@ function suite_settings_add_range(name, func, t0, t1, inc, current, inc_width)
 	-- draw value
 	
 	add(suite_settings_elements, function()
-		local w, h = print_size(current)
+		local s = current
+		if(format) s = string.format(format, s)
+
+		local w, h = print_size(s)
 		rectfill(x2 - w - 2, y + 3, x2+1, y+h+3, 7)
-		double_print(current, x2 - w, y + 5, 1)
+		double_print(s, x2 - w, y + 5, 1)
 	end)
 	
 	-- add buttons
