@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 15:04:19",revision=2565]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 15:28:32",revision=2606]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -393,7 +393,7 @@ function game_update()
 end
 
 function game_settings_opened()
-	suite_settings_add_options("Suit Colors", function(op)
+	suite_window_add_options("Suit Colors", function(op)
 		game_save.suit_colors = op == 2
 		reset_card_suit_colors()
 		suite_store_save(game_save)

@@ -1,7 +1,7 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 15:04:19",revision=8040]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 15:28:32",revision=8087]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
-include"suite_scripts/suite_settings.lua"
+include"suite_scripts/suite_extra_window.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
 game_version = "0.2.0 DEV"
@@ -51,7 +51,7 @@ local function suite_draw_wrapper()
 	function game_draw(layer)
 		old_draw(layer)
 		
-		suite_settings_draw(layer)
+		suite_window_draw(layer)
 		
 		if layer == 2 then
 			suite_menuitem_draw_pages()
