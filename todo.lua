@@ -1,15 +1,22 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 16:47:17",revision=14852]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 21:27:13",revision=15072]]
 --[[
 
-before release
+== ANY update before release ==	
 
+update label with new solitaire variants (credit pixelDub)
+	specifically when a 0.X.0 version is released
+	
 update .p64 version number
+force update for all subrepository files
 create pull request for main branches
 make release with new version tag
 post
 
 == 0.2.0 ==
 			
+remove card_shadow enable/disable on variants, force shadows to be on?
+change cards_api_coroutine_add to turn functions into coroutines	
+	
 consistent naming
 	always use .width and not .w
 	double check .x_to
@@ -17,9 +24,9 @@ consistent naming
 	bn vs b in buttons	
 
 !prepare for example project 
-
-	coroutine queue instead of single instance
 	
+	return goal stacks
+
 	better game mode sharing support
 		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
 		maybe use game info to double check file
@@ -31,12 +38,16 @@ consistent naming
 			similar to the load idea, just replacing files
 			
 		wait, some way to update the base cart's scripts?
+		
+	use pepper to separate the files
+	
+invisible button to block rules cards
 
 message zep about using fetch to gather carts
 
 manage mods list
+	use new custom window system
 
-remove card_shadow enable/disable on variants, force shadows to be on?
 
 enforce cards to always have a stack?
 	inside init
@@ -50,10 +61,15 @@ tutorial
 last played card game is automatically selected on the main menu
 	only when exiting from that game
 		
-update label with new solitaire variants (credit pixelDub)
-	specifically when a 0.X.0 version is released
+overlap optmization
+	when cards are not moving, render only part of the card that would be visible
 	
-
+	function update_placement(stack)
+		for i,c in all(stack.cards) do
+			c.placement = i
+		end
+	end
+	
 == 0.?.0 ==
 
 page control or scrolling for the suite_window
