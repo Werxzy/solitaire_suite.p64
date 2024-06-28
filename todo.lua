@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-26 21:27:13",revision=15072]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-28 02:57:17",revision=15178]]
 --[[
 
 == ANY update before release ==	
@@ -13,9 +13,6 @@ make release with new version tag
 post
 
 == 0.2.0 ==
-			
-remove card_shadow enable/disable on variants, force shadows to be on?
-change cards_api_coroutine_add to turn functions into coroutines	
 	
 consistent naming
 	always use .width and not .w

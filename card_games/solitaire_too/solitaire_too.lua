@@ -10,8 +10,6 @@ card_height = 60
 
 rank_count = 13 -- adjustable
 
-cards_api_shadows_enable(true)
-
 function game_setup()
 
 	-- save data is based on lua file's name
@@ -103,7 +101,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_api_coroutine_add(cocreate(game_reset_anim))
+			cards_api_coroutine_add(game_reset_anim)
 		end
 	})
 	
@@ -121,10 +119,10 @@ function game_setup()
 	wins_button:update_val()
 		
 	suite_button_simple("Auto Place ->", 340, 248, function()
-		cards_api_coroutine_add(cocreate(game_auto_place_anim))
+		cards_api_coroutine_add(game_auto_place_anim)
 	end)
 	
-	cards_api_coroutine_add(cocreate(game_setup_anim))
+	cards_api_coroutine_add(game_setup_anim)
 	card_position_reset_all()
 end
 
@@ -218,7 +216,7 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_api_coroutine_add(cocreate(game_win_anim))
+	cards_api_coroutine_add(game_win_anim)
 end
 
 --[[ as cool as this might be, it's expensive

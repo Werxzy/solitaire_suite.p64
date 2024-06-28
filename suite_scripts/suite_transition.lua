@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-26 16:05:22",modified="2024-06-26 16:50:53",revision=215]]
+--[[pod_format="raw",created="2024-06-26 16:05:22",modified="2024-06-26 16:57:01",revision=230]]
 
 local suite_transition_t = 0
 
@@ -41,9 +41,9 @@ function suite_transition_prepare_1()
 			suite_transition_t = 0.9
 		end
 		
-		cards_api_coroutine_add(cocreate(
+		cards_api_coroutine_add(
 			function() pause_frames(50) end
-		))
+		)
 		
 	end
 end

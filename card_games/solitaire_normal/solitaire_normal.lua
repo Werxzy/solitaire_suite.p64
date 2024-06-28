@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-26 16:50:53",revision=2715]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-28 02:57:17",revision=2830]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -31,8 +31,6 @@ function get_card_sprite()
 end
 
 rank_count = 13 -- adjustable
-
-cards_api_shadows_enable(true)
 
 function game_setup()
 
@@ -122,7 +120,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_api_coroutine_add(cocreate(game_reset_anim))
+			cards_api_coroutine_add(game_reset_anim)
 		end
 	})
 	
@@ -140,10 +138,10 @@ function game_setup()
 	wins_button:update_val()
 	
 	suite_button_simple("Auto Place ->", 340, 248, function()
-		cards_api_coroutine_add(cocreate(game_auto_place_anim))
+		cards_api_coroutine_add(game_auto_place_anim)
 	end)
 	
-	cards_api_coroutine_add(cocreate(game_setup_anim))
+	cards_api_coroutine_add(game_setup_anim)
 	card_position_reset_all()
 end
 
@@ -251,7 +249,7 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_api_coroutine_add(cocreate(game_win_anim))
+	cards_api_coroutine_add(game_win_anim)
 end
 
 -- reposition calculation that has fixed positions
@@ -310,7 +308,7 @@ function stack_on_click_reveal()
 	
 	-- draw 3 cards
 	if #s > 0 then
-		cards_api_coroutine_add(cocreate(function()
+		cards_api_coroutine_add(function()
 			for i = 1, 3 do
 				if #s > 0 then
 					local c = s[#s]
@@ -319,7 +317,7 @@ function stack_on_click_reveal()
 					pause_frames(10)
 				end
 			end
-		end))
+		end)
 		
 	-- put stack of cards back
 	else

@@ -17,7 +17,6 @@ card_gap = 4
 suit_count = 3 -- keep this from 1 to 4
 rank_count = 13
 
-cards_api_shadows_enable(true)
 
 -- function called after the game is selected and started from the main menu
 -- name must match
@@ -148,7 +147,7 @@ function game_setup()
 		colors = {12, 16, 1}, 
 		on_click = function()
 			-- when clicked, create a new coroutine that will control the game
-			cards_api_coroutine_add(cocreate(game_reset_anim))
+			cards_api_coroutine_add(game_reset_anim)
 		end
 	})
 	
@@ -175,7 +174,7 @@ function game_setup()
 	suite_button_simple("Test Button", 50, 200, function() --[[do things here]] end)
 	
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards
-	cards_api_coroutine_add(cocreate(game_setup_anim))
+	cards_api_coroutine_add(game_setup_anim)
 	
 	-- resets the position of all cards
 	card_position_reset_all()
@@ -262,7 +261,7 @@ function game_count_win()
 	suite_store_save(game_save)
 	
 	-- play the win animation
-	cards_api_coroutine_add(cocreate(game_win_anim))
+	cards_api_coroutine_add(game_win_anim)
 end
 
 -- coroutine for when the game is won

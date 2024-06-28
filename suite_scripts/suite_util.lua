@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 16:50:53",revision=8381]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 16:57:01",revision=8395]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
@@ -83,7 +83,7 @@ end
 function suite_load_game(game_path)
 	cards_api_clear()
 	
-	cards_api_coroutine_add(cocreate(function()
+	cards_api_coroutine_add(function()
 	-- example "card_games/solitaire_basic.lua"
 	suite_game_name = suite_get_game_name(game_path)
 	
@@ -157,7 +157,7 @@ function suite_load_game(game_path)
 		suite_transition_prepare_2()
 	end
 	first_load = false
-	end))
+	end)
 end
 
 function suite_exit_game()

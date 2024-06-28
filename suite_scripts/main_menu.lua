@@ -10,6 +10,12 @@ cards_api_shadows_enable(true)
 main_menu_selected = nil
 cards_animated = {} -- clears animated card backs to prevent overflowing memory
 
+-- stores the original display palette just in case a custom game changes it.
+if original_display_palette then
+	poke(0x5000, unpack(original_display_palette))
+else
+	original_display_palette = {peek(0x5000, 0x400)}
+end
 
 
 -- initializes the list of game variant folders

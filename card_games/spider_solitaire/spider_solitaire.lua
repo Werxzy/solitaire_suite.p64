@@ -14,8 +14,6 @@ total_ranks = 13 -- king
 
 available_columns = 8
 
-cards_api_shadows_enable(true)
-
 function game_setup()
 	
 	game_save = suite_load_save() or {
@@ -92,7 +90,7 @@ function game_setup()
 		text = "New Game",
 		colors = {12, 16, 1}, 
 		on_click = function()
-			cards_api_coroutine_add(cocreate(game_reset_anim))
+			cards_api_coroutine_add(game_reset_anim)
 		end
 	})
 	
@@ -109,7 +107,7 @@ function game_setup()
 	end	
 	wins_button:update_val()
 	
-	cards_api_coroutine_add(cocreate(game_setup_anim))
+	cards_api_coroutine_add(game_setup_anim)
 	card_position_reset_all()
 end
 
@@ -169,7 +167,7 @@ end
 
 function stack_on_click_reveal(card)
 	if #deck_stack.cards>0 then
-		cards_api_coroutine_add(cocreate(deck_draw_anim))
+		cards_api_coroutine_add(deck_draw_anim)
 	end
 end
 
@@ -268,13 +266,13 @@ function game_action_resolved()
 			-- if all the ranks found
 			if r > total_ranks then
 				i += 1
-				cards_api_coroutine_add(cocreate(function()
+				cards_api_coroutine_add(function()
 					pause_frames(15)
 					while stack.cards[i] do
 						stack_cards(stack_goal, unstack_cards(stack.cards[#stack.cards]))
 						pause_frames(3)
 					end
-				end))
+				end)
 				
 			end
 		end
@@ -300,5 +298,5 @@ function game_count_win()
 	game_save.wins += 1
 	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_api_coroutine_add(cocreate(game_win_anim))
+	cards_api_coroutine_add(game_win_anim)
 end

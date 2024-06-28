@@ -1,14 +1,7 @@
 --[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 11:00:49",revision=3155]]
 
 
--- todo, fetch cards in folder in appdata
-
 -- sprite can be a number or userdata
---[[ !!! warning !!! 
-While sprite card backs are usually 45x60,
-They will likely become 100x100 sprites without the card boarder.
-This is so that a card back can be generated for most card sizes
-]]
 
 -- id can be a number or string, just make sure it doesn't match any other card's
 -- used to save card back selected
