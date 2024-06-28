@@ -1,20 +1,20 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-27 00:50:28",revision=9655]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-28 02:57:17",revision=9779]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
 
-include "game/test_include.lua"
 -- including or fetching files next to the main file should include
 -- "/game/" or "game/" at the start of the path
+include "game/stack_rules.lua"
 
 -- some variables used for consistency
 card_width = 45
 card_height = 60
 card_gap = 4
 
-suit_count = 4
+suit_count = 3 -- keep this from 1 to 4
 rank_count = 13
 
 cards_api_shadows_enable(true)
@@ -90,7 +90,7 @@ function game_setup()
 		
 	-- stack that will contain all the cards
 	deck_stack = stack_new(
-		{5,6},
+		{5,7},
 		card_gap, card_gap,
 		{
 			-- stack_repose_static: much more stiff in the card repositioning
@@ -119,6 +119,23 @@ function game_setup()
 		stack_add_card(deck_stack, c, unstacked_cards)
 		-- turn card face down
 		c.a_to = 0.5
+	end
+	
+	-- creates 4 stacks meant for keeping the 
+	stack_goals = {}
+	for i = 0,suit_count-1 do
+		add(stack_goals, stack_new(
+			{5},
+			8*(card_width + card_gap*2) + card_gap,
+			i*(card_height + card_gap*2-1) + card_gap,
+			{
+				-- cards are perfectly stacked on top of eachother
+				reposition = stack_repose_normal(0),
+				-- rule for if a card can be placed on top.
+				can_stack = stack_can_goal, 
+				-- only allow unstacking the top card
+				on_click = stack_on_click_unstack(card_is_top)
+			}))
 	end
 	
 	-- initializes the menu bar
@@ -155,7 +172,7 @@ function game_setup()
 	wins_button:update_val()
 	
 	-- example of a button
-	suite_button_simple("Test Button", 300, 200, function() --[[do things here]] end)
+	suite_button_simple("Test Button", 50, 200, function() --[[do things here]] end)
 	
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards
 	cards_api_coroutine_add(cocreate(game_setup_anim))
@@ -198,7 +215,7 @@ end
 -- coroutine that places all the cards back onto the main deck
 function game_reset_anim()
 	-- takes cards from stack_supply and hand_stack into deck_stack 
-	stack_collecting_anim(deck_stack, stacks_supply, hand_stack)
+	stack_collecting_anim(deck_stack, stacks_supply, hand_stack, stack_goals)
 	
 	-- plays the setup coroutine
 	game_setup_anim()
@@ -220,7 +237,18 @@ end
 
 -- returns true when the game's win condition is fulfilled
 function game_win_condition()
-	return false
+	-- for each goal stack
+	for g in all(stack_goals) do
+		-- check that each card is the next ascending rank, up to the rank count
+		for i = 1,rank_count do
+			if not g.cards[i] or g.cards[i].rank ~= i then
+				return false -- (this is a little overcomplicated, could have been just (#cards == rank_count))
+			end
+		end
+	end
+	
+	-- all goal stacks have the right cards
+	return true
 end
 
 -- called when the game's win condition is fulfilled
@@ -244,91 +272,6 @@ function game_win_anim()
 	-- wait 25 frames (for effect)
 	pause_frames(25)
 	confetti_new(350,135, 100, 10)
-end
-
--- reposition calculation that has fixed positions
-function stack_repose_top_three(stack)
-	local y = stack.y_to
-	local len = #stack.cards - 3
-	for i, c in pairs(stack.cards) do
-		c.x_to = stack.x_to
-		c.y_to = y
-		y += i <= len and 2 or 12
-	end
-end
-
--- determines if stack2 can be placed on stack
--- for solitaire rules like decending ranks and alternating suits
-function stack_can_rule(stack, stack2)
-	-- empty stack can always have cards placed on it
-	if #stack.cards == 0 then
-		return true
-	end
-	
-	-- get's the top card of stack and bottom/first card of stack2
-	local c1 = stack.cards[#stack.cards]
-	local c2 = stack2.cards[1]
-	
-	-- 1 rank below, and is alternating suit
-	if c1.rank - 1 == c2.rank 
-	and (c1.suit + c2.suit) % 2 == 1 then -- alternating suits (b,r,b,r) (0,1,2,3)
-		return true
-	end
-end
-
--- expects to be stacked from ace to king with the same suit
-function stack_can_goal(stack, stack2)
-	
-	-- only one card at a time
-	if #stack2.cards ~= 1 then
-		return false
-	end
-	
-	local c1 = stack.cards[#stack.cards]
-	local c2 = stack2.cards[1] 
-	
-	-- if there's no cards, then expect and ace card
-	if #stack.cards == 0 and c2.rank == 1 then
-		return true
-	end
-	
-	-- need to be one rank above and the same suit
-	if #stack.cards > 0 and c1.rank + 1 == c2.rank and c1.suit == c2.suit then
-		return true
-	end
-end
-
--- used when the deck is clicked on
-function stack_on_click_reveal()
-	local s = deck_stack.cards
-	
-	-- move top card to the hand_stack and turn it face up
-	if #s > 0 then
-		local c = s[#s]
-		stack_add_card(hand_stack, c)
-		c.a_to = 0
-	end
-end
-
--- checks if the cards are decending in rank
-function unstack_rule_decending(card)
-	local s = card.stack.cards
-	local i = has(s, card)
-	
-	-- goes through each card above clicked card to see if the rank decends
-	-- assumes that the suit alternates
-	for j = i+1, #s do
-		local next_card = s[j]
-		
-		-- not decending by 1
-		if next_card.rank+1 ~= card.rank then
-			return false
-		end
-	
-		card = next_card -- current card becomes previous card
-	end
-	
-	return true
 end
 
 -- primary draw function, called multiple times with layers being from 0 to 3
