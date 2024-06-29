@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 21:02:19",revision=18666]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 21:12:20",revision=18690]]
 
 include"cards_api/card_gen.lua"
 
@@ -238,7 +238,7 @@ function game_setup()
 		
 		local b = add(game_mode_buttons, 
 			button_new({
-				x = bx, y = 100, 
+				x = bx, y = 100 - info.sprite:height() + 78, 
 				width = info.sprite:width(), 
 				height = info.sprite:height(),
 				draw = button_deckbox_draw, 
