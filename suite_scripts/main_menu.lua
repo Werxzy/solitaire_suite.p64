@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-26 15:17:15",revision=17996]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 18:03:29",revision=18156]]
 
 include"cards_api/card_gen.lua"
 
@@ -36,16 +36,21 @@ all_card_back_info = {}
 
 for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do 
 	local trav = folder_traversal(loc)
+	local e = cap_env()
+	
 	for p in trav do
 		for cb in all(ls(p)) do
-			include(p .. "/" .. cb)
-			for info in all(get_info()) do
-				
-				if type(info.sprite) == "function" then
-					card_back_animated(info)
+			e.get_info = nil
+			cap_load(p .. "/" .. cb, e)
+			
+			if e.get_info then
+				for info in all(e.get_info()) do
+					if type(info.sprite) == "function" then
+						card_back_animated(info)
+					end
+					
+					add(all_card_back_info, info)
 				end
-				
-				add(all_card_back_info, info)
 			end
 		end
 	end
@@ -202,14 +207,13 @@ function game_setup()
 		local p, n = unpack(game)
 		
 		local info_path = p .. "/" .. n .. "/game_info.lua"
-		if include(info_path) then
-			local info = game_info()
-			if info.api_version == api_version_expected then
-				local op = add(all_info, info)	
-				op.order = op.order or 999999
-				op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
-				op.info_path = info_path
-			end
+		local info = get_game_info(info_path)()
+		
+		if info and info.api_version == api_version_expected then
+			local op = add(all_info, info)	
+			op.order = op.order or 999999
+			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
+			op.info_path = info_path
 		end
 	end
 	
@@ -259,7 +263,7 @@ function game_setup()
 			function() 
 				if main_menu_selected then
 					rule_cards = nil
-					include(main_menu_selected.info_path)
+					game_info = get_game_info(main_menu_selected.info_path)
 					suite_load_game(main_menu_selected.game)
 				end
 			end

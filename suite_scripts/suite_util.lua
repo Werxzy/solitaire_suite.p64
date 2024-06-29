@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-26 16:57:01",revision=8395]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-29 18:03:29",revision=8542]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
@@ -15,6 +15,15 @@ mkdir(suite_save_folder .. "/saves")
 
 banned_env =	split([[
 store
+include
+fetch
+get_game_info
+cap_load
+cap_include
+cap_fetch
+correct_path
+suite_function_wrapper
+suite_load_game
 ]], "\n", false)
 
 copied_env = split([[
@@ -109,28 +118,13 @@ function suite_load_game(game_path)
 -- attempt at encapsulating the game environment
 
 	if game_path ~= "suite_scripts/main_menu.lua" then
-		game_env = {}
-		for k,v in pairs(_ENV) do
-			if type(v) == "function" then
-				game_env[k] = v
-			end
-		end
-		
-		for c in all(copied_env) do
-			game_env[c] = nil
-		end
-		for b in all(banned_env) do
-			game_env[b] = nil
-		end
+		game_env = cap_env()
 		
 		game_env.include = cap_include(game_path:dirname(), game_env)
 		game_env.fetch = cap_fetch(game_path:dirname())
 		
-		--local func,err = load(src, "@"..filename, "t", _ENV)
-		local func, err = load(fetch(game_path), "@".. fullpath(game_path), "t", game_env)
-		--local ok = pcall(func)
-		assert(func, err)
-		func()
+		
+		cap_load(game_path, game_env)
 		
 	--	if(not ok) stop()
 		for c in all(copied_env) do
@@ -236,6 +230,38 @@ function suite_card_back_set(sprite)
 end
 
 
+
+function get_game_info(path)
+	local new_env = {}
+	cap_load(path, new_env)
+	return new_env.game_info
+end
+
+function cap_env()
+	local new_env = {}
+	for k,v in pairs(_ENV) do
+		if type(v) == "function" then
+			new_env[k] = v
+		end
+	end
+	
+	for c in all(copied_env) do
+		new_env[c] = nil
+	end
+	for b in all(banned_env) do
+		new_env[b] = nil
+	end
+	
+	return new_env
+end
+
+function cap_load(path, env)
+	--local func,err = load(src, "@"..filename, "t", _ENV)
+	local func, err = load(fetch(path), "@".. fullpath(path), "t", env)
+	--local ok = pcall(func)
+	assert(func, err)
+	func()
+end
 
 -- copied from include
 function cap_include(base, new_env)
