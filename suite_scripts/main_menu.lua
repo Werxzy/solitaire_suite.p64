@@ -66,7 +66,7 @@ function box_shadow(x1, y1, x2, y2)
 end
 
 function button_deckbox_draw(b)
-	box_shadow(b.x-3, b.y+10, b.x+b.w+2, b.y+b.h+2)
+	box_shadow(b.x-3, b.y+10, b.x+b.width+2, b.y+b.height+2)
 	
 	-- interpolates the draw position
 	b.y2 = lerp(b.y2 or 0, (b.highlight and 3 or 0) + (b == main_menu_selected and 8 or 0), 0.15)
@@ -163,20 +163,20 @@ end
 local function card_button_draw(button)
 	local left = button.highlight and 6 or 0
 	button.t = lerp(button.t, left, 0.2)
-	nine_slice(8, button.x + button.t, button.y + button.off, button.w, 45)
+	nine_slice(8, button.x + button.t, button.y + button.off, button.width, 45)
 	double_print(button.str, button.x2 + button.t, button.y+3, button.col)
 end
 
 local function card_button_new(str, col, y, on_click, offset)
 	local b = button_new({
 		x = 205, y = y, 
-		w = 65, h = 13, 
+		width = 65, height = 13, 
 		draw = card_button_draw, 
 		on_click = on_click
 	})
 	b.str = str
 	b.col = col
-	b.x2 = b.x + (b.w - print_size(str)) \ 2
+	b.x2 = b.x + (b.width - print_size(str)) \ 2
 	b.t = 0
 	b.off = offset or 0
 end
@@ -235,8 +235,8 @@ function game_setup()
 		local b = add(game_mode_buttons, 
 			button_new({
 				x = bx, y = 100, 
-				w = info.sprite:width(), 
-				h = info.sprite:height(),
+				width = info.sprite:width(), 
+				height = info.sprite:height(),
 				draw = button_deckbox_draw, 
 				on_click = button_deckbox_click
 			})
@@ -401,7 +401,7 @@ function game_setup()
 
 	local b = button_new({
 		x = 215, y = 335, 
-		w = 20, h = 21, 
+		width = 20, height = 21, 
 		draw = draw_button, 
 		on_click = scroll(120)
 	})
@@ -410,7 +410,7 @@ function game_setup()
 	
 	local b = button_new({
 		x = 245, y = 335, 
-		w = 20, h = 21, 
+		width = 20, height = 21, 
 		draw = draw_button, 
 		on_click = scroll(-120)
 	})

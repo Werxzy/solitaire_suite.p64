@@ -14,16 +14,40 @@ post
 
 == 0.2.0 ==
 	
-consistent naming
-	always use .width and not .w
-	double check .x_to
-	.text vs .str?	
-	bn vs b in buttons	
+
+change game_info() to be encapsulated (no shinanigans pls)
+	maybe cardback too? 
+
+enforce cards to always have a stack?
+	inside init
+	if done, remove x,y position from card_new parameters
+		mostly because it the position will be reset anyways
+		have the x and y set to the stack's position
+
+card box sprite size calculation for shadows?
+	I think they're currently constant
+
+use pepper to create the example cart
+	remove check for other games in appdata
+	allow for custom card backs (and eventually music)
+
+
+manage mods list
+	use new custom window system
+	upload example game to see if the right game can be pulled
+	store metadata for what games were loaded
+		cart name
+		games detected
+		author?
+		version number?
+		api version
+	button to copy link to original page
+
+	add update button so that all games can get updated to the newest version (unless dash is provided)
+
 
 !prepare for example project 
 	
-	return goal stacks
-
 	better game mode sharing support
 		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
 		maybe use game info to double check file
@@ -35,26 +59,14 @@ consistent naming
 			similar to the load idea, just replacing files
 			
 		wait, some way to update the base cart's scripts?
-		
-	use pepper to separate the files
-	
-invisible button to block rules cards
 
 message zep about using fetch to gather carts
 
-manage mods list
-	use new custom window system
 
 
-enforce cards to always have a stack?
-	inside init
 
-tutorial
-	some clicking and dragging of cards
-	teach ranks 
-		first go 5 to ace
-		then king to ace
-		
+
+
 last played card game is automatically selected on the main menu
 	only when exiting from that game
 		
@@ -66,9 +78,27 @@ overlap optmization
 			c.placement = i
 		end
 	end
+
+custom games
+	card falling game
+		5-7 columns
+		moving a card from one stack to another will increase a counter
+			after a counter is maxxed, it resets and every column gets a new card on bottom
+				cards can be face down
+			(or maybe when getting a new card from the deck)
+
+		create straights of (5?) cards to remove them
+			probably allow king to go to ace
+
 	
 == 0.?.0 ==
 
+tutorial
+	some clicking and dragging of cards
+	teach ranks 
+		first go 5 to ace
+		then king to ace
+		
 page control or scrolling for the suite_window
 	
 ?switch to userdata for some of the structures (it's much faster)

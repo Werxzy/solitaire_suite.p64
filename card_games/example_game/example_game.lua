@@ -171,7 +171,11 @@ function game_setup()
 	wins_button:update_val()
 	
 	-- example of a button
-	suite_button_simple("Test Button", 50, 200, function() --[[do things here]] end)
+	suite_button_simple({
+		text = "Test Button", 
+		x = 50, y = 200, 
+		on_click = function() --[[do things here]] end
+	})
 	
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards
 	cards_api_coroutine_add(game_setup_anim)

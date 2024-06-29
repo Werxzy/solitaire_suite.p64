@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-26 14:56:52",revision=4878]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-28 00:42:34",revision=4977]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -19,7 +19,7 @@ end
 
 local function suite_button_draw(button)
 	local x, y = button.x, button.y
-	local w = button.w
+	local w = button.width
 	local l = button.left
 	
 	
@@ -27,7 +27,7 @@ local function suite_button_draw(button)
 	local ox, oy = camera(-x, -y)
 	color(button.colors[2])
 	
-	rectfill(4 + l, 13, button.w+3, 15)
+	rectfill(4 + l, 13, button.width+3, 15)
 	
 	for i = 0, 3 do
 		local y = 2 + i * 3
@@ -89,12 +89,12 @@ function suite_menuitem(param, too_many)
 	end
 	
 	local last = menuitems[#menuitems]
-	local x = last and last.x+last.w or 0
+	local x = last and last.x+last.width or 0
 	local w = print_size(text) + 10
 	
 	local b = button_new({
 		x = x, y = 255, 
-		w = w, h = 15, 
+		width = w, height = 15, 
 		draw = suite_button_draw, 
 		on_click = on_click and function(b)
 			b.t = 1
@@ -102,6 +102,7 @@ function suite_menuitem(param, too_many)
 		end,
 		bottom = true,
 		group = 2,
+		always_active = param.always_active
 	})
 	
 	b.pages = param.pages
@@ -111,10 +112,9 @@ function suite_menuitem(param, too_many)
 	b.on_destroy = suite_button_on_destroy
 	b.set_value = suite_button_set_value
 	b.left = #menuitems == 0 and -4 or 0
-	b.always_active = param.always_active
 	
 	if not text or #tostr(text) == 0 then
-		b.w -= 4
+		b.width -= 4
 	end
 
 	if value then
@@ -122,8 +122,8 @@ function suite_menuitem(param, too_many)
 			
 		b.value = value
 		b.valw = valw
-		b.valx = b.w - 2
-		b.w += valw + 7
+		b.valx = b.width - 2
+		b.width += valw + 7
 	end
 	
 	return add(menuitems, b)
@@ -138,7 +138,7 @@ local function suite_pages_button(param)
 	
 	local b = button_new({
 		x = -100, y = 0, 
-		w = w, h = 15, 
+		width = w, height = 15, 
 		draw = suite_button_draw, 
 		on_click = on_click and function(b)
 			b.t = 1
@@ -146,17 +146,17 @@ local function suite_pages_button(param)
 		end,
 		bottom = true,
 		group = 2,
+		always_active = true
 	})
 	
 	b.t = 0
 	b.text = text
 	b.colors = {4, 20, 21}
 	b.left = param.left or 0
-	b.always_active = true
 	b.on_destroy = suite_pages_on_destory
 	
 	if not text or #tostr(text) == 0 then
-		b.w -= 4
+		b.width -= 4
 	end
 		
 	return add(pages_buttons, b, 1)
@@ -251,7 +251,7 @@ local function suite_button_simple_draw(b)
 	
 	sspr(b.spr2, 
 		0,0, 
-		b.w,b.h+click_y, 
+		b.width,b.height+click_y, 
 		b.x,b.y-click_y) 
 	
 	pal(12, 12)	
@@ -259,43 +259,48 @@ local function suite_button_simple_draw(b)
 	pal(1, 1)	
 end
 
-function suite_button_simple(t, x, y, on_click, colors, group)
-	local w, h = print_size(t)
+--function suite_button_simple(t, x, y, on_click, colors, group)
+function suite_button_simple(param)
+	local text = param.text or " "
+	local w, h = print_size(text)
 	w += 9
 	h += 4
 	
-	local bn = button_new({
-		x = x, y = y, 
-		w = w, h = h, 
+	local on_click = param.on_click
+
+	local b = button_new({
+		x = param.x, y = param.y, 
+		width = w, height = h, 
 		draw = suite_button_simple_draw, 
-		on_click = function (b)
-			b.ct = 1
+		on_click = function (button)
+			button.ct = 1
 			if on_click then
-				on_click(b)
+				on_click(button)
 			end
 		end,
-		group = group
+		group = param.group,
+		always_active = param.always_active
 	})
-	bn.col = colors or {27,3,19}
-	bn.ct = 0	
-	bn.text = t
+	b.col = param.colors or {27,3,19}
+	b.ct = 0	
+	b.text = text
 	
 	local cx, cy = camera()
 
-	bn.spr1 = userdata("u8", bn.w + 6, bn.h + 4)
-	set_draw_target(bn.spr1)
-	nine_slice(17, 0, 0, bn.spr1:width(), bn.spr1:height())
+	b.spr1 = userdata("u8", b.width + 6, b.height + 4)
+	set_draw_target(b.spr1)
+	nine_slice(17, 0, 0, b.spr1:width(), b.spr1:height())
 	
-	bn.spr2 = userdata("u8", bn.w, bn.h)
-	set_draw_target(bn.spr2)
-	nine_slice(18, 0, 0, bn.spr2:width(), bn.spr2:height())
-	print(t, 5, 3, 22)
-	print(t, 5, 2, 7)
+	b.spr2 = userdata("u8", b.width, b.height)
+	set_draw_target(b.spr2)
+	nine_slice(18, 0, 0, b.spr2:width(), b.spr2:height())
+	print(text, 5, 3, 22)
+	print(text, 5, 2, 7)
 	
 	set_draw_target()
 	camera(cx, cy)
 	
-	return bn
+	return b
 end
 
 -- page display functions
@@ -331,7 +336,7 @@ function suite_menuitem_draw_pages()
 	pos = (1 - pos) * (p.width + 10)
 	local oldx, oldy = camera(pos, 0)
 	for i, b in pairs(pages_buttons) do
-		pos += b.w
+		pos += b.width
 		b.x = p.width  - pos - 1
 		b.y = 270 - p.height - 37 -- test
 	end

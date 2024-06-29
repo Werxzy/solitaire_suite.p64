@@ -137,9 +137,13 @@ function game_setup()
 	end	
 	wins_button:update_val()
 	
-	suite_button_simple("Auto Place ->", 340, 248, function()
-		cards_api_coroutine_add(game_auto_place_anim)
-	end)
+	suite_button_simple({
+		text = "Auto Place ->", 
+		x = 340, y = 248, 
+		on_click = function()
+			cards_api_coroutine_add(game_auto_place_anim)
+		end
+	})
 	
 	cards_api_coroutine_add(game_setup_anim)
 	card_position_reset_all()

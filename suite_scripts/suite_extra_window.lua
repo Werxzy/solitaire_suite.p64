@@ -41,7 +41,7 @@ function suite_window_init(name, width)
 	-- interaction blocker
 	suite_window_blocker = button_new({
 		x = -1000, y = -1000, 
-		w = 3000, h = 3000, 
+		width = 3000, height = 3000, 
 		draw = function() end, 
 		group = 3
 	})
@@ -218,16 +218,27 @@ function suite_window_add_range(name, func, format, t0, t1, inc, current, inc_wi
 	end
 	
 	-- increment buttons
-	local b2 = suite_button_simple("+", suite_window_width - 23, y, function()
-		current = mid(current + inc, t0, t1)
-		func(current)
-	end, nil, 3)
-	b2.always_active = true
-	local b1 = suite_button_simple("-", suite_window_width - 130, y, function()
-		current = mid(current - inc, t0, t1)
-		func(current)
-	end, nil, 3)
-	b1.always_active = true
+	local b2 = suite_button_simple({
+		text = "+", 
+		x = suite_window_width - 23, y = y, 
+		on_click = function()
+			current = mid(current + inc, t0, t1)
+			func(current)
+		end,
+		group = 3,
+		always_active = true
+	})
+
+	local b1 = suite_button_simple({
+		text = "-", 
+		x = suite_window_width - 130, y = y, 
+		on_click = function()
+			current = mid(current - inc, t0, t1)
+			func(current)
+		end,
+		group = 3,
+		always_active = true
+	})
 	
 	-- calculates number of marks
 	local i1 = (t1-t0) \ inc
@@ -236,7 +247,7 @@ function suite_window_add_range(name, func, format, t0, t1, inc, current, inc_wi
 	local left = b2.x - i1 * inc_width - 7
 	
 	-- repositions "-" button based on size
-	b1.x = left - b1.w - 8
+	b1.x = left - b1.width - 8
 	local x2 = b1.x - 6
 	
 	-- add text
@@ -295,9 +306,9 @@ function suite_window_add_divider(edge, col)
 end
 
 -- ui helper that adds a text label to a row
-function suite_window_add_text_part(text, right_x, y)
+function suite_window_add_text_part(str, right_x, y)
 
-	local tw = print_size(text) + 13
+	local tw = print_size(str) + 13
 	
 	-- adds text label and dotted line
 	add(suite_window_elements, function()
@@ -305,7 +316,7 @@ function suite_window_add_text_part(text, right_x, y)
 		rectfill(tw, y+12, right_x, y+12, 32) 
 		fillp()
 
-		double_print(text, 10, y+5, 2)
+		double_print(str, 10, y+5, 2)
 	end)
 end
 
@@ -314,8 +325,13 @@ function suite_window_add_mulibutton(y, ops, right_side)
 	-- creates a button for each option
 	local op_buttons = {}
 	for o in all(ops) do
-		local b = add(op_buttons, suite_button_simple(o[1], 0, y, o[2], nil, 3))
-		b.always_active = true
+		add(op_buttons, suite_button_simple({
+			text = o[1], 
+			x = 0, y = y, 
+			on_click = o[2], 
+			group = 3,
+			always_active = true
+		}))
 	end
 	
 	local x = 10
@@ -326,7 +342,7 @@ function suite_window_add_mulibutton(y, ops, right_side)
 		for i = #op_buttons, 1, -1 do
 			local b = op_buttons[i]
 			
-			x -= b.w + 10
+			x -= b.width + 10
 			b.x = x
 			
 			suite_window_button_add(b)
@@ -337,7 +353,7 @@ function suite_window_add_mulibutton(y, ops, right_side)
 		for i = 1, #op_buttons do
 			local b = op_buttons[i]
 			b.x = x
-			x += b.w + 10
+			x += b.width + 10
 						
 			suite_window_button_add(b)
 		end
