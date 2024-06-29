@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-28 02:57:17",revision=15178]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-29 19:51:29",revision=15565]]
 --[[
 
 == ANY update before release ==	
@@ -15,16 +15,11 @@ post
 == 0.2.0 ==
 	
 
-change game_info() to be encapsulated (no shinanigans pls)
-	maybe cardback too? 
+have stack as an optional parameter for card_new
+	if stack provided and no x or y provided, apply the stack's position
 
-enforce cards to always have a stack?
-	inside init
-	if done, remove x,y position from card_new parameters
-		mostly because it the position will be reset anyways
-		have the x and y set to the stack's position
 
-card box sprite size calculation for shadows?
+card box sprite size calculation for shadows? (main menu)
 	I think they're currently constant
 
 use pepper to create the example cart
@@ -92,6 +87,13 @@ custom games
 
 	
 == 0.?.0 ==
+
+hand_unstack currently (ignoring the not_held parameter) move the card to held
+	this is a bit inconsistent with the function stack_on_click_unstack function
+	maybe have a function hand_on_click_unstack which removes only one card
+		and then have hand_unstack only return the new stack
+		
+	assign the unstack action to the stack?
 
 tutorial
 	some clicking and dragging of cards

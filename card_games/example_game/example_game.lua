@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-28 02:57:17",revision=9779]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-29 19:51:29",revision=10098]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
@@ -83,6 +83,10 @@ function game_setup()
 				-- unstack_rule_decending : 	the cards must be decending in suit
 				-- unstack_rule_face_up : 	clicked card must be face up
 				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), 
+			
+				-- event for when a card in the stack is clicked twice quickly
+				-- will attempt to place the card onto one of the goal stacks
+				on_double = stack_on_double_goal,
 			}))
 			
 	end
@@ -98,17 +102,31 @@ function game_setup()
 			on_click = stack_on_click_reveal,
 		})
 	
+	-- just a simple sprite to draw the area of the hand
+	local w = 150
+	local b = 14
+	hand_stack_sprite = userdata("u8", w + b, 60 + b)
+	set_draw_target(hand_stack_sprite)
+	rect(0,0,w+b-1, 60+b-1, 19)
+	rect(2,2,w+b-3, 60+b-3, 19)
+	rectfill(4,4,w+b-5, 60+b-5, 19)
+	set_draw_target()
+
 	-- speical stack that will lay out the cards like a hand
 	-- cards can be added/removed in any order, or even be reordered
 	hand_stack = stack_hand_new(
-		{},
+		{hand_stack_sprite},
 		150, 180,
 		{
-			hand_width = 200,
+			hand_width = w,
 			hand_max_delta = 30,
-			-- any card can be stacked here
-			-- TODO, have a hand limit of 5
-			can_stack = function() return true end,
+			-- any card can be stacked, as long as there are 5 or less
+			can_stack = hand_can_stack,
+			on_double = function(card)
+				stack_on_double_goal(card, true)
+			end,
+			x_off = -b\2,
+			y_off = -b\2,
 		})
 		
 	-- goes through all the cards and puts them into the deck stack in a random order
@@ -172,9 +190,11 @@ function game_setup()
 	
 	-- example of a button
 	suite_button_simple({
-		text = "Test Button", 
-		x = 50, y = 200, 
-		on_click = function() --[[do things here]] end
+		text = "Auto Place", 
+		x = 417, y = 210, 
+		on_click = function()
+			cards_api_coroutine_add(game_auto_place_anim)
+		end
 	})
 	
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-06-28 02:57:17",revision=31]]
+--[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-06-29 19:51:29",revision=324]]
 
 
 -- determines if stack2 can be placed on stack
@@ -47,7 +47,8 @@ function stack_on_click_reveal()
 	local s = deck_stack.cards
 	
 	-- move top card to the hand_stack and turn it face up
-	if #s > 0 then
+	-- only if there are cards available and there are less than 5 in the hand
+	if #s > 0 and #hand_stack.cards < 5 then
 		local c = s[#s]
 		stack_add_card(hand_stack, c)
 		c.a_to = 0
@@ -75,3 +76,55 @@ function unstack_rule_decending(card)
 	return true
 end
 
+-- the number of cards in the hand cannot go above 5
+function hand_can_stack(stack, stack2) 
+	return #stack.cards + #stack2.cards <= 5 
+end
+
+
+-- attempts to place the card onto any of the goal stacks
+-- returns true if successful
+function stack_on_double_goal(card, from_hand)
+	-- only accept top card (though could work with multiple cards
+	if card and (from_hand or card_is_top(card)) then 
+		local old_stack = card.stack
+		-- create a temporary stack containing the card
+		local temp_stack = from_hand and unstack_hand_card(card, true) or unstack_cards(card)
+		
+		-- attempt to place on each of the goal stacks
+		for g in all(stack_goals) do
+			if g:can_stack(temp_stack) then
+				stack_cards(g, temp_stack)
+				card.a_to = 0 -- turn face up
+				return true
+			end
+		end
+			
+		-- if temp stack still exists, then return card to original stack
+		if temp_stack then
+			stack_apply_unresolved(temp_stack)
+		end
+	end
+end
+
+-- goes through each card and plays a card where it expects
+-- easier than double clicking each card
+function game_auto_place_anim()
+	::again::
+	pause_frames(6) -- delay between cards
+	
+	-- checks each of the supply stacks, starting from the closest to the goal stacks
+	for i = #stacks_supply, 1, -1 do
+		if stack_on_double_goal(get_top_card(stacks_supply[i])) then
+			-- if found, find the next card the can be stacked on the goal
+			goto again
+		end
+	end
+	
+	-- each card in hand will be checked by themselves
+	for c in all(hand_stack.cards) do
+		if stack_on_double_goal(c, true) then
+			goto again
+		end
+	end
+end

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-26 16:27:50",revision=10246]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-29 19:31:38",revision=10278]]
 
 
 include "suite_scripts/confetti.lua"
@@ -159,43 +159,19 @@ end
 -- goes through each card and plays a card where it expects
 -- easier than double clicking each card
 function game_auto_place_anim()
-	local found = true
+	::again::
+	pause_frames(6) -- delay between cards
 	
-	local function find_placement(stack)
-		-- create temp stack with top card
-		local card = get_top_card(stack)
-		if not card then
-			return
-		end
-		local temp_stack = unstack_cards(card)
-	
-		-- check with each goal stack if card can be placed
-		for g in all(stack_goals) do
-			if g:can_stack(temp_stack) then
-				found = true
-				stack_cards(g, temp_stack)
-				break
-			end
-		end
-		
-		-- return card to original stack
-		if not found then
-			stack_cards(stack, temp_stack)
+	-- checks each of the supply stacks, starting from the closest to the goal stacks
+	for i = #stacks_supply, 1, -1 do
+		if stack_on_double_goal(get_top_card(stacks_supply[i])) then
+			-- if found, find the next card the can be stacked on the goal
+			goto again
 		end
 	end
 	
-	while found do
-		found = false
-		for i = #stacks_supply, 1, -1 do
-			find_placement(stacks_supply[i])
-			if found then
-				break
-			end
-		end
-		if not found then
-			find_placement(deck_playable)
-		end
-		pause_frames(6)
+	if stack_on_double_goal(get_top_card(deck_playable)) then
+		goto again
 	end
 end
 
@@ -310,25 +286,27 @@ function stack_on_click_reveal()
 	end
 end
 
+-- attempts to place the card onto any of the goal stacks
+-- returns true if successful
 function stack_on_double_goal(card)
 	-- only accept top card (though could work with multiple cards
-	if card and card_is_top(card) then 
+	if card and (from_hand or card_is_top(card)) then 
 		local old_stack = card.stack
-		-- create a temporary stack
-		local temp_stack = unstack_cards(card)
+		-- create a temporary stack containing the card
+		local temp_stack = from_hand or unstack_cards(card)
 		
 		-- attempt to place on each of the goal stacks
 		for g in all(stack_goals) do
 			if g:can_stack(temp_stack) then
 				stack_cards(g, temp_stack)
-				temp_stack = nil
-				break
+				card.a_to = 0 -- turn face up
+				return true
 			end
 		end
 			
 		-- if temp stack still exists, then return card to original stack
 		if temp_stack then
-			stack_cards(old_stack, temp_stack)
+			stack_apply_unresolved(temp_stack)
 		end
 	end
 end
