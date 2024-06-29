@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 18:03:29",revision=18156]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 21:02:19",revision=18666]]
 
 include"cards_api/card_gen.lua"
 
@@ -363,11 +363,9 @@ function game_setup()
 			local c = card_new({
 				sprite = front_sprite,
 				back_sprite = cb_sprite,
-				x = s.x_to,
-				y = s.y_to,
+				stack = s
 			})
 			c.info = cb
-			stack_add_card(s,  c)
 		end
 	end
 	

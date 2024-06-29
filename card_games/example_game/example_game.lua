@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-29 19:51:29",revision=10098]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-29 21:02:19",revision=10359]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
@@ -26,6 +26,17 @@ function game_setup()
 	game_save = suite_load_save() or {
 		wins = 0 -- default save data, can store game settings here
 	}	
+		
+	-- stack that will contain all the cards
+	deck_stack = stack_new(
+		{5,7},
+		card_gap, card_gap,
+		{
+			-- stack_repose_static: much more stiff in the card repositioning
+			-- -0.16 packs the cards more tightly like a normal stack of cards
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal,
+		})
 	
 	-- get the card back sprite that the player wants to use
 	local card_back = suite_card_back()
@@ -43,7 +54,11 @@ function game_setup()
 				 -- front sprite
 				sprite = card_sprites[suit][rank],
 				-- backs sprite
-				back_sprite = card_back
+				back_sprite = card_back,
+				-- stack first assigned to
+				stack = deck_stack,
+				-- starts face down
+				a = 0.5
 			})
 			
 			-- assigns the card it's suit and rank
@@ -52,12 +67,7 @@ function game_setup()
 		end
 	end
 	
-	-- creates a table of all the unstacked cards
-	local unstacked_cards = {}
-	for c in all(get_all_cards()) do
-		add(unstacked_cards, c)
-	end
-	
+	stack_quick_shuffle(deck_stack)	
 	
 	-- creates 7 stacks evenly spaced out 
 	-- stacks are places for cards to be held, while having rules for how cards can be taken
@@ -90,17 +100,6 @@ function game_setup()
 			}))
 			
 	end
-		
-	-- stack that will contain all the cards
-	deck_stack = stack_new(
-		{5,7},
-		card_gap, card_gap,
-		{
-			-- stack_repose_static: much more stiff in the card repositioning
-			-- -0.16 packs the cards more tightly like a normal stack of cards
-			reposition = stack_repose_static(-0.16),
-			on_click = stack_on_click_reveal,
-		})
 	
 	-- just a simple sprite to draw the area of the hand
 	local w = 150
@@ -128,16 +127,7 @@ function game_setup()
 			x_off = -b\2,
 			y_off = -b\2,
 		})
-		
-	-- goes through all the cards and puts them into the deck stack in a random order
-	while #unstacked_cards > 0 do
-		local c = rnd(unstacked_cards)
-		-- add card "c" to "deck_stack" and remove it from table "unstacked_cards"
-		stack_add_card(deck_stack, c, unstacked_cards)
-		-- turn card face down
-		c.a_to = 0.5
-	end
-	
+			
 	-- creates 4 stacks meant for keeping the 
 	stack_goals = {}
 	for i = 0,suit_count-1 do

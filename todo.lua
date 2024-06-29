@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-29 19:51:29",revision=15565]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-29 21:02:19",revision=15795]]
 --[[
 
 == ANY update before release ==	
@@ -14,10 +14,6 @@ post
 
 == 0.2.0 ==
 	
-
-have stack as an optional parameter for card_new
-	if stack provided and no x or y provided, apply the stack's position
-
 
 card box sprite size calculation for shadows? (main menu)
 	I think they're currently constant

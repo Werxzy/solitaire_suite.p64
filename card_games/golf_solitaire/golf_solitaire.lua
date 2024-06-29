@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-26 16:26:58",revision=2990]]
+--[[pod_format="raw",created="2024-03-21 00:44:11",modified="2024-06-29 21:02:07",revision=3089]]
 
 
 include "suite_scripts/confetti.lua"
@@ -18,9 +18,18 @@ function game_setup()
 		wins = 0
 	}	
 	
+	local card_gap = 4
+	
+	deck_stack = stack_new(
+		{5,257},
+		240-card_width-card_gap*2, 160,
+		{
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal
+		})
+	
 	local card_back = suite_card_back()
 	
-	local card_gap = 4
 	local card_sprites = card_gen_standard({
 		suits = 4, 
 		ranks = rank_count
@@ -31,19 +40,15 @@ function game_setup()
 			local c = card_new({
 				sprite = card_sprites[suit][rank], 
 				back_sprite = card_back,
-				x = 240,
-				y = 100
+				stack = deck_stack,
+				a = 0.5
 			})
 			c.suit = suit
 			c.rank = rank
 		end
 	end
 	
-	local unstacked_cards = {}
-	local cards_all = get_all_cards()
-	for c in all(cards_all) do
-		add(unstacked_cards, c)
-	end
+	stack_quick_shuffle(deck_stack)	
 	
 	stacks_supply = {}
 	for i = 1,7 do
@@ -58,13 +63,6 @@ function game_setup()
 			
 	end
 	
-	deck_stack = stack_new(
-		{5,257},
-		240-card_width-card_gap*2, 160,
-		{
-			reposition = stack_repose_static(-0.16),
-			on_click = stack_on_click_reveal
-		})
 	
 	deck_goal = stack_new(
 		{5,258},
@@ -73,13 +71,7 @@ function game_setup()
 			reposition = stack_repose_static(-0.16),
 			can_stack = stack_can_goal
 		})
-	
-	while #unstacked_cards > 0 do
-		local c = rnd(unstacked_cards)
-		stack_add_card(deck_stack, c, unstacked_cards)
-		c.a_to = 0.5
-	end
-		
+			
 	suite_menuitem_init()
 	suite_menuitem({
 		text = "New Game",
