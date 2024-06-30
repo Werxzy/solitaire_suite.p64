@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-29 21:02:19",revision=15795]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-30 00:07:37",revision=16296]]
 --[[
 
 == ANY update before release ==	
@@ -14,18 +14,19 @@ post
 
 == 0.2.0 ==
 	
-
-card box sprite size calculation for shadows? (main menu)
-	I think they're currently constant
-
 use pepper to create the example cart
-	remove check for other games in appdata
-	allow for custom card backs (and eventually music)
-
-
+	custom temp label for example cart
+	
+fix pepper error messages
+	prevent the project from starting (don't know why it is allowed)
+	error messages for missing parameters in rename
+	
 manage mods list
 	use new custom window system
 	upload example game to see if the right game can be pulled
+		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
+		maybe use game info to double check files			
+			
 	store metadata for what games were loaded
 		cart name
 		games detected
@@ -35,27 +36,8 @@ manage mods list
 	button to copy link to original page
 
 	add update button so that all games can get updated to the newest version (unless dash is provided)
-
-
-!prepare for example project 
 	
-	better game mode sharing support
-		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
-		maybe use game info to double check file
-		probably copy the contents of the bbs_card.p64.png/card_games into it's own folder
-			if the folder already exists, clear it
-			
-		add an example game that can easily be copied and 
-		add update button that looks at the original cart
-			similar to the load idea, just replacing files
-			
-		wait, some way to update the base cart's scripts?
-
 message zep about using fetch to gather carts
-
-
-
-
 
 
 last played card game is automatically selected on the main menu
@@ -81,6 +63,12 @@ custom games
 		create straights of (5?) cards to remove them
 			probably allow king to go to ace
 
+double check and fill out documentation for 
+	the example game
+	suite
+	cards api
+	
+	
 	
 == 0.?.0 ==
 
@@ -110,6 +98,10 @@ visual tutorial sequence for a each game
 	
 
 == maybe ?? ==
+
+more control for the card box sprites
+	currently just shifts the position a bit based on the height
+	also the shadow is always rectangular
 
 ? better error handling for solitaire variants
 

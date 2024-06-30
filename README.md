@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2024-06-29 22:17:29",modified="2024-06-29 22:45:52",revision=117]]
 # Picotron Solitaire Suite
 
 Here I'm only showing Picotron Solitaire Suite specific functions. To see the main list, check out the api readme (https://github.com/Werxzy/cards_api/blob/main/README.md).
@@ -19,6 +20,9 @@ To ensure that the right information is being loaded, have your file structure l
 
 The suite will look for files named `game_info.lua` and their parent folder to determine what `GAMENAME` is.
 Any other files can be included inside `/GAMENAME/`
+
+When using `include` or `fetch`, start your path with `/game/` in order to get the files relative to `game_info.lua` and `GAMENAME.lua`.
+This will help the Suite in fetching the right files, even if they are loaded into `/appdata/`
 
 ### game_info.lua
 

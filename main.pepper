@@ -1,3 +1,10 @@
---[[pod_format="raw",created="2024-05-30 00:26:30",modified="2024-05-31 22:20:46",revision=55]]
+--[[pod_format="raw",created="2024-05-30 00:26:30",modified="2024-06-30 00:07:37",revision=580]]
 
+remove todo.lua
 
+remove card_games/example_game/
+remove EXAMPLE_READMEFIRST.md
+remove label_example.png
+
+remove main.pepper
+remove example.pepper

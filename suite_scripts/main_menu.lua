@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-29 21:12:20",revision=18690]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-30 00:07:37",revision=19370]]
 
 include"cards_api/card_gen.lua"
 
@@ -20,8 +20,13 @@ end
 
 -- initializes the list of game variant folders
 game_list = {}
+--#if not example
 for loc in all{"card_games", suite_save_folder .. "/card_games"} do
 	local trav = folder_traversal(loc)
+--[[#else
+	local trav = folder_traversal("card_games")
+--#end]]
+
 	for p in trav do
 		-- find any game info files
 		if trav("find", "game_info.lua") then
@@ -29,7 +34,10 @@ for loc in all{"card_games", suite_save_folder .. "/card_games"} do
 			trav"exit" -- don't allow 
 		end
 	end
+	
+--#if not example
 end
+--#end
 
 
 all_card_back_info = {}
@@ -255,8 +263,13 @@ function game_setup()
 		bx += info.sprite:width() + 10
 	end
 	
-	local third = game_mode_buttons[3]
-	x_offset("pos", 240 - third.sprite:width() - 5 - third.x_old)
+	if #game_mode_buttons > 1 then
+		local third = game_mode_buttons[3] or game_mode_buttons[1]
+		x_offset("pos", 240 - third.sprite:width() - 5 - third.x_old)
+	else
+		local first = game_mode_buttons[1]
+		x_offset("pos", 240 - first.sprite:width()\2 - 1 - first.x_old)
+	end
 	
 	local cb = {
 		{"Start Game", 8, 
@@ -268,7 +281,9 @@ function game_setup()
 				end
 			end
 		},
+--#if not example
 		{"Manage Mods", 16, function()end},
+--#end
 		{"Settings", 27, suite_open_settings},
 		{"Exit Game", 25, exit},
 	}
@@ -282,7 +297,7 @@ function game_setup()
 			end
 		end
 		
-		card_button_new(d[1], d[2], 185 + (i-1)*13, d[3])
+		card_button_new(d[1], d[2], 185 + (i-1 + 4-#cb)*13, d[3])
 	end
 			
 	card_button_new("Return", 16, 310, 
@@ -417,6 +432,11 @@ function game_setup()
 		on_click = scroll(-120)
 	})
 	b.t = 0
+	
+	-- if there's only one game, auto select it
+	if #game_mode_buttons == 1 then
+		--game_mode_buttons[1]:on_click()
+	end
 end
 
 -- also updates the card back
@@ -482,17 +502,46 @@ function game_update()
 end
 
 function game_draw(layer)
-	if layer == 0 then
-	
+	if layer == 0 then		
+		
+-- example color palette
+--#if not example
 		cls(3)
 		
+--[[#else
+		-- EDIT THIS (remove, or adjust colors)
+		--normally cls(3)
+		cls(18)
+		pal(3,18) 
+		pal(27,13) 
+		pal(19,2)
+		pal(11,29)
+--#end]]
 	
 		local cy = main_menu_y() * 260.5
 		camera(0, cy)	
-		spr(22, 121, 2)
+		spr(22, 121, 2) -- feel free to replae this this
 	
+		-- keep this, it's based on the suite version
 		print("Version " .. game_version, 1, 262, 19)
+		
+--[[#if example
+	-- but please keep this in some fashion
+	print("Made with Picotron", 390, 230)
+	print("Solitaire Suite", 399, 240)
+--#end]]
 		print("Mostly by Werxzy", 399, 261)
+		
+--#if not example
+
+--[[#else
+		-- EDIT THIS (remove or edit colors)
+		print("EXAMPLE PROJECT", 160, 85)
+		pal(3,3)
+		pal(27,27)
+		pal(19,19)
+		pal(11,11)
+--#end]]
 		
 	-- card back info
 		local full_w = 187 - 12
@@ -515,6 +564,7 @@ function game_draw(layer)
 		spr(game_description, 8, 182)
 		
 	-- card back selection details
+		rectfill(0, 518, 480, 519, 3)
 		rectfill(0, 530, 480, 540, 21)
 		for i = 0, 479,175  do
 			spr(12, i, 364)
@@ -531,8 +581,8 @@ function game_draw(layer)
 		box_shadow(203, 241-3, 203+73, 241+12)
 		box_shadow(203-3, 260, 203+73+3, 309)
 		spr(1, 203, 241)
-		
 	end
+	
 end
 
 
