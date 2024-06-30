@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-06-29 19:51:29",revision=324]]
+--[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-06-30 23:30:20",revision=472]]
 
 
 -- determines if stack2 can be placed on stack
@@ -89,7 +89,7 @@ function stack_on_double_goal(card, from_hand)
 	if card and (from_hand or card_is_top(card)) then 
 		local old_stack = card.stack
 		-- create a temporary stack containing the card
-		local temp_stack = from_hand and unstack_hand_card(card, true) or unstack_cards(card)
+		local temp_stack = from_hand and unstack_hand_card(card) or unstack_cards(card)
 		
 		-- attempt to place on each of the goal stacks
 		for g in all(stack_goals) do

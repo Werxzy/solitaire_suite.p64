@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-30 00:07:37",revision=16296]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-30 23:30:20",revision=16365]]
 --[[
 
 == ANY update before release ==	
@@ -13,10 +13,7 @@ make release with new version tag
 post
 
 == 0.2.0 ==
-	
-use pepper to create the example cart
-	custom temp label for example cart
-	
+
 fix pepper error messages
 	prevent the project from starting (don't know why it is allowed)
 	error messages for missing parameters in rename
