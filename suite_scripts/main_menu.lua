@@ -1,7 +1,7 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-06-30 00:07:37",revision=19370]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-01 23:28:02",revision=20061]]
 
 include"cards_api/card_gen.lua"
-
+include"suite_scripts/suite_mod_window.lua"
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
@@ -282,7 +282,7 @@ function game_setup()
 			end
 		},
 --#if not example
-		{"Manage Mods", 16, function()end},
+		{"Manage Mods", 16, suite_open_mod_manager},
 --#end
 		{"Settings", 27, suite_open_settings},
 		{"Exit Game", 25, exit},

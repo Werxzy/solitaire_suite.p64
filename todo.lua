@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-06-30 23:30:20",revision=16365]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-01 23:28:02",revision=16961]]
 --[[
 
 == ANY update before release ==	
@@ -14,15 +14,11 @@ post
 
 == 0.2.0 ==
 
-fix pepper error messages
-	prevent the project from starting (don't know why it is allowed)
-	error messages for missing parameters in rename
-	
 manage mods list
 	use new custom window system
 	upload example game to see if the right game can be pulled
 		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
-		maybe use game info to double check files			
+		maybe use game info to double check files
 			
 	store metadata for what games were loaded
 		cart name
@@ -59,6 +55,10 @@ custom games
 
 		create straights of (5?) cards to remove them
 			probably allow king to go to ace
+		uses highscore instead of win count
+			
+	roguelite of some sort?
+			
 
 double check and fill out documentation for 
 	the example game

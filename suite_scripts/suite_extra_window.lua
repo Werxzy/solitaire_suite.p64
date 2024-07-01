@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-06-26 16:04:23",revision=1453]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-01 23:28:02",revision=1993]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -60,7 +60,7 @@ function suite_window_footer(exit_text)
 end
 
 function suite_window_draw(layer)
-	local sett_x, sett_y = (480 - suite_window_width) / 2, (270 - suite_window_height) / 2
+	local sett_x, sett_y = (480 - suite_window_width) / 2, (270 - suite_window_height) / 2 + 20
 		
 	if layer == 2 then
 		suite_menuitem_draw_pages()
@@ -138,6 +138,7 @@ function suite_open_settings()
 end
 
 function suite_close_settings()
+	
 	suite_window_to = -0.1
 	suite_window_blocker:destroy()
 	suite_window_blocker = nil
@@ -169,8 +170,9 @@ end
 -- adds multiple buttons in a row, each with their own function to call
 -- ops = {{name, func}, {...}, ...}
 function suite_window_add_buttons(ops, right_side)
-	suite_window_add_mulibutton(suite_window_layout_y, ops, right_side)	
+	local _, b = suite_window_add_mulibutton(suite_window_layout_y, ops, right_side)	
 	suite_window_layout_y += 20
+	return b
 end
 
 -- adds multiple buttons, but only one should be selected at a time
