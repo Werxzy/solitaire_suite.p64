@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-01 23:28:02",revision=723]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-02 00:45:58",revision=1008]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
@@ -7,7 +7,55 @@ local game_sel_buttons = {}
 local game_sel_desc = ""
 local game_sel_current = nil
 
+local game_list_all = {
+	{name = "test game"},
+	{name = "test game 2"},
+}
+
+local function save_game_list()
+	store("/appdata/solitaire_suite/mod_list.pod", game_list_all)
+end
+
+local function cull_version(id)
+	return split(id, "-")[1]
+end
+
+local function find_game_by_id(id)
+	id = cull_version(id)
+	
+	for g in all(game_list_all) do
+		if cull_version(g.id) == id then
+			return g
+		end
+	end
+end
+
+local function attempt_add_game(id)
+	-- TODO search current list for game
+	-- if already exists, remove it
+	
+	-- TODO fetch game
+	-- check game is valid
+	
+	-- be careful of loading own games from #solitaire_suite
+	
+	-- can't do individual games since there are card backs that can be added
+	add(game_list_all, {
+		id = id, -- id cart is loaded
+		name = "aaa", -- name of game?
+		author = "bbb", -- author(s) of game
+		games_path = "",
+		card_backs_path = "",
+	})
+
+	save_game_list()
+end
+
+
 function suite_open_mod_manager()
+	game_list_all = fetch("/appdata/solitaire_suite/mod_list.pod") or {}
+	save_game_list()
+
 	suite_window_init("Mod Manager")
 	
 	game_sel_desc = ""
@@ -22,13 +70,6 @@ function suite_open_mod_manager()
 	suite_window_footer("Exit Mod Manager")
 end
 
-local fake_list = {
-	"game 1",
-	"game 2",
-	"game 3",
-	"game 4",
-	"game 5",	
-	}
 	
 local function destroy_button_list(list)
 	for b in all(list) do
@@ -75,7 +116,9 @@ local function update_game_list()
 	local y = game_list_y_start+1
 	local h = 17	
 
-	for i = 1,#fake_list do
+	for i = 1,#game_list_all do
+		local g = game_list_all[i]
+		
 		local b = button_new({
 			x = 10,
 			y = y,
@@ -86,7 +129,7 @@ local function update_game_list()
 			always_active = true
 		})
 		
-		b.text = fake_list[i]
+		b.text = g.name
 		b.t = 0
 		y += h
 		
@@ -136,32 +179,46 @@ function add_text_field()
 	local y = get_suite_window_layout_y()
 	
 	local g = create_gui()
+	local w, h = 117, 13
 	local nav_text = g:attach_text_editor{
 		x=10,y=4+y,
-		width=100,
-		height=12,
+		width=w,
+		height=h,
 		max_lines = 1,	
 		key_callback = { 
 			enter = function()end,
 			tab = function()end
-		}
+		},
+		bgcol = 21,
+		fgcol = 6,
 	}
 			
-	add(suite_window_elements, function()
+	add(suite_window_elements, function()	
+
+		rectfill(9, 3+y, 10+w, 3+y, 20)
+		rect(9, 2+y, 10+w, 4+y+h, 4)
+		rect(8, 1+y, 11+w, 5+y+h, 20)
+		rectfill(8, 6+y+h, 11+w, 6+y+h, 21)
+
 		-- due to the text field not being affected by camera()
-		local x, y = camera()
-		g.x, g.y = -x, -y
-		camera(x, y)
-		
+		local cx, cy = camera()
+		g.x, g.y = -cx, -cy
+		camera(cx, cy)	
+
 		g:update_all()
 		g:draw_all()
+		
+		if #nav_text.get_text()[1] == 0 then
+			print("Input cart ID...", 14, y+7, 4)
+		end
 	end)
 
-	suite_window_add_buttons({{"Add Mod", function()
+	local b = suite_window_add_buttons({{"Add", function()
 			notify("TODO: add " .. tostr(nav_text.get_text()[1]))
 		end}}, true)
-
-	y += 20
-	set_suite_window_layout_y(y)
 	
+	b[1].base_x -= 131
+	b[1].base_y += 1
+
+	set_suite_window_layout_y(y+21)
 end

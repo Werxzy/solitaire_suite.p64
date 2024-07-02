@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-06-30 00:07:37",revision=621]]
+--[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-02 00:45:58",revision=770]]
 
 def example true
 
@@ -14,6 +14,8 @@ remove card_games/spider_solitaire/
 
 remove card_backs/card_backs_louie_chapman.lua
 remove card_backs/card_backs_fletch.lua
+
+remove suite_scripts/suite_mod_window.lua
 
 rename label_example.png label.png
 
