@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-01 23:28:02",revision=16961]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-02 19:11:07",revision=17368]]
 --[[
 
 == ANY update before release ==	
@@ -31,6 +31,7 @@ manage mods list
 	add update button so that all games can get updated to the newest version (unless dash is provided)
 	
 message zep about using fetch to gather carts
+	message sent, no response yet
 
 
 last played card game is automatically selected on the main menu

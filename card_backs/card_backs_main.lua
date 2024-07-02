@@ -1,5 +1,8 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-06-10 11:00:49",revision=3155]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-02 18:26:11",revision=3235]]
 
+
+-- NOTE, make your own .lua file along side this one instead of modifying this one.
+-- this file is ignored when loading it as a Mod inside Picotron Solitaire Suite
 
 -- sprite can be a number or userdata
 

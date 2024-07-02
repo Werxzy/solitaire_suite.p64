@@ -1,7 +1,9 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-01 23:28:02",revision=20061]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-02 19:11:07",revision=20478]]
 
 include"cards_api/card_gen.lua"
+--#if not example
 include"suite_scripts/suite_mod_window.lua"
+--#end
 
 -- this isn't actually a game, but still uses the cards api, but instead a menu for all the game modes and options
 
@@ -49,15 +51,19 @@ for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do
 	for p in trav do
 		for cb in all(ls(p)) do
 			e.get_info = nil
-			cap_load(p .. "/" .. cb, e)
+			local p2 = p .. "/" .. cb
 			
-			if e.get_info then
-				for info in all(e.get_info()) do
-					if type(info.sprite) == "function" then
-						card_back_animated(info)
+			if fstat(p2) == "file" and cb:ext() == "lua" then
+				cap_load(p2, e)
+				
+				if e.get_info then
+					for info in all(e.get_info()) do
+						if type(info.sprite) == "function" then
+							card_back_animated(info)
+						end
+						
+						add(all_card_back_info, info)
 					end
-					
-					add(all_card_back_info, info)
 				end
 			end
 		end

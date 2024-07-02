@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-02 00:45:58",revision=1008]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-02 19:11:07",revision=1287]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
@@ -30,24 +30,86 @@ local function find_game_by_id(id)
 	end
 end
 
+-- many lines of this function are from system/lib/load.lua
 local function attempt_add_game(id)
+	local c1 = id:sub(1,1)
+	if c1 == "#" then
+		id = id:sub(2)
+	end
+	
+	local orig_id = id
+
+	
+	if c1 == "/" then
+		id = id:sub(2)
+	end
+	
 	-- TODO search current list for game
 	-- if already exists, remove it
 	
-	-- TODO fetch game
-	-- check game is valid
+	local filename = id
+	local true_name = split(id:basename(), ".")[1]
 	
+	-- download the cart if from the bbs
+	if c1 ~= "/" then	
+		-- ***** this is not a public api! [yet?] *****
+		local cart_png, err = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..id) 
+		if err then
+			notify(tostr(err))
+			return
+		end
+	
+		if (type(cart_png) == "string" and #cart_png > 0) then
+			mkdir"/ram/mod_cart/"
+			
+			filename = "/ram/mod_cart/".. true_name ..".p64.png"
+			rm(filename) -- unmount. deleteme -- should be unnecessary
+			store(filename, cart_png)
+	
+		else
+			notify"download failed"
+			return
+		end	
+	end	
+
+
+	local attrib = fstat(filename)
+	if (attrib ~= "folder") then
+		-- doesn't exist or a file --> try with .p64 extension
+		filename = filename..".p64"
+		if (fstat(filename) ~= "folder") then
+			notify"could not load"
+			return
+		end
+	end
+	
+	-- TODO check game is valid
 	-- be careful of loading own games from #solitaire_suite
 	
+	
+
+	-- TODO only add folder if the game has those things
+	-- reverse /card_games/true_name/ to /true_name/card_games/ ?
+	--mkdir(suite_save_folder .. "/card_games/" .. true_name)
+	--mkdir(suite_save_folder .. "/card_backs/" .. true_name)
+	
+	cp(filename .. "/card_games", suite_save_folder .. "/card_games/" .. true_name)
+	cp(filename .. "/card_backs", suite_save_folder .. "/card_backs/" .. true_name)
+	
+	-- remove base cardback
+	rm(suite_save_folder .. "/card_backs/" .. true_name .. "/card_backs_main.lua")
+	
+	-- DO NOT remove filename when done, it may be a locally created file
+	
+	local md = fetch_metadata(filename)
+
 	-- can't do individual games since there are card backs that can be added
 	add(game_list_all, {
-		id = id, -- id cart is loaded
-		name = "aaa", -- name of game?
-		author = "bbb", -- author(s) of game
-		games_path = "",
-		card_backs_path = "",
+		id = orig_id, -- id cart is loaded
+		name = true_name, -- name of game?
+		author = md.author or "no author added" -- author(s) of game
 	})
-
+	
 	save_game_list()
 end
 
@@ -214,7 +276,8 @@ function add_text_field()
 	end)
 
 	local b = suite_window_add_buttons({{"Add", function()
-			notify("TODO: add " .. tostr(nav_text.get_text()[1]))
+			--notify("TODO: add " .. tostr(nav_text.get_text()[1]))
+			attempt_add_game(tostr(nav_text.get_text()[1]))
 		end}}, true)
 	
 	b[1].base_x -= 131
