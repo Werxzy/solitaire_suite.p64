@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 21:44:58",revision=18628]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 21:56:16",revision=18677]]
 --[[
 
 == ANY update before release ==	
@@ -21,9 +21,6 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-	
-last played card game is automatically selected on the main menu
-	only when exiting from that game
 	
 change order of print/wrap function returns
 	make the text first (number isn't always used

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 21:38:05",revision=21759]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 21:56:16",revision=21848]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -397,7 +397,6 @@ local function card_button_new(str, col, y, on_click, offset)
 end
 
 
-------------------------------------------------------------------------
 function game_setup()
 
 	settings_data = suite_load_save() or {
@@ -411,6 +410,7 @@ function game_setup()
 		{"Start Game", 8, 
 			function() 
 				if main_menu_selected then
+					last_selected_game = main_menu_selected.info_path
 					rule_cards = nil
 					game_info = get_game_info(main_menu_selected.info_path)
 					suite_load_game(main_menu_selected.game)
@@ -485,7 +485,18 @@ function game_setup()
 
 	-- if there's only one game, auto select it
 	if #game_mode_buttons == 1 then
-		--game_mode_buttons[1]:on_click()
+		game_mode_buttons[1]:on_click()
+		menu_selected_inst = true
+	end
+	
+	if last_selected_game then
+		for b in all(game_mode_buttons) do
+			if b.info_path == last_selected_game then
+				b:on_click()
+				menu_selected_inst = true
+				last_selected_game = nil
+			end
+		end
 	end
 end
 
@@ -520,9 +531,15 @@ function swap_stacks(stack, stack2)
 end
 
 function game_update()
-	local x = main_menu_selected 
-		and x_offset(240 - main_menu_selected.sprite:width()/2 - main_menu_selected.x_old)
-		or x_offset(x_offset())
+	local x_to = main_menu_selected and 240 - main_menu_selected.sprite:width()/2 - main_menu_selected.x_old or x_offset()
+	local x = x_offset(x_to) 
+		
+	-- instantly move to the position of the selected box
+	if menu_selected_inst then
+		x_offset("pos", x_to)
+		x_offset("vel", 0)
+		menu_selected_inst = false
+	end
 		
 	for b in all(game_mode_buttons) do
 		b.x = x + b.x_old
