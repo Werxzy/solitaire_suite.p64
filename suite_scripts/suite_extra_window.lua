@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-03 20:50:37",revision=2627]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-03 21:59:03",revision=2850]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -183,7 +183,7 @@ end
 -- adds multiple buttons in a row, each with their own function to call
 -- ops = {{name, func}, {...}, ...}
 function suite_window_add_buttons(ops, right_side)
-	local _, b = suite_window_add_mulibutton(suite_window_layout_y, ops, right_side)	
+	local b = suite_window_add_mulibutton(suite_window_layout_y, ops, right_side)	
 	suite_window_layout_y += 20
 	return b
 end
@@ -194,7 +194,7 @@ function suite_window_add_options(name, func, ops, current)
 	local y = suite_window_layout_y
 	
 	-- updates the selected status of a button
-	local x, buttons = nil
+	local buttons, x = nil
 	local function update_options()
 		for i, b in ipairs(buttons) do
 			b.selected = i == current
@@ -215,7 +215,7 @@ function suite_window_add_options(name, func, ops, current)
 	end
 	
 	-- adds the button options
-	x, buttons = suite_window_add_mulibutton(y, ops2, true)
+	buttons, x = suite_window_add_mulibutton(y, ops2, true)
 	update_options()
 	
 	-- adds text label
@@ -374,7 +374,7 @@ function suite_window_add_mulibutton(y, ops, right_side)
 		end
 	end	
 
-	return x, op_buttons
+	return op_buttons, x
 end
 
 -- other potential ui elements for the settings menu

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 21:43:14",revision=2886]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 22:04:57",revision=2958]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
@@ -201,9 +201,9 @@ end
 
 local function game_list_button_on_click(b)
 	b.t = 1
-	local _, _, name = print_wrap_prep(b.info.name, 131)
-	local _, _, author = print_wrap_prep("By:" .. b.info.author, 131)
-	local _, _, notes = print_wrap_prep(b.info.notes, 131)
+	local name = print_wrap_prep(b.info.name, 131)
+	local author = print_wrap_prep("By:" .. b.info.author, 131)
+	local notes = print_wrap_prep(b.info.notes, 131)
 	
 	local l = "\|c\fw"
 	for i = 1,30 do
@@ -317,6 +317,8 @@ end
 function update_game_list()
 	destroy_button_list(game_list_buttons)
 	scroll_game_list(0) -- clamp scrolling if an element is removed
+	
+	quicksort(game_list_all, "name")
 	
 	local y = game_list_y_start+1
 	local h = 19	

@@ -352,7 +352,7 @@ function suite_menuitem_draw_pages()
 	local ty = type(c)
 	
 	if ty == "string" then
-		local _, _, c = print_wrap_prep(c, p.width-4)
+		local c = print_wrap_prep(c, p.width-4)
 		double_print(c, x+2, y+2, 1)
 		
 	elseif ty == "userdata" or ty == "number" then

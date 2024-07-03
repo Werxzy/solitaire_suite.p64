@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 21:56:16",revision=18677]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 22:04:57",revision=18693]]
 --[[
 
 == ANY update before release ==	
@@ -21,9 +21,6 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-	
-change order of print/wrap function returns
-	make the text first (number isn't always used
 
 add better error messages for games
 	currently it's an error message inside of an error message

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 21:56:16",revision=21848]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 22:04:57",revision=21865]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -316,7 +316,7 @@ function button_deckbox_click(b)
 		double_print(by, 179/2-x/2+4, 7, 1)
 		
 		local s =  "\n\n" .. info.description
-		local lw, lh, loreprint = print_wrap_prep(s, 175)
+		local loreprint, lw, lh = print_wrap_prep(s, 175)
 		double_print(loreprint, 6, 7, 1)
 		
 		if info.desc_score then
@@ -341,7 +341,7 @@ function button_deckbox_click(b)
 	-- say click to get description
 	else
 		local s =  "Click a deck box to see information about it."
-		local lw, lh, loreprint = print_wrap_prep(s, 175)
+		local loreprint, lw, lh = print_wrap_prep(s, 175)
 		double_print(loreprint, 6, 7, 1)
 	end
 	
@@ -616,7 +616,7 @@ function game_draw(layer)
 		
 		local s = "Artist : " .. card_back.artist
 		local w = print_size(s)
-		local lw, lh, loreprint = print_wrap_prep(card_back.lore, full_w)
+		local loreprint, lw, lh = print_wrap_prep(card_back.lore, full_w)
 		
 		rectfill(x + 2, y + 2, x + 185, y + 76, 7)
 		
