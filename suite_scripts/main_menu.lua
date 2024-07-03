@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-02 19:11:07",revision=20478]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 20:50:37",revision=21593]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -20,58 +20,217 @@ else
 end
 
 
--- initializes the list of game variant folders
-game_list = {}
---#if not example
-for loc in all{"card_games", suite_save_folder .. "/card_games"} do
-	local trav = folder_traversal(loc)
---[[#else
-	local trav = folder_traversal("card_games")
---#end]]
+local x_offset = smooth_val(0, 0.5, 0.1)
 
-	for p in trav do
-		-- find any game info files
-		if trav("find", "game_info.lua") then
-			local op = add(game_list, {p:dirname(), p:basename()})
-			trav"exit" -- don't allow 
+function update_all_assets()
+	
+	-- initializes the list of game variant folders
+	game_list = {}
+	--#if not example
+	for loc in all{"card_games", suite_save_folder .. "/card_games"} do
+		local trav = folder_traversal(loc)
+	--[[#else
+		local trav = folder_traversal("card_games")
+	--#end]]
+	
+		for p in trav do
+			-- find any game info files
+			if trav("find", "game_info.lua") then
+				local op = add(game_list, {p:dirname(), p:basename()})
+				trav"exit" -- don't allow 
+			end
 		end
+		
+	--#if not example
 	end
+	--#end
 	
---#if not example
-end
---#end
-
-
-all_card_back_info = {}
-
-for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do 
-	local trav = folder_traversal(loc)
-	local e = cap_env()
 	
-	for p in trav do
-		for cb in all(ls(p)) do
-			e.get_info = nil
-			local p2 = p .. "/" .. cb
-			
-			if fstat(p2) == "file" and cb:ext() == "lua" then
-				cap_load(p2, e)
+	all_card_back_info = {}
+	
+	for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do 
+		local trav = folder_traversal(loc)
+		local e = cap_env()
+		
+		for p in trav do
+			for cb in all(ls(p)) do
+				e.get_info = nil
+				local p2 = p .. "/" .. cb
 				
-				if e.get_info then
-					for info in all(e.get_info()) do
-						if type(info.sprite) == "function" then
-							card_back_animated(info)
+				if fstat(p2) == "file" and cb:ext() == "lua" then
+					cap_load(p2, e)
+					
+					if e.get_info then
+						for info in all(e.get_info()) do
+							if type(info.sprite) == "function" then
+								card_back_animated(info)
+							end
+							
+							add(all_card_back_info, info)
 						end
-						
-						add(all_card_back_info, info)
 					end
 				end
 			end
 		end
 	end
+	
+	-- make sure the card back in question is available
+	set_card_back(has_key(all_card_back_info, "id", settings_data.card_back_id) or rnd(all_card_back_info))
+
+	update_game_options()
+	update_card_back_options()
 end
 
+function update_game_options()
 
-local x_offset = smooth_val(0, 0.5, 0.1)
+	main_menu_selected = nil
+	-- creates buttons for each game mode
+	game_mode_buttons = {}
+	local bx = 2
+	
+	local all_info = {}
+	
+	for game in all(game_list) do
+		local p, n = unpack(game)
+		
+		local info_path = p .. "/" .. n .. "/game_info.lua"
+		local info = get_game_info(info_path)()
+		
+		if info and info.api_version == api_version_expected then
+			local op = add(all_info, info)	
+			op.order = op.order or 999999
+			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
+			op.info_path = info_path
+		end
+	end
+	
+	quicksort(all_info, "order")
+
+	for info in all(all_info) do
+		
+		-- grab sprite 0 from 1.gfx if there is one for the game
+		if not info.sprite then
+			local extra_sprite = fetch(info.info_path:dirname() .. "/1.gfx")
+			if extra_sprite then
+				info.sprite = extra_sprite[0].bmp
+			else
+				info.sprite = 32
+			end
+		end
+		
+		-- if a number is provided for the sprite, use get_spr to allow for :width()
+		if type(info.sprite) == "number" then
+			info.sprite = get_spr(info.sprite)
+		end
+		
+		local b = add(game_mode_buttons, 
+			button_new({
+				x = bx, y = 100 - info.sprite:height() + 78, 
+				width = info.sprite:width(), 
+				height = info.sprite:height(),
+				draw = button_deckbox_draw, 
+				on_click = button_deckbox_click
+			})
+		)
+			
+		b.sprite = info.sprite
+		b.game = info.game
+		b.info_path = info.info_path
+		b.info = info
+		b.x_old = bx
+		
+		bx += info.sprite:width() + 10
+	end
+	
+	if #game_mode_buttons > 1 then
+		local third = game_mode_buttons[3] or game_mode_buttons[1]
+		x_offset("pos", 240 - third.sprite:width() - 5 - third.x_old)
+	else
+		local first = game_mode_buttons[1]
+		x_offset("pos", 240 - first.sprite:width()\2 - 1 - first.x_old)
+	end
+	
+	button_deckbox_click()
+end
+
+function update_card_back_options()
+	local cb_sprite = suite_card_back()
+	local cb = has_key(all_card_back_info, "id", settings_data.card_back_id)
+	local cb_front = cb.gen and cb.gen() or card_gen_back({sprite = cb.sprite})
+			
+	local c = card_new({
+			sprite = cb_front, 
+			back_sprite = cb_sprite,
+			x = 300,
+			y = 190
+		})
+	c.info = card_back
+	stack_add_card(card_back_edit_button, c)
+	
+
+	local card_width = 45
+	local card_height = 60 
+	
+	local function create_card_back_stack(i)
+		local s = stack_new(
+			{9},
+			(i\2)*(60) + 7, 365 + i%2 * (card_height + 10) + 17, 
+			{
+				reposition = stack_repose_normal(),
+				can_stack = function(stack) 
+					if #card_back_edit_button.cards == 0 then
+						return #stack.cards == 1
+					end
+					return true
+				end, 
+				on_click = stack_on_click_unstack(),
+				resolve_stack = swap_stacks,
+				x_off = -7,
+				y_off = -4,
+			})
+		s.base_x = s.x_to
+			
+		return add(card_back_options, s)
+	end
+
+-- adds card back options
+	card_back_options = {}
+	for cb in all(all_card_back_info) do
+		if cb.id ~= card_back.id then
+			local s = create_card_back_stack(#card_back_options)
+			
+			local front_sprite = nil
+				
+			if cb.gen then
+				front_sprite = cb.gen()	
+			else
+				front_sprite = card_gen_back({sprite = cb.sprite})
+			end
+			
+			
+			local c = card_new({
+				sprite = front_sprite,
+				back_sprite = cb_sprite,
+				stack = s
+			})
+			c.info = cb
+		end
+	end
+	
+-- adds extra card back slots for looks
+	local extra = 0
+	while #card_back_options < 16 
+	or #card_back_options % 4 ~= 0
+	or extra < 4 do
+		extra += 1
+		create_card_back_stack(#card_back_options)
+	end
+	card_back_scroll_max = min(480 - #card_back_options \ 2 * 60)
+	for i = -4,-1 do
+		create_card_back_stack(i)
+	end
+end
+
 
 function box_shadow(x1, y1, x2, y2)
 	-- draw shadows, based on the the boxes size
@@ -155,7 +314,6 @@ function button_deckbox_click(b)
 	camera(old_x, old_y)	
 end
 
-button_deckbox_click()
 
 function set_card_back(info)
 	card_back = info
@@ -200,82 +358,16 @@ local function card_button_new(str, col, y, on_click, offset)
 	b.off = offset or 0
 end
 
+
+------------------------------------------------------------------------
 function game_setup()
 
 	settings_data = suite_load_save() or {
 		card_back_id = 1
 	}
 
-	set_card_back(has_key(all_card_back_info, "id", settings_data.card_back_id) or rnd(all_card_back_info))
-	
 	main_menu_y = smooth_val(0, 0.8, 0.023, 0.00001)
 	main_menu_y_to = 0
-
-	-- creates buttons for each game mode
-	game_mode_buttons = {}
-	local bx = 2
-	
-	local all_info = {}
-	
-	for game in all(game_list) do
-		local p, n = unpack(game)
-		
-		local info_path = p .. "/" .. n .. "/game_info.lua"
-		local info = get_game_info(info_path)()
-		
-		if info and info.api_version == api_version_expected then
-			local op = add(all_info, info)	
-			op.order = op.order or 999999
-			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
-			op.info_path = info_path
-		end
-	end
-	
-	quicksort(all_info, "order")
-
-	for info in all(all_info) do
-		
-		-- grab sprite 0 from 1.gfx if there is one for the game
-		if not info.sprite then
-			local extra_sprite = fetch(info.info_path:dirname() .. "/1.gfx")
-			if extra_sprite then
-				info.sprite = extra_sprite[0].bmp
-			else
-				info.sprite = 32
-			end
-		end
-		
-		-- if a number is provided for the sprite, use get_spr to allow for :width()
-		if type(info.sprite) == "number" then
-			info.sprite = get_spr(info.sprite)
-		end
-		
-		local b = add(game_mode_buttons, 
-			button_new({
-				x = bx, y = 100 - info.sprite:height() + 78, 
-				width = info.sprite:width(), 
-				height = info.sprite:height(),
-				draw = button_deckbox_draw, 
-				on_click = button_deckbox_click
-			})
-		)
-			
-		b.sprite = info.sprite
-		b.game = info.game
-		b.info_path = info.info_path
-		b.info = info
-		b.x_old = bx
-		
-		bx += info.sprite:width() + 10
-	end
-	
-	if #game_mode_buttons > 1 then
-		local third = game_mode_buttons[3] or game_mode_buttons[1]
-		x_offset("pos", 240 - third.sprite:width() - 5 - third.x_old)
-	else
-		local first = game_mode_buttons[1]
-		x_offset("pos", 240 - first.sprite:width()\2 - 1 - first.x_old)
-	end
 	
 	local cb = {
 		{"Start Game", 8, 
@@ -311,7 +403,6 @@ function game_setup()
 			main_menu_y_to = 0
 		end, -30)
 	
-	set_draw_target()
 	
 	card_back_edit_button = stack_new(
 		{10}, 300, 190, 
@@ -327,81 +418,6 @@ function game_setup()
 			y_off = -13,
 		})
 		
-	local cb_sprite = suite_card_back()
-	local cb = has_key(all_card_back_info, "id", settings_data.card_back_id)
-	local cb_front = cb.gen and cb.gen() or card_gen_back({sprite = cb.sprite})
-			
-	local c = card_new({
-			sprite = cb_front, 
-			back_sprite = cb_sprite,
-			x = 300,
-			y = 190
-		})
-	c.info = card_back
-	stack_add_card(card_back_edit_button, c)
-	
-
-	local card_width = 45
-	local card_height = 60 
-	
-	local function create_card_back_stack(i)
-		local s = stack_new(
-			{9},
-			(i\2)*(60) + 7, 365 + i%2 * (card_height + 10) + 17, 
-			{
-				reposition = stack_repose_normal(),
-				can_stack = function(stack) 
-					if #card_back_edit_button.cards == 0 then
-						return #stack.cards == 1
-					end
-					return true
-				end, 
-				on_click = stack_on_click_unstack(),
-				resolve_stack = swap_stacks,
-				x_off = -7,
-				y_off = -4,
-			})
-		s.base_x = s.x_to
-			
-		return add(card_back_options, s)
-	end
-
--- adds card back options
-	card_back_options = {}
-	for cb in all(all_card_back_info) do
-		if cb.id ~= card_back.id then
-			local s = create_card_back_stack(#card_back_options)
-			
-			local front_sprite = nil
-				
-			if cb.gen then
-				front_sprite = cb.gen()	
-			else
-				front_sprite = card_gen_back({sprite = cb.sprite})
-			end
-			
-			
-			local c = card_new({
-				sprite = front_sprite,
-				back_sprite = cb_sprite,
-				stack = s
-			})
-			c.info = cb
-		end
-	end
-	
--- adds extra card back slots for looks
-	local extra = 0
-	while #card_back_options < 16 
-	or #card_back_options % 4 ~= 0
-	or extra < 4 do
-		extra += 1
-		create_card_back_stack(#card_back_options)
-	end
-	card_back_scroll_max = min(480 - #card_back_options \ 2 * 60)
-	for i = -4,-1 do
-		create_card_back_stack(i)
-	end
 	
 -- adds card back scrolling buttons
 	card_back_scroll_to = 0
@@ -439,6 +455,10 @@ function game_setup()
 	})
 	b.t = 0
 	
+
+	update_all_assets()
+	
+
 	-- if there's only one game, auto select it
 	if #game_mode_buttons == 1 then
 		--game_mode_buttons[1]:on_click()

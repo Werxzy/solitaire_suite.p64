@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-01 23:28:02",revision=1993]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-03 20:50:37",revision=2627]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -87,6 +87,8 @@ function suite_window_draw(layer)
 			
 			local w, h = print_size(suite_window_title)
 			
+			rectfill(w+10, -h, 
+				w+30, h+20, 32)
 			nine_slice(35, 0, -h-20, 
 				w+20, h+20, 20)
 			
@@ -150,6 +152,15 @@ end
 -- and manages it's position and clickability
 function suite_window_button_add(button)
 	add(suite_window_buttons, button)
+	local old_destory = button.on_destroy
+	
+	button.on_destroy = function(b)
+		del(suite_window_buttons, b)
+		if old_destroy then
+			old_destroy()
+		end
+	end
+	
 	button.on_click = suite_window_button_check(button.on_click)
 	button.base_x = button.base_x or button.x
 	button.base_y = button.base_y or button.y
@@ -157,9 +168,11 @@ end
 
 -- prevents button from being pressed unless the menu is open
 function suite_window_button_check(func)
-	return function(button)
-		if suite_window_to >= 1 then
-			func(button)
+	if func then
+		return function(button)
+			if suite_window_to >= 1 then
+				func(button)
+			end
 		end
 	end
 end

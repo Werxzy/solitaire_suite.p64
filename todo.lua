@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 04:41:34",revision=17771]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 20:50:37",revision=18458]]
 --[[
 
 == ANY update before release ==	
@@ -12,19 +12,22 @@ create pull request for main branches
 make release with new version tag
 post
 
-== 0.2.0 ==
-	
+== !!! ==
+
 message zep about using fetch to gather carts
-	message sent, no response yet (pretty recently sent)
+	done!
+	responded saying that it should work fine for now
+	"bbs://" with be a separate protocol for handles caching and sandboxing etc.
+	change will be inside suite_mod_window.lua
+
+== 0.2.0 ==
 	
 manage mods list
 			
 	store metadata for what games were loaded
 		games detected?
+			or card backs?
 		api version?
-	button to copy link to original page?
-	when pressing the update button, the info becomes unlinked and doesn't get removed when "remove" is clicked
-		probably just search by ID again isntead of using the button.info
 
 	update games listed in the main menu
 		probably shove a lot of the original init code into functions

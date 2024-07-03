@@ -1,15 +1,18 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 04:41:34",revision=1824]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 20:50:37",revision=2710]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
 local game_list_width = 150
+local game_list_scroll = 0
 local game_sel_buttons = {}
 local game_sel_desc = ""
+local game_sel_desc_shadow = ""
 local game_sel_current = nil
 
 local game_list_all = {}
 
 local update_game_list = nil
+local scroll_game_list = nil
 
 local function save_game_list()
 	store("/appdata/solitaire_suite/mod_list.pod", game_list_all)
@@ -23,7 +26,7 @@ local function find_game_by_id(id)
 	id = cull_version(id)
 	
 	for g in all(game_list_all) do
-		if cull_version(g.id) == id then
+		if g.id and cull_version(g.id) == id then
 			return g
 		end
 	end
@@ -54,7 +57,7 @@ local function attempt_add_game(id)
 	
 	-- download the cart if from the bbs
 	if c1 ~= "/" then	
-		-- ***** this is not a public api! [yet?] *****
+		-- TODO !!!!!!!!!!!! when zep adds "bbs://", use that instead
 		local cart_png, err = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..id) 
 		if err then
 			notify(tostr(err))
@@ -153,10 +156,11 @@ end
 function suite_open_mod_manager()
 	game_list_all = fetch("/appdata/solitaire_suite/mod_list.pod") or {}
 	save_game_list()
-
+	
 	suite_window_init("Mod Manager")
 	
 	game_sel_desc = ""
+	game_sel_desc_shadow = ""
 	game_list_buttons = {}
 	game_sel_buttons = {}
 	game_sel_current = nil
@@ -185,10 +189,14 @@ local function game_list_button_draw(b)
 	rectfill(b.x, y2, x2, y2, 20)
 	rectfill(b.x, b.y+yt, x2, y2+yt-1, (b.highlight or b.text == game_sel_current) and 31 or 4)
 		
-	print(b.text, b.x+5+17, b.y+6+yt, 20)
-	print(b.text, b.x+5+17, b.y+5+yt, 7)
+	local xd = b.info and 17 or 0	
+
+	print(b.text, b.x+5+xd, b.y+6+yt, 20)
+	print(b.text, b.x+5+xd, b.y+5+yt, 7)
 	
-	spr(b.info.icon, b.x+1, b.y+1+yt)
+	if b.info then
+		spr(b.info.icon, b.x+1, b.y+1+yt)
+	end
 end
 
 local function game_list_button_on_click(b)
@@ -203,17 +211,64 @@ local function game_list_button_on_click(b)
 	end
 	l ..= "\fl\|d"
 
-	game_sel_desc = name .. "\n" .. author .. "\n"..l.."\n" .. notes
-	game_sel_desc ..= "\n" .. l .. "\n" .. b.info.from
-	if #b.info.version > 0 then
-		game_sel_desc ..=  "\nVersion:" .. b.info.version
+	game_sel_desc = "\f2".. name .. "\fl\n" .. author .. "\n"..l.."\n" .. notes .. "\n" .. l
+	if b.info.from == "local file" then
+		game_sel_desc ..=  "\n" .. print_cutoff(b.info.from, 131)
 	end
-	
+	if #b.info.version > 0 then
+		game_sel_desc ..=  "\nVersion:" .. print_cutoff(b.info.version, 131)
+	end
 
+
+	
 	game_sel_current = b.text
 	game_sel_info = b.info
 	
 	destroy_button_list(game_sel_buttons)
+	
+	if b.info.from ~= "local file" then
+		local _, h = print_size(game_sel_desc)
+		local from = b.info.from
+		
+		local b2 = button_new({
+			x = game_list_width + 20,
+			y = h + game_list_y_start + 5,
+			width = 120, height = 15,
+			draw = game_list_button_draw,
+			on_click = function(b)
+				b.t = 1 
+				set_clipboard(from) 
+				notify("copied to clipboard: " .. from) 
+			end,
+			group = 3,
+			always_active = true
+		})
+		
+		
+		b2.text = "\-9\|e".. print_cutoff(from, 105)
+		b2.info = {icon = 26}
+		b2.t = 0
+		
+		suite_window_button_add(b2)
+		add(game_sel_buttons, b2)
+	end
+	
+	-- add a shadow layer to the text by extracting the color settings
+	local sp = split(game_sel_desc, "\f")
+	game_sel_desc_shadow = sp[1]
+	for i = 2, #sp do
+		local s = sp[i]
+		local c1 = sub(s,1,1)
+		if c1 == "w" then
+			s = "0" .. sub(s, 2)
+		else
+			s = "w" .. sub(s, 2)
+		end
+		game_sel_desc_shadow ..= "\f" .. s
+	end
+	
+	
+
 	
 	set_suite_window_layout_y(game_list_y_start + 141)
 	
@@ -227,47 +282,88 @@ local function game_list_button_on_click(b)
 			end},
 			{"Remove", function(b)
 				remove_game(game_sel_info.id)
-				del(game_list_all, game_sel_info)
+				
+				del(game_list_all, find_game_by_id(game_sel_info.id))
 				save_game_list()
 				update_game_list()
 				
 				notify("removed " .. game_sel_current)
 				
-				game_sel_desc = nil
+				game_sel_desc = ""
+				game_sel_desc_shadow = ""
 				game_sel_info = nil
 				game_sel_current = nil
+				destroy_button_list(game_sel_buttons)
 			end}
 		}, true)
 		
 	for b in all(buttons) do
 		add(game_sel_buttons, b)
 	end
+	
+	notify(tostr(#game_sel_buttons))
 end
 
+--local
+local scroll_amount = 3
+function scroll_game_list(n)
+	game_list_scroll = min(max(game_list_scroll\scroll_amount + n), max((#game_list_all - 1)\scroll_amount)) * scroll_amount	
+end
+
+-- local
 function update_game_list()
 	destroy_button_list(game_list_buttons)
+	scroll_game_list(0) -- clamp scrolling if an element is removed
 	
 	local y = game_list_y_start+1
 	local h = 19	
-
-	for i = 1,#game_list_all do
-		local g = game_list_all[i]
-		
+	
+	if #game_list_all > 0 then
+		for i = game_list_scroll + 1, min(game_list_scroll + 6, #game_list_all) do
+			local g = game_list_all[i]
+			
+			local b = button_new({
+				x = 10,
+				y = y,
+				width = game_list_width, height = h,
+				draw = game_list_button_draw,
+				on_click = game_list_button_on_click,
+				group = 3,
+				always_active = true
+			})
+			
+			
+			b.text = print_cutoff(g.name, game_list_width - 22)
+			b.info = g
+			b.t = 0
+			y += h
+			
+			suite_window_button_add(b)
+			add(game_list_buttons, b)
+		end
+	end
+	
+	local x = 10
+	local y = game_list_y_start + 1 + h * 6
+	for b2 in all({
+		{"<-", 20, function(b) b.t = 1 scroll_game_list(-1) 	update_game_list() end},
+		{"->", 20, function(b) b.t = 1 scroll_game_list(1) update_game_list() end},
+		{(game_list_scroll + 1) .. " / " .. #game_list_all, game_list_width - 42},
+	}) do
 		local b = button_new({
-			x = 10,
+			x = x,
 			y = y,
-			width = game_list_width, height = h,
+			width = b2[2], height = 18,
 			draw = game_list_button_draw,
-			on_click = game_list_button_on_click,
+			on_click = b2[3],
 			group = 3,
 			always_active = true
 		})
-		
-		b.text = g.name
-		b.info = g
+		b.text = b2[1]
 		b.t = 0
-		y += h
 		
+		x += b.width+1
+	
 		suite_window_button_add(b)
 		add(game_list_buttons, b)
 	end
@@ -302,6 +398,7 @@ function add_games_list()
 		rect(6, 145, 13+game_list_width, 145, 20)
 		rect(6, 146, 13+game_list_width, 146, 21)
 		
+		print(game_sel_desc_shadow, game_list_width + 21, game_list_y_start + 6)
 		print(game_sel_desc, game_list_width + 20, game_list_y_start + 5)
 	
 	end)
