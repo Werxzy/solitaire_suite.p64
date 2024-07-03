@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-02 19:11:07",revision=17368]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 04:41:34",revision=17771]]
 --[[
 
 == ANY update before release ==	
@@ -13,29 +13,31 @@ make release with new version tag
 post
 
 == 0.2.0 ==
-
-manage mods list
-	use new custom window system
-	upload example game to see if the right game can be pulled
-		look at load.lua to be able to load in game modes from bbs carts and add them to appdata
-		maybe use game info to double check files
-			
-	store metadata for what games were loaded
-		cart name
-		games detected
-		author?
-		version number?
-		api version
-	button to copy link to original page
-
-	add update button so that all games can get updated to the newest version (unless dash is provided)
 	
 message zep about using fetch to gather carts
-	message sent, no response yet
+	message sent, no response yet (pretty recently sent)
+	
+manage mods list
+			
+	store metadata for what games were loaded
+		games detected?
+		api version?
+	button to copy link to original page?
+	when pressing the update button, the info becomes unlinked and doesn't get removed when "remove" is clicked
+		probably just search by ID again isntead of using the button.info
 
+	update games listed in the main menu
+		probably shove a lot of the original init code into functions
 
 last played card game is automatically selected on the main menu
 	only when exiting from that game
+	
+change order of print/wrap function returns
+	make the text first (number isn't always used
+
+add better error messages for games
+	currently it's an error message inside of an error message
+	not properly linking
 		
 overlap optmization
 	when cards are not moving, render only part of the card that would be visible

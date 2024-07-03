@@ -1,6 +1,8 @@
---[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-02 17:30:09",revision=805]]
+--[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-03 04:41:34",revision=1015]]
 
 def example true
+
+execute example_only/example_prep.lua
 
 remove todo.lua
 remove changeloc.txt
@@ -22,3 +24,4 @@ rename label_example.png label.png
 
 remove main.pepper
 remove example.pepper
+remove example_only/

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-02 19:11:07",revision=1287]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 04:41:34",revision=1824]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
@@ -7,10 +7,9 @@ local game_sel_buttons = {}
 local game_sel_desc = ""
 local game_sel_current = nil
 
-local game_list_all = {
-	{name = "test game"},
-	{name = "test game 2"},
-}
+local game_list_all = {}
+
+local update_game_list = nil
 
 local function save_game_list()
 	store("/appdata/solitaire_suite/mod_list.pod", game_list_all)
@@ -30,6 +29,13 @@ local function find_game_by_id(id)
 	end
 end
 
+local function rmcp(from, to)
+	-- makes sure to remove full folder and contents
+	-- not sure if this is already done
+	rm(to)
+	cp(from, to)
+end
+
 -- many lines of this function are from system/lib/load.lua
 local function attempt_add_game(id)
 	local c1 = id:sub(1,1)
@@ -39,14 +45,10 @@ local function attempt_add_game(id)
 	
 	local orig_id = id
 
-	
 	if c1 == "/" then
 		id = id:sub(2)
 	end
-	
-	-- TODO search current list for game
-	-- if already exists, remove it
-	
+		
 	local filename = id
 	local true_name = split(id:basename(), ".")[1]
 	
@@ -93,24 +95,58 @@ local function attempt_add_game(id)
 	--mkdir(suite_save_folder .. "/card_games/" .. true_name)
 	--mkdir(suite_save_folder .. "/card_backs/" .. true_name)
 	
-	cp(filename .. "/card_games", suite_save_folder .. "/card_games/" .. true_name)
-	cp(filename .. "/card_backs", suite_save_folder .. "/card_backs/" .. true_name)
+	rmcp(filename .. "/card_games", suite_save_folder .. "/card_games/" .. true_name)
+	rmcp(filename .. "/card_backs", suite_save_folder .. "/card_backs/" .. true_name)
 	
 	-- remove base cardback
 	rm(suite_save_folder .. "/card_backs/" .. true_name .. "/card_backs_main.lua")
 	
-	-- DO NOT remove filename when done, it may be a locally created file
 	
 	local md = fetch_metadata(filename)
+
+	-- remove old definition
+	del(game_list_all, find_game_by_id(id))
 
 	-- can't do individual games since there are card backs that can be added
 	add(game_list_all, {
 		id = orig_id, -- id cart is loaded
-		name = true_name, -- name of game?
-		author = md.author or "no author added" -- author(s) of game
+		name = md.title or true_name, -- name of game?
+		author = md.author or "???", -- author(s) of game
+		version = md.version or "???",
+		notes = md.notes or "",
+		from = c1 ~= "/" and "#" .. orig_id or "local file",
+		icon = md.icon,
 	})
 	
+	-- clean up bbs cart
+	if c1 ~= "/" then
+		rm(filename)
+	end
+	
 	save_game_list()
+	update_game_list()
+	
+	notify("'" .. true_name .. "' added successfully")
+	return true -- successful
+end
+
+local function remove_game(id)
+	local c1 = id:sub(1,1)
+	if c1 == "#" then
+		id = id:sub(2)
+	end
+	
+	local orig_id = id
+
+	if c1 == "/" then
+		id = id:sub(2)
+	end
+		
+	local filename = id
+	local true_name = split(id:basename(), ".")[1]
+		
+	rm(suite_save_folder .. "/card_games/" .. true_name)
+	rm(suite_save_folder .. "/card_backs/" .. true_name)	
 end
 
 
@@ -149,22 +185,58 @@ local function game_list_button_draw(b)
 	rectfill(b.x, y2, x2, y2, 20)
 	rectfill(b.x, b.y+yt, x2, y2+yt-1, (b.highlight or b.text == game_sel_current) and 31 or 4)
 		
-	print(b.text, b.x+5, b.y+5+yt, 20)
-	print(b.text, b.x+5, b.y+4+yt, 7)
+	print(b.text, b.x+5+17, b.y+6+yt, 20)
+	print(b.text, b.x+5+17, b.y+5+yt, 7)
+	
+	spr(b.info.icon, b.x+1, b.y+1+yt)
 end
 
 local function game_list_button_on_click(b)
 	b.t = 1
-	game_sel_desc = b.text
+	local _, _, name = print_wrap_prep(b.info.name, 131)
+	local _, _, author = print_wrap_prep("By:" .. b.info.author, 131)
+	local _, _, notes = print_wrap_prep(b.info.notes, 131)
+	
+	local l = "\|c\fw"
+	for i = 1,30 do
+		l ..= "-\-f"
+	end
+	l ..= "\fl\|d"
+
+	game_sel_desc = name .. "\n" .. author .. "\n"..l.."\n" .. notes
+	game_sel_desc ..= "\n" .. l .. "\n" .. b.info.from
+	if #b.info.version > 0 then
+		game_sel_desc ..=  "\nVersion:" .. b.info.version
+	end
+	
+
 	game_sel_current = b.text
+	game_sel_info = b.info
 	
 	destroy_button_list(game_sel_buttons)
 	
-	set_suite_window_layout_y(game_list_y_start + 110)
+	set_suite_window_layout_y(game_list_y_start + 141)
 	
 	local buttons = suite_window_add_buttons({
-			{"Update", function()end},
-			{"Remove", function()end}
+			{"Update", function(b)
+				if attempt_add_game(game_sel_info.id) then
+					save_game_list()
+					update_game_list()
+					notify("successfully updated " .. game_sel_current)
+				end
+			end},
+			{"Remove", function(b)
+				remove_game(game_sel_info.id)
+				del(game_list_all, game_sel_info)
+				save_game_list()
+				update_game_list()
+				
+				notify("removed " .. game_sel_current)
+				
+				game_sel_desc = nil
+				game_sel_info = nil
+				game_sel_current = nil
+			end}
 		}, true)
 		
 	for b in all(buttons) do
@@ -172,11 +244,11 @@ local function game_list_button_on_click(b)
 	end
 end
 
-local function update_game_list()
+function update_game_list()
 	destroy_button_list(game_list_buttons)
 	
 	local y = game_list_y_start+1
-	local h = 17	
+	local h = 19	
 
 	for i = 1,#game_list_all do
 		local g = game_list_all[i]
@@ -192,10 +264,12 @@ local function update_game_list()
 		})
 		
 		b.text = g.name
+		b.info = g
 		b.t = 0
 		y += h
 		
 		suite_window_button_add(b)
+		add(game_list_buttons, b)
 	end
 end
 	
@@ -276,8 +350,9 @@ function add_text_field()
 	end)
 
 	local b = suite_window_add_buttons({{"Add", function()
-			--notify("TODO: add " .. tostr(nav_text.get_text()[1]))
-			attempt_add_game(tostr(nav_text.get_text()[1]))
+			if (attempt_add_game(tostr(nav_text.get_text()[1]))) then
+				nav_text.get_text()[1] = ""
+			end
 		end}}, true)
 	
 	b[1].base_x -= 131
