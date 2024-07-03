@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 20:50:37",revision=21593]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 21:38:05",revision=21759]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -45,9 +45,11 @@ function update_all_assets()
 	end
 	--#end
 	
-	
+	-- clear original animated card backs	
+	cards_animated = {}
+
+	-- initializes the card back info
 	all_card_back_info = {}
-	
 	for loc in all{"card_backs", suite_save_folder .. "/card_backs"} do 
 		local trav = folder_traversal(loc)
 		local e = cap_env()
@@ -76,14 +78,19 @@ function update_all_assets()
 	
 	-- make sure the card back in question is available
 	set_card_back(has_key(all_card_back_info, "id", settings_data.card_back_id) or rnd(all_card_back_info))
-
+	
+	-- initializes the ui for the assets
 	update_game_options()
 	update_card_back_options()
 end
 
 function update_game_options()
-
+	-- cleanup
 	main_menu_selected = nil
+	for b in all(game_mode_buttons) do
+		b:destroy()
+	end
+
 	-- creates buttons for each game mode
 	game_mode_buttons = {}
 	local bx = 2
@@ -105,7 +112,7 @@ function update_game_options()
 	end
 	
 	quicksort(all_info, "order")
-
+	
 	for info in all(all_info) do
 		
 		-- grab sprite 0 from 1.gfx if there is one for the game
@@ -149,11 +156,42 @@ function update_game_options()
 		local first = game_mode_buttons[1]
 		x_offset("pos", 240 - first.sprite:width()\2 - 1 - first.x_old)
 	end
-	
+		
 	button_deckbox_click()
 end
 
 function update_card_back_options()
+	-- cleanup step
+	
+	-- delete all original cards and stacks
+	local cs = get_all_cards()
+	for c in all(cs) do
+		c.stack = nil
+		del(cs, c)
+	end
+	local st = get_all_stacks()
+	for s in all(st) do
+		del(st, s)
+	end
+	
+
+	-- init step
+	
+	card_back_edit_button = stack_new(
+		{10}, 300, 190, 
+		{
+			reposition = stack_repose_normal(),
+			can_stack = function() return true end, 
+			on_click = function(c)
+				stack_on_click_unstack()(c)
+				main_menu_y_to = 1
+			end,
+			resolve_stack = swap_stacks,
+			x_off = -12,
+			y_off = -13,
+		})
+		
+
 	local cb_sprite = suite_card_back()
 	local cb = has_key(all_card_back_info, "id", settings_data.card_back_id)
 	local cb_front = cb.gen and cb.gen() or card_gen_back({sprite = cb.sprite})
@@ -404,20 +442,6 @@ function game_setup()
 		end, -30)
 	
 	
-	card_back_edit_button = stack_new(
-		{10}, 300, 190, 
-		{
-			reposition = stack_repose_normal(),
-			can_stack = function() return true end, 
-			on_click = function(c)
-				stack_on_click_unstack()(c)
-				main_menu_y_to = 1
-			end,
-			resolve_stack = swap_stacks,
-			x_off = -12,
-			y_off = -13,
-		})
-		
 	
 -- adds card back scrolling buttons
 	card_back_scroll_to = 0

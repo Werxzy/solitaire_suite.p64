@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 20:50:37",revision=2710]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 21:43:14",revision=2886]]
 
 local game_list_buttons = {}
 local game_list_y_start = 0
@@ -275,33 +275,36 @@ local function game_list_button_on_click(b)
 	local buttons = suite_window_add_buttons({
 			{"Update", function(b)
 				if attempt_add_game(game_sel_info.id) then
+					local name = game_sel_info.name
 					save_game_list()
 					update_game_list()
-					notify("successfully updated " .. game_sel_current)
+					update_all_assets()
+					notify("Successfully updated " .. name)
 				end
 			end},
 			{"Remove", function(b)
+				local name = game_sel_info.name
 				remove_game(game_sel_info.id)
 				
 				del(game_list_all, find_game_by_id(game_sel_info.id))
 				save_game_list()
 				update_game_list()
 				
-				notify("removed " .. game_sel_current)
-				
 				game_sel_desc = ""
 				game_sel_desc_shadow = ""
 				game_sel_info = nil
-				game_sel_current = nil
 				destroy_button_list(game_sel_buttons)
+				
+				update_all_assets()
+				
+				notify("Removed " .. name)
+				game_sel_current = nil
 			end}
 		}, true)
 		
 	for b in all(buttons) do
 		add(game_sel_buttons, b)
 	end
-	
-	notify(tostr(#game_sel_buttons))
 end
 
 --local
@@ -449,6 +452,7 @@ function add_text_field()
 	local b = suite_window_add_buttons({{"Add", function()
 			if (attempt_add_game(tostr(nav_text.get_text()[1]))) then
 				nav_text.get_text()[1] = ""
+				update_all_assets()
 			end
 		end}}, true)
 	

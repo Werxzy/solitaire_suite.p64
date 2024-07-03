@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 20:50:37",revision=18458]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 21:44:58",revision=18628]]
 --[[
 
 == ANY update before release ==	
@@ -22,16 +22,6 @@ message zep about using fetch to gather carts
 
 == 0.2.0 ==
 	
-manage mods list
-			
-	store metadata for what games were loaded
-		games detected?
-			or card backs?
-		api version?
-
-	update games listed in the main menu
-		probably shove a lot of the original init code into functions
-
 last played card game is automatically selected on the main menu
 	only when exiting from that game
 	
@@ -42,7 +32,7 @@ add better error messages for games
 	currently it's an error message inside of an error message
 	not properly linking
 		
-overlap optmization
+overlap optimization
 	when cards are not moving, render only part of the card that would be visible
 	
 	function update_placement(stack)
@@ -75,6 +65,11 @@ double check and fill out documentation for
 	
 == 0.?.0 ==
 
+extra mod list metadata for what games were loaded
+	games detected?
+		or card backs?
+	api version?
+
 hand_unstack currently (ignoring the not_held parameter) move the card to held
 	this is a bit inconsistent with the function stack_on_click_unstack function
 	maybe have a function hand_on_click_unstack which removes only one card
@@ -99,6 +94,7 @@ visual tutorial sequence for a each game
 	walk though different steps and display speech bubbles pointing a different game elements
 	if a sequence isn't provided for game, don't display the option to view a tutorial
 	
+double check card backs on mod load, update, or deletion
 
 == maybe ?? ==
 
@@ -142,5 +138,11 @@ change button control of cards api to instead check for any interaction
 
 double click for instantly starting the game.
 	
+better clearing of some objects
+	stack:destroy()
+	card:destroy()
+	something for clearing unused animated card backs from the main list
 				
+update the list of games only when exiting the mod manager			
+
 ]]
