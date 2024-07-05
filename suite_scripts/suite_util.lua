@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-06-29 18:03:29",revision=8542]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-05 07:13:01",revision=12579]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
@@ -18,12 +18,17 @@ store
 include
 fetch
 get_game_info
+
 cap_load
 cap_include
 cap_fetch
+
 correct_path
 suite_function_wrapper
 suite_load_game
+
+game_on_error
+
 ]], "\n", false)
 
 copied_env = split([[
@@ -124,16 +129,24 @@ function suite_load_game(game_path)
 		game_env.fetch = cap_fetch(game_path:dirname())
 		
 		
-		cap_load(game_path, game_env)
+		local ok, err1, err2 = cap_load(game_path, game_env)
+		if not ok then
+			cards_api_display_error(err1, err2)
+			game_on_error()
+			yield() -- have to yield to prevent freezes
+			return
+		end
 		
-	--	if(not ok) stop()
 		for c in all(copied_env) do
 			_ENV[c] = game_env[c]
 		end
+		subgame_on_error = game_env.game_on_error
 		
 		suite_transition_prepare_1()
 		
-		game_setup()
+		if game_setup then
+			game_setup()
+		end
 		
 	else	
 		include(game_path)
@@ -233,7 +246,10 @@ end
 
 function get_game_info(path)
 	local new_env = {}
-	cap_load(path, new_env)
+	local ok, err1, err2 = cap_load(path, new_env)
+	if not ok then
+		return false, err1, err2
+	end
 	return new_env.game_info
 end
 
@@ -258,9 +274,16 @@ end
 function cap_load(path, env)
 	--local func,err = load(src, "@"..filename, "t", _ENV)
 	local func, err = load(fetch(path), "@".. fullpath(path), "t", env)
-	--local ok = pcall(func)
-	assert(func, err)
-	func()
+	if not func then
+		return false, "*syntax error", err
+	end
+	
+	local ok, err = pcall(func)
+	if not ok then
+		return false, "*runtime error", err
+	end
+	
+	return true
 end
 
 -- copied from include
@@ -270,8 +293,8 @@ function cap_include(base, new_env)
 		local src = fetch(filename)
 	
 		if (type(src) ~= "string") then 
-			notify("could not include "..filename)
-			stop()
+			cards_api_display_error("*could not include "..filename)
+			cards_api_on_error()
 			return
 		end
 	
@@ -283,16 +306,19 @@ function cap_include(base, new_env)
 		local func,err = load(src, "@"..filename, "t", new_env)
 	
 		-- syntax error while loading
-		if (not func) then 
-			-- printh("** syntax error in "..filename..": "..tostr(err))
-			--notify("syntax error in "..filename.."\n"..tostr(err))
-			send_message(3, {event="report_error", content = "*syntax error"})
-			send_message(3, {event="report_error", content = tostr(err)})
-	
-			stop()
+		if not func then 
+			cards_api_display_error("*syntax error", err)
+			cards_api_on_error()
 			return
 		end
-		func()
+		
+		local ok, err = pcall(func)
+		if not ok then
+			cards_api_display_error("*runtime error", err)
+			cards_api_on_error()
+			return
+		end
+		
 	
 		return true -- ok, no error including
 	end

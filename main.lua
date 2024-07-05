@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-06-26 15:16:59",revision=18979]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-07-05 01:18:06",revision=19812]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -9,6 +9,7 @@ function _init()
 		width = 480, 
 		height = 270,
 		autoclose = true,
+		pauseable = false,
 		icon = 
 --[[pod,pod_type="image"]]unpod("b64:bHo0ABwAAAAaAAAA8AtweHUAQyAICAQgF0A3IFcAdwAXEBcwF0A3kA==")
 }

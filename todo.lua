@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-03 22:04:57",revision=18693]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-05 07:13:01",revision=19242]]
 --[[
 
 == ANY update before release ==	
@@ -21,10 +21,6 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-
-add better error messages for games
-	currently it's an error message inside of an error message
-	not properly linking
 		
 overlap optimization
 	when cards are not moving, render only part of the card that would be visible

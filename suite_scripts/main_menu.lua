@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-03 22:04:57",revision=21865]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-05 07:13:01",revision=22462]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -60,9 +60,13 @@ function update_all_assets()
 				local p2 = p .. "/" .. cb
 				
 				if fstat(p2) == "file" and cb:ext() == "lua" then
-					cap_load(p2, e)
+					local ok, err1, err2 = cap_load(p2, e)
 					
-					if e.get_info then
+					-- send message of the file's error
+					if not ok then
+						cards_api_display_error(err1, err2)
+					
+					elseif e.get_info then
 						for info in all(e.get_info()) do
 							if type(info.sprite) == "function" then
 								card_back_animated(info)
@@ -101,9 +105,12 @@ function update_game_options()
 		local p, n = unpack(game)
 		
 		local info_path = p .. "/" .. n .. "/game_info.lua"
-		local info = get_game_info(info_path)()
+		local info, err1, err2 = get_game_info(info_path)()
 		
-		if info and info.api_version == api_version_expected then
+		if not info then
+			cards_api_display_error(err1, err2)
+	
+		elseif info.api_version == api_version_expected then
 			local op = add(all_info, info)	
 			op.order = op.order or 999999
 			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
@@ -411,7 +418,6 @@ function game_setup()
 			function() 
 				if main_menu_selected then
 					last_selected_game = main_menu_selected.info_path
-					rule_cards = nil
 					game_info = get_game_info(main_menu_selected.info_path)
 					suite_load_game(main_menu_selected.game)
 				end
@@ -656,3 +662,11 @@ end
 function cards_game_exiting()
 	suite_load_game"suite_scripts/main_menu.lua"
 end
+
+
+function game_on_error()
+	-- call's the subgame's original game_on_error function, if provided
+	if (subgame_on_error) subgame_on_error()
+	suite_load_game"suite_scripts/main_menu.lua"
+end
+
