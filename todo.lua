@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-05 07:13:01",revision=19242]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-10 09:33:48",revision=20142]]
 --[[
 
 == ANY update before release ==	
@@ -21,15 +21,6 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-		
-overlap optimization
-	when cards are not moving, render only part of the card that would be visible
-	
-	function update_placement(stack)
-		for i,c in all(stack.cards) do
-			c.placement = i
-		end
-	end
 
 custom games
 	card falling game
@@ -44,6 +35,11 @@ custom games
 		uses highscore instead of win count
 			
 	roguelite of some sort?
+
+
+adjust how card options are ordered
+figure out a better way to save cardback ids
+fix menubar to have an adjustable size (mostly for the scores)
 			
 
 double check and fill out documentation for 
