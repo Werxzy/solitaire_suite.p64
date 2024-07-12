@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-10 09:33:48",revision=20142]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-12 04:48:14",revision=20762]]
 --[[
 
 == ANY update before release ==	
@@ -40,7 +40,8 @@ custom games
 adjust how card options are ordered
 figure out a better way to save cardback ids
 fix menubar to have an adjustable size (mostly for the scores)
-			
+better custom shadow for custom sprites?
+	define a number/sprite inside game_info() to give a shadow
 
 double check and fill out documentation for 
 	the example game
@@ -83,6 +84,14 @@ visual tutorial sequence for a each game
 double check card backs on mod load, update, or deletion
 
 == maybe ?? ==
+
+stack sprite optimization???
+	when a card is on top of a stack and isn't moving
+	cut out the center rectangle of the stack
+		would need to be split into 4 sspr calls, which might be a bit much?
+		though if pixels are that expensive to draw, it might be worth it
+	this MIGHT have a tiny bit of performance boost
+	
 
 more control for the card box sprites
 	currently just shifts the position a bit based on the height

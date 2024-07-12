@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-10 09:33:48",revision=11242]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-12 04:48:14",revision=12104]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -53,6 +53,18 @@ card_width = 45
 card_height = 60
 card_gap = 4
 
+function game_values_reset()
+	dealout_flip_count = 1
+	game_score = 0
+	game_combo = 1
+	game_combo_decay = 0
+	game_level = 1
+	game_levelup = 0
+	game_overload_check = false
+	game_card_limit = 10
+	game_over = false
+end
+game_values_reset()
 
 -- function called after the game is selected and started from the main menu
 -- name must match
@@ -65,18 +77,20 @@ function game_setup()
 		
 	-- stack that will contain all the cards
 	deck_stack = stack_new(
-		{5},
-		card_gap, card_gap,
+		{1+256},
+		28, 16,
 		{
 			reposition = stack_repose_static(-0.16),
+			y_off = -5,
 		})
 		
 	-- stack that will contain all the cards
 	stack_discard = stack_new(
-		{5},
-		card_gap, card_gap*3 + card_height,
+		{2+256},
+		28, 86,
 		{
 			reposition = stack_repose_static(-0.16),
+			y_off = -5,
 		})
 	
 	-- get the card back sprite that the player wants to use
@@ -88,7 +102,7 @@ function game_setup()
 		ranks = 10,
 	}
 	
-	for i = 1,8 do
+	for i = 1,12 do
 		for rank = 1,5 do
 			local c = card_new({
 				sprite = card_sprites[1][rank],
@@ -107,12 +121,13 @@ function game_setup()
 	stacks_supply = {}
 	for i = 1,5 do
 		local s = add(stacks_supply, stack_new(
-			{5},
-			(i + 0.5)*(card_width + card_gap*2) + card_gap, card_gap*3 + card_height, 
+			{4+256},
+			(i-1) * (card_width + 9) + 109, 90, 
 			{
 				reposition = stack_repose_normal(),				
 				can_stack = stack_can_rule, 				
-				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up), 			
+				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up),
+				y_off = -5,
 			}))
 			
 		wrap_stack_resolve(s)
@@ -121,10 +136,11 @@ function game_setup()
 	stacks_prepare = {}
 	for i = 1,5 do
 		add(stacks_prepare, stack_new(
-			{5},
-			(i + 0.5)*(card_width + card_gap*2) + card_gap, card_gap, 
+			{3+256},
+			(i-1) * (card_width + 9) + 109, 6, 
 			{
-				reposition = stack_repose_normal(),							
+				reposition = stack_repose_normal(),	
+				offset = -4,						
 			}))
 			
 	end
@@ -133,12 +149,13 @@ function game_setup()
 	stack_storage = {}
 	for i = 1,3 do
 		local s = add(stack_storage, stack_new(
-			{5},
-			7*(card_width + card_gap*2) + card_gap,
-			(i-0.5)*(card_height + card_gap*2-1) + card_gap,
+			{1+256},
+			406,
+			(i-1)*(70) + 35,
 			{
 				on_click = stack_on_click_unstack(),
 				can_stack = can_stack_only_one,
+				y_off = -5,
 			}))
 			
 		wrap_stack_resolve(s)
@@ -154,13 +171,27 @@ function game_setup()
 
 	init_menus()
 	
-	suite_button_simple({
-		text = "Drop Cards", 
-		x = 8, y = 180, 
-		on_click = function()
-			cards_api_coroutine_add(reveal_next_card)
+	local b = button_new({ 
+		x = 30, y = 163,
+		width = 41, height = 13,
+		on_click = function(b)
+			if not game_over then
+				apply_combo_decay()
+				cards_api_coroutine_add(reveal_next_card)
+				b.t = 1
+			end
+		end,
+		draw = function(b)
+			b.t = max(b.t - 0.07)
+			
+			local click_y = ((b.t*2-1)^2 * 2.5 - 2.5) \ 1
+			rectfill(b.x, b.y, b.x+b.width, b.y+b.height, 5)
+			spr(b.highlight and not game_over and 262 or 263, b.x, b.y-click_y)
+			spr(279, b.x-3, b.y-2)
 		end
 	})
+	b.t = 0
+	
 		
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards
 	cards_api_coroutine_add(game_setup_anim)
@@ -188,24 +219,26 @@ function init_menus()
 	suite_menuitem_rules()
 	
 	-- adds a label for the number of wins in the game
-	wins_button = suite_menuitem({
+	highscore_button = suite_menuitem({
 		text = "Highscore", -- name
 		value = "000000" -- default value
 		-- no on_click attribute means it will not do anything when clicked
 	})
 	
 	-- function used to update the text value
-	wins_button.update_val = function(b)
+	highscore_button.update_val = function(b)
 		local s = "\fc"..tostr(game_save.highscore)
 		while(#s < 8) s = "0".. s
 		b:set_value(s)
 	end	
 	-- updates the value on setup
-	wins_button:update_val()
+	highscore_button:update_val()
 end
 
 -- deals the cards out
 function game_setup_anim()
+	game_values_reset()
+
 	-- wait for a bit
 	pause_frames(30)
 	
@@ -264,7 +297,9 @@ function game_dealout_anim()
 	
 	pause_frames(10)
 	-- reveals the first card
-	stacks_prepare[1].cards[1].a_to = 0
+	for i = 1,dealout_flip_count do
+		stacks_prepare[i].cards[1].a_to = 0
+	end
 end
 
 function game_card_drop_anim()
@@ -272,10 +307,11 @@ function game_card_drop_anim()
 		local c = get_top_card(s)
 		
 		c.a_to = 0
-		stack_add_card(stacks_supply[i], c)
-		
+		stack_add_card(stacks_supply[i], c)	
+	
 		pause_frames(3)
 	end
+	game_overload_check = true
 	
 	game_dealout_anim()
 end
@@ -297,13 +333,15 @@ end
 -- for now, all cards are the same suit and go from 1 to 5
 function game_prepare_start_cards_anim()
 	-- get rid of extra cards
-	while #deck_stack.cards > 40 do
+	--[[
+	while #deck_stack.cards > 60 do
 		local c = get_top_card(deck_stack)
 		c.a_to = 0.5
 		stack_add_card(stack_off_frame, c)
 		
 		pause_frames(5)
 	end
+	]]
 	
 	local i = 0
 	
@@ -322,6 +360,7 @@ function game_action_resolved()
 	if not get_held_stack() then
 		-- check all stacks
 		local m = 0
+		local scored = false
 		for s in all(stacks_supply) do
 			
 			local r = 1
@@ -345,14 +384,66 @@ function game_action_resolved()
 						stack_cards(stack_discard, unstack_cards(s2.cards[#s2.cards]))
 						pause_frames(3)
 					end
+					game_score += game_combo
+					game_combo += 1
+					game_combo_decay = 7
 				end)
+				scored = true
 			end
 		end		
 
 		if action_count_up then
 			action_count_up = false
 			
+			if not scored then
+				apply_combo_decay()
+			end
+			
 			reveal_next_card()
+		end
+		
+		if game_overload_check and not scored then
+			game_overload_check = false
+			
+			local overloaded = {}
+			for s in all(stacks_supply) do
+				if #s.cards > game_card_limit then
+					add(overloaded, s)
+				end
+			end
+			if #overloaded > 0 then
+				game_over_anim(overloaded)
+			end
+		end
+	end
+end
+
+function game_over_anim(stacks)
+	-- TODO, add animation of explosions on stacks
+	cards_api_coroutine_add(function()
+		yield()
+		
+		cards_api_set_frozen(true)
+		
+		-- new highscore
+		if game_save.highscore < game_score then
+			game_save.highscore = game_score
+			highscore_button:update_val()
+			suite_store_save(game_save)
+		end
+		
+		game_over = true
+		
+		-- TEMP
+		notify"game over"
+	end)
+end
+
+function apply_combo_decay()
+	if game_combo_decay > 0 then
+		game_combo_decay -= 1
+		if game_combo_decay <= 0 then
+			game_combo = 1
 		end
 	end
 end
@@ -361,7 +452,6 @@ function reveal_next_card()
 	for i = 1,6 do
 		if i == 6 then
 			cards_api_coroutine_add(function()
-				pause_frames(20)
 				game_card_drop_anim()
 			end)
 			break
@@ -375,21 +465,6 @@ function reveal_next_card()
 	end
 end
 
-
--- called when the game's win condition is fulfilled
--- (yes, it's important that this is separate)
-function game_count_win()
-	-- increase the win count
-	game_save.wins += 1
-	-- update the value displayed by wins_button
-	wins_button:update_val()
-	-- save the game data
-	suite_store_save(game_save)
-	
-	-- play the win animation
-	cards_api_coroutine_add(game_win_anim)
-end
-
 -- primary draw function, called multiple times with layers being from 0 to 3
 -- don't forget to check layer number
 -- name must match
@@ -398,15 +473,115 @@ function game_draw(layer)
 	if layer == 0 then
 		-- clear function needs to be called during layer 0
 		-- or at least drawing over the entire screen
-		cls(3)
+		cls(22)		
+
+	-- layer 1 is above all layer 1 buttons and stack sprites		
+	elseif layer == 1 then
 	
-	-- layer 1 is above all layer 1 buttons and stack sprites
-	
+		-- center meters
+		local w = {[0]=1, 2,4,6,8,10, 14,18,22,26, 36}
+		for s in all(stacks_supply) do
+			local w = w[mid(#s.cards, 0, 10)]+1
+
+			local x, y = s.x_to + 3, s.y_to - 20
+			sspr(269, 0,0, w+1,14, x,y)
+			sspr(268, w,0, 39-w,14, x+w,y)
+		end	
+		
+		-- center edges
+		rectfill(101, 0, 101, 269, 6)
+		spr(276, 96, 69)	
+		rectfill(377, 0, 377, 269, 5)
+		spr(277, 377, 69)
+
+		-- screws
+		for i = 0,5 do
+			spr(274, 100 + 54*i, 74)
+		end
+		
+		-- stack boxes
+		ui_boxes(14,2,2)
+		ui_boxes(392,21,3)
+		spr(261,400,9)
+		
+		-- scoring
+		spr(265, 23, 185)
+		ui_numbers(68, 198, min(game_score, 9999999))
+		ui_numbers(68, 213, min(game_combo, 99))
+		ui_numbers(68, 230, min(game_level, 99))
+		
+		ui_bar_levels(26, 224, game_combo_decay)
+		ui_bar_levels(26, 241, game_levelup)
+
 	-- layer 2 is drawn above all cards
 	end
 	
 	-- layer 3 and 4 are mostly reserved and are drawn above everything else 
 end
+
+-- just to simplify the drawing calls
+function ui_left_edge(x, y)
+	sspr(275, 0,3, 3,11, x,y)
+end
+function ui_right_edge(x, y)
+	sspr(275, 12,3, 3,11, x,y)
+end
+function ui_top_edge(x, y)
+	sspr(275, 2,0, 11,4, x,y)
+end
+function ui_bottom_edge(x, y)
+	sspr(275, 2,11, 11,10, x,y)
+end
+
+function ui_boxes(x, y, n)
+	ui_top_edge(x+2, y)
+	ui_top_edge(x+60, y)
+	rectfill(x+14, y+3, x+60, y+3, 6) 
+
+	for i = 0,n do
+		local yi = y+i*70
+		ui_left_edge(x, yi+3)
+		ui_right_edge(x+70, yi+3)
+		spr(273, x+4, yi+4)
+		spr(273, x+62, yi+4)
+	
+		if i > 0 then
+			rectfill(x+3, yi-58, x+3, yi+2, 6)
+			rectfill(x+69, yi-58, x+69, yi+2, 5)
+		end
+	end
+	
+	local yn = y+n*70
+	ui_bottom_edge(x+2, yn+11)
+	ui_bottom_edge(x+60, yn+11)
+	rectfill(x+13, yn+11, x+60, yn+13, 5) 
+end
+
+function ui_numbers(x, y, n)
+	assert(n >= 0 and n%1 == 0, "invalid number")
+	
+	repeat
+		local v = n%10
+		n \= 10
+		
+		sspr(266, v*5,0, 6,10, x,y)
+		
+		x -= 7
+	until n == 0
+end
+
+-- currently out of 7
+function ui_bar_levels(x, y, n)
+	local sp_x = n < 3 and 0
+		or n < 5 and 6 
+		or 12
+	
+	for i = 0,n-1 do
+		sspr(267, sp_x,0, 6,4, x, y)
+		x += 7
+	end
+end
+
 
 -- primay update function
 -- name must match
