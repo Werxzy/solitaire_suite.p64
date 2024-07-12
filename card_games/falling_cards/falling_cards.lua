@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-12 04:48:14",revision=12104]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-12 07:38:18",revision=12633]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -6,45 +6,43 @@ include "cards_api/card_gen.lua"
 -- including or fetching files next to the main file should include
 -- "/game/" or "game/" at the start of the path
 include "game/stack_rules.lua"
-
-
+include "game/particles.lua"
 
 --[[
-idea
-5 columns, 5 prepare slots, 1 deck and 1 discard/set-slot on the left, 3 item/card slots on the right
+TODO
 
-after each action, reveal 1 card in the prepare slots
-after all prepare slots are revealed, place them on top (or bottom?) of the 5 columns
-	refresh replace the prepare slots
-	if there's less than 5 then shuffle the discard stack and put it in the deck stack
-		probably check if empty after each draw
-		
-a straight consists of 5 cards in a row, which are then moved to the discard pile
-every straight is a point
-every 7? actions that scores a point results in a multiplier increase
-	after 7 actions with no scoring, reset the multiplier
-
-new counter display for the score
-	accelerates to the right number
-	maybe have a smear versions of the sprite at certain speeds
-
-after so many points, there's a level up
-	either increasing suit count, increasing range of ranks, adding cards with negative effects
+back 2 back straights give bonuses
+	notify player there's a bonus
 	
-maybe rig the revealing cards, to ensure there's an even distribution
+bonus card on level up
+	replaces one of the added cards
+	
+	wild card, replaces any care
+	bomb card, remove a single stack of cards
+	?shuffle, shuffle around all the cards, maybe evenly distribute them
+	
+display points earned
 
+game over effect
+sparks on cards that are flipped from levels?
+
+? bonus suit that awards x2 points, multiple cards with the bonus suit increases the bonus exponentially
+
+on level 10 and greater
+	change the starting flipped card to 2 face up
+	
+	on level 20, make it 3 face up
+	any more than that and it might be too difficult
+]]
+
+--[[
+	
 3 types of item cards can appear
 	bomb, takes out column
 		maybe another one that removes the top two rows?
 	wild, can be used in place of any card
 	
 	shuffle?
-	
-item/card slots on the right can hold onto any item or 
-
-after a slot has a certain amount of cards or more, there is a warning symbol
-	probably have a meter to show how close it is to overflowing
-	if cards are added from the prepare slots while one is overflowing, then it's game over
 
 ]]
 
@@ -63,6 +61,7 @@ function game_values_reset()
 	game_overload_check = false
 	game_card_limit = 10
 	game_over = false
+	game_prepare_bonus = false
 end
 game_values_reset()
 
@@ -99,7 +98,9 @@ function game_setup()
 	-- generates sprites with given parameters
 	card_sprites = card_gen_standard{
 		suits = 4, 
-		ranks = 10,
+		ranks = 5,
+		rank_chars = {"1","2","3","4","5"},
+		face_sprites = {}
 	}
 	
 	for i = 1,12 do
@@ -179,6 +180,13 @@ function game_setup()
 				apply_combo_decay()
 				cards_api_coroutine_add(reveal_next_card)
 				b.t = 1
+					
+				-- sparks
+				for i = 1,5 do
+					new_particles(b.x+rnd(b.width), b.y+rnd(b.height), 1, 0.5)
+				end
+				new_particles(b.x, b.y + b.height/2, 5, 0.8)
+				new_particles(b.x+b.width, b.y + b.height/2, 5, 0.8)
 			end
 		end,
 		draw = function(b)
@@ -221,15 +229,15 @@ function init_menus()
 	-- adds a label for the number of wins in the game
 	highscore_button = suite_menuitem({
 		text = "Highscore", -- name
-		value = "000000" -- default value
+		value = "0000000" -- default value
 		-- no on_click attribute means it will not do anything when clicked
 	})
 	
 	-- function used to update the text value
 	highscore_button.update_val = function(b)
-		local s = "\fc"..tostr(game_save.highscore)
-		while(#s < 8) s = "0".. s
-		b:set_value(s)
+		local s = tostr(game_save.highscore)
+		while(#s < 7) s = "0".. s
+		b:set_value("\fc"..s)
 	end	
 	-- updates the value on setup
 	highscore_button:update_val()
@@ -268,7 +276,18 @@ function game_setup_anim()
 end
 
 function game_dealout_anim()
-	local adding = random_least(5)
+	local adding = nil
+	if game_prepare_bonus then
+		adding = random_least(5)
+		
+		-- TODO: add a random 
+		--	adding = random_least(4)
+		-- add(adding, rnd({"wild", "bomb"})
+	
+	else
+		adding = random_least(5)
+	end
+
 	for i, s in pairs(stacks_prepare) do
 		local c = get_top_card(deck_stack)
 		
@@ -367,6 +386,7 @@ function game_action_resolved()
 			for i = 1, 5, 1 do
 				local c = s.cards[#s.cards-i+1]
 				
+				-- TODO rewrite if allowing wild as 0 or 6
 				if c and (c.rank == r or c.rank == "wild") then
 					r += 1
 				else
@@ -377,6 +397,7 @@ function game_action_resolved()
 			m = max(m, r)
 			
 			if r == 6 then
+				-- SCORING
 				local s2 = s
 				cards_api_coroutine_add(function()
 					pause_frames(15)
@@ -384,9 +405,18 @@ function game_action_resolved()
 						stack_cards(stack_discard, unstack_cards(s2.cards[#s2.cards]))
 						pause_frames(3)
 					end
+					
+					local a,b = game_score, game_combo
 					game_score += game_combo
-					game_combo += 1
+					game_combo = min(game_combo + 1, 99)
 					game_combo_decay = 7
+					
+					sparks_on_change(71, 203, a, game_score)
+					sparks_on_change(71, 218, b, game_combo)
+					
+					inc_levelup(2)
+					
+					
 				end)
 				scored = true
 			end
@@ -443,6 +473,7 @@ function apply_combo_decay()
 	if game_combo_decay > 0 then
 		game_combo_decay -= 1
 		if game_combo_decay <= 0 then
+			sparks_on_change(71, 218, game_combo, 1)
 			game_combo = 1
 		end
 	end
@@ -514,6 +545,9 @@ function game_draw(layer)
 		ui_bar_levels(26, 241, game_levelup)
 
 	-- layer 2 is drawn above all cards
+	elseif layer == 2 then
+		particles_draw()
+	
 	end
 	
 	-- layer 3 and 4 are mostly reserved and are drawn above everything else 
@@ -583,9 +617,45 @@ function ui_bar_levels(x, y, n)
 end
 
 
+
 -- primay update function
 -- name must match
 function game_update()
+--[[
+	local mx, my, mb = mouse()
+	if mb&1 == 1 and lastmb&1 == 0 then
+		new_particles(mx, my, 3, 0.5)
+	end
+	lastmb = mb
+]]
+	particles_update()
 end
+--local lastmb = 0
 
 
+function inc_levelup(n)
+	game_levelup += n
+	if game_levelup == 8 then
+		local a = game_level
+		game_level = min(game_level+1, 99)
+		game_levelup -= 8
+		sparks_on_change(71, 235, a, game_level)
+		
+		game_prepare_bonus = true
+		
+		-- reveal cards on level up, half the previous level rounded up
+		local flip_n = min(game_level\2, 5)
+		local function add_next()
+			if flip_n > 0 then
+				flip_n -= 1
+				cards_api_coroutine_add(function()
+					reveal_next_card()
+					pause_frames(5)
+					add_next()
+				end)
+			end
+		end
+		
+		add_next()
+	end
+end
