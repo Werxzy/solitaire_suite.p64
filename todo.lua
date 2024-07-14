@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-12 04:48:14",revision=20762]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-14 13:20:12",revision=22589]]
 --[[
 
 == ANY update before release ==	
@@ -43,6 +43,9 @@ fix menubar to have an adjustable size (mostly for the scores)
 better custom shadow for custom sprites?
 	define a number/sprite inside game_info() to give a shadow
 
+fix scroll buttons on menu manager resetting when pressed
+	probably just store their t value as a global
+
 double check and fill out documentation for 
 	the example game
 	suite
@@ -50,7 +53,11 @@ double check and fill out documentation for
 	
 	
 	
+	
 == 0.?.0 ==
+
+generate once card back sprites
+	sprites that change a bit based on their size, but only need to be generated once
 
 extra mod list metadata for what games were loaded
 	games detected?
@@ -83,6 +90,9 @@ visual tutorial sequence for a each game
 	
 double check card backs on mod load, update, or deletion
 
+drag and drop cart and add it to the mods while the manager is open
+	remember to check it is valid
+
 == maybe ?? ==
 
 stack sprite optimization???
@@ -97,8 +107,6 @@ more control for the card box sprites
 	currently just shifts the position a bit based on the height
 	also the shadow is always rectangular
 
-? better error handling for solitaire variants
-
 include 1.map or 1.sfx in the future
 
 transition draw mode?
@@ -107,29 +115,8 @@ transition draw mode?
 	then when the transition is happening, store the first frame when drawing the new level
 		and draw the transition using only the 2 stored screen sprites
 	would require disabling input during the transition
-
-change button control of cards api to instead check for any interaction
-	maybe have a clickable priority
-	clickables = {
-		[0] = {first / topmost}
-		[1] = {default / before stacks, after cards}
-		[2] = {last / after everything else}
-	}
-	return true if click is consumed
-	if true, call the on_click function
 	
 ? add bool to enable shadows for cards in hand
-
-??? better variable encapsulation
-	(attempted this, but it doesn't work out that well due to not planning for it from the start)
-
-	essentially, when including a new game, it should not have access to some functions, like fetch or store
-		this is more to prevent malicious code
-		but this would require some large refactoring
-
-	clean up env
-		probably will need to have functions for getting tables that could change outside of the scope
-		like held_stack would change, but it wouldn't be communicated to the game env
 
 double click for instantly starting the game.
 	

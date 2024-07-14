@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-12 07:38:18",revision=12633]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-14 13:20:12",revision=14099]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -11,39 +11,19 @@ include "game/particles.lua"
 --[[
 TODO
 
-back 2 back straights give bonuses
-	notify player there's a bonus
-	
+game over effect
+
 bonus card on level up
 	replaces one of the added cards
 	
-	wild card, replaces any care
+	wild card, replaces any rank
 	bomb card, remove a single stack of cards
 	?shuffle, shuffle around all the cards, maybe evenly distribute them
 	
-display points earned
 
-game over effect
-sparks on cards that are flipped from levels?
+new card box sprite
 
 ? bonus suit that awards x2 points, multiple cards with the bonus suit increases the bonus exponentially
-
-on level 10 and greater
-	change the starting flipped card to 2 face up
-	
-	on level 20, make it 3 face up
-	any more than that and it might be too difficult
-]]
-
---[[
-	
-3 types of item cards can appear
-	bomb, takes out column
-		maybe another one that removes the top two rows?
-	wild, can be used in place of any card
-	
-	shuffle?
-
 ]]
 
 -- some variables used for consistency
@@ -62,6 +42,9 @@ function game_values_reset()
 	game_card_limit = 10
 	game_over = false
 	game_prepare_bonus = false
+	new_highscore_found = false
+	
+	game_exploded_meters = {}
 end
 game_values_reset()
 
@@ -406,12 +389,19 @@ function game_action_resolved()
 						pause_frames(3)
 					end
 					
-					local a,b = game_score, game_combo
-					game_score += game_combo
+					local b = game_combo
+					local sx, sy = s2.x_to + s2.width\2, s2.y_to + s2.height\2
+					
+					if game_combo_decay == 7 then
+						new_text_particle(sx, sy - 13, 284)
+						game_add_score(game_combo * 2, sx, sy)
+					else
+						game_add_score(game_combo, sx, sy)
+					end
+					
 					game_combo = min(game_combo + 1, 99)
 					game_combo_decay = 7
 					
-					sparks_on_change(71, 203, a, game_score)
 					sparks_on_change(71, 218, b, game_combo)
 					
 					inc_levelup(2)
@@ -436,9 +426,9 @@ function game_action_resolved()
 			game_overload_check = false
 			
 			local overloaded = {}
-			for s in all(stacks_supply) do
+			for i, s in pairs(stacks_supply) do
 				if #s.cards > game_card_limit then
-					add(overloaded, s)
+					add(overloaded, {i, s})
 				end
 			end
 			if #overloaded > 0 then
@@ -451,21 +441,19 @@ end
 function game_over_anim(stacks)
 	-- TODO, add animation of explosions on stacks
 	cards_api_coroutine_add(function()
-		yield()
-		
+
 		cards_api_set_frozen(true)
-		
-		-- new highscore
-		if game_save.highscore < game_score then
-			game_save.highscore = game_score
-			highscore_button:update_val()
-			suite_store_save(game_save)
-		end
-		
 		game_over = true
 		
-		-- TEMP
-		notify"game over"
+		for s in all(stacks) do
+			game_exploded_meters[s[1]] = true
+			
+			local s = s[2]
+			new_explode_particle(s.x_to + s.width\2, s.y_to - 17)
+			pause_frames(40)
+		end
+		
+		new_text_particle(240, 180, 278, 120)
 	end)
 end
 
@@ -479,21 +467,35 @@ function apply_combo_decay()
 	end
 end
 
-function reveal_next_card()
+function reveal_next_card(spark)
 	for i = 1,6 do
 		if i == 6 then
 			cards_api_coroutine_add(function()
+				if spark then
+					foreach(stacks_prepare, reveal_spark)
+				end
 				game_card_drop_anim()
 			end)
 			break
 		end
-			
-		local c = stacks_prepare[i].cards[1]
+		
+		local s = stacks_prepare[i]
+		local c = s.cards[1]
 		if c.a_to == 0.5 then
 			c.a_to = 0
+			
+			if spark then
+				reveal_spark(s)
+			end
 			break
 		end
 	end
+end
+
+function reveal_spark(s)
+	local sx, sy = s.x_to + s.width\2, s.y_to + s.height\2
+	new_text_particle(sx, sy, 287)
+	new_particles(sx, sy, 10, 1)
 end
 
 -- primary draw function, called multiple times with layers being from 0 to 3
@@ -511,12 +513,22 @@ function game_draw(layer)
 	
 		-- center meters
 		local w = {[0]=1, 2,4,6,8,10, 14,18,22,26, 36}
-		for s in all(stacks_supply) do
-			local w = w[mid(#s.cards, 0, 10)]+1
-
+		for i, s in pairs(stacks_supply) do
 			local x, y = s.x_to + 3, s.y_to - 20
-			sspr(269, 0,0, w+1,14, x,y)
-			sspr(268, w,0, 39-w,14, x+w,y)
+			
+			if game_exploded_meters[i] then
+				spr(270, x, y)
+				
+			else
+				local wi = mid(#s.cards, 0, 10)
+				if wi == 10 and time()%1 < 0.333 then -- flash the last light
+					wi -= 1
+				end
+				local w = w[wi]+1
+				
+				sspr(269, 0,0, w+1,14, x,y)
+				sspr(268, w,0, 39-w,14, x+w,y)
+			end
 		end	
 		
 		-- center edges
@@ -635,13 +647,23 @@ end
 
 function inc_levelup(n)
 	game_levelup += n
-	if game_levelup == 8 then
+	if game_levelup >= 8 then
 		local a = game_level
 		game_level = min(game_level+1, 99)
 		game_levelup -= 8
+		
+		new_text_particle(50, 215, 285)
 		sparks_on_change(71, 235, a, game_level)
 		
 		game_prepare_bonus = true
+		
+		-- increase difficulty by increasing the starting amount of revealed cards
+		if game_level == 15 
+		or game_level == 30
+		or game_level == 45
+		or game_level == 60 then
+			dealout_flip_count += 1
+		end
 		
 		-- reveal cards on level up, half the previous level rounded up
 		local flip_n = min(game_level\2, 5)
@@ -649,13 +671,34 @@ function inc_levelup(n)
 			if flip_n > 0 then
 				flip_n -= 1
 				cards_api_coroutine_add(function()
-					reveal_next_card()
+					reveal_next_card(true)
 					pause_frames(5)
 					add_next()
 				end)
 			end
 		end
-		
+				
 		add_next()
 	end
+end
+
+function game_add_score(n, x, y)
+	local a = game_score
+	game_score += n
+	
+	new_text_particle(x, y, tostr(n))
+	new_particles(x, y, 15, 1.5)
+	
+	-- store highest score
+	if game_score > game_save.highscore then
+		if not new_highscore_found then
+			new_highscore_found = true
+			new_text_particle(50, 200, 286)
+		end
+		game_save.highscore = game_score
+		highscore_button:update_val()
+		suite_store_save(game_save)	
+	end
+	
+	sparks_on_change(71, 203, a, game_score)
 end
