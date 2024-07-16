@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-14 13:20:12",revision=14099]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-16 06:37:29",revision=14636]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -9,17 +9,6 @@ include "game/stack_rules.lua"
 include "game/particles.lua"
 
 --[[
-TODO
-
-game over effect
-
-bonus card on level up
-	replaces one of the added cards
-	
-	wild card, replaces any rank
-	bomb card, remove a single stack of cards
-	?shuffle, shuffle around all the cards, maybe evenly distribute them
-	
 
 new card box sprite
 
@@ -31,6 +20,8 @@ card_width = 45
 card_height = 60
 card_gap = 4
 
+bonus_card_ranks = {"wild", "bomb", "shuffle"}
+
 function game_values_reset()
 	dealout_flip_count = 1
 	game_score = 0
@@ -41,7 +32,8 @@ function game_values_reset()
 	game_overload_check = false
 	game_card_limit = 10
 	game_over = false
-	game_prepare_bonus = false
+	game_prepare_bonus = true
+	game_super_bonus = false
 	new_highscore_found = false
 	
 	game_exploded_meters = {}
@@ -80,10 +72,11 @@ function game_setup()
 
 	-- generates sprites with given parameters
 	card_sprites = card_gen_standard{
-		suits = 4, 
-		ranks = 5,
-		rank_chars = {"1","2","3","4","5"},
-		face_sprites = {}
+		suits = 1, 
+		ranks = 8,
+		rank_chars = {"1","2","3","4","5","\^:10081e3d3f3f3f1e","?", "S"},
+		suit_show = {true, true, true, true, true, false, false, false},
+		face_sprites = {[6] = 24+256, [7] = 25+256, [8] = 32+256}
 	}
 	
 	for i = 1,12 do
@@ -108,13 +101,13 @@ function game_setup()
 			{4+256},
 			(i-1) * (card_width + 9) + 109, 90, 
 			{
-				reposition = stack_repose_normal(),				
+				reposition = stack_repose_normal(nil, nil, 140),				
 				can_stack = stack_can_rule, 				
 				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up),
 				y_off = -5,
 			}))
 			
-		wrap_stack_resolve(s)
+		wrap_stack_resolve(s, true)
 	end
 	
 	stacks_prepare = {}
@@ -260,12 +253,26 @@ end
 
 function game_dealout_anim()
 	local adding = nil
-	if game_prepare_bonus then
-		adding = random_least(5)
+	
+	-- 3% chance that all dealt cards are bonus cards 
+	-- only once per game
+	if game_prepare_bonus 
+	and not game_super_bonus 
+	and rnd() < 0.03 
+	and game_level >= 11 then
+		game_super_bonus = true
+		game_prepare_bonus = false
 		
-		-- TODO: add a random 
-		--	adding = random_least(4)
-		-- add(adding, rnd({"wild", "bomb"})
+		adding = {}
+		for i = 1,5 do
+			add(adding, rnd(bonus_card_ranks))
+		end
+	 
+	elseif game_prepare_bonus then
+		game_prepare_bonus = false
+		
+		adding = random_least(4)
+		add(adding, rnd(bonus_card_ranks))
 	
 	else
 		adding = random_least(5)
@@ -289,7 +296,20 @@ function game_dealout_anim()
 		-- assign new rank
 		local new_rank = del(adding, rnd(adding))
 		c.rank = new_rank
-		c.sprite = card_sprites[1][new_rank]
+		
+		if type(new_rank) == "number" then
+			c.sprite = card_sprites[1][new_rank]
+		
+		elseif new_rank == "bomb" then
+			c.sprite = card_sprites[1][6]
+			
+		elseif new_rank == "wild" then
+			c.sprite = card_sprites[1][7]
+			
+		elseif new_rank == "shuffle" then
+			c.sprite = card_sprites[1][8]
+			
+		end
 		
 		c.a_to = 0.5
 		stack_add_card(s, c)
@@ -320,11 +340,15 @@ end
 
 function game_shuffle_discard()
 	stack_collecting_anim(deck_stack, stack_discard)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
 end
 
 -- coroutine that places all the cards back onto the main deck
 function game_reset_anim()
 	stack_collecting_anim(deck_stack, stacks_prepare, stacks_supply, stack_storage, stack_discard)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
 
 	game_prepare_start_cards_anim()
 	
@@ -411,35 +435,97 @@ function game_action_resolved()
 				scored = true
 			end
 		end		
-
-		if action_count_up then
-			action_count_up = false
+		
+		local effect_wait = false
+		if action_effect_check then
+			local c = get_top_card(action_effect_check)
+			local stack = action_effect_check
 			
-			if not scored then
-				apply_combo_decay()
+			if c.rank == "bomb" then
+				cards_api_coroutine_add(function()
+					pause_frames(5)
+					local sx, sy = c.x_to + c.width\2, c.y_to + c.height\2
+					new_explode_particle(sx, sy)
+					new_particles(sx, sy, 35, 2.5)
+					pause_frames(30)
+					stack_collecting_anim(stack_discard, 0, stack)
+					pause_frames(15)
+				end)
+				effect_wait = true
 			end
 			
-			reveal_next_card()
+			if c.rank == "shuffle" then
+				cards_api_coroutine_add(function()
+					
+					stack_collecting_anim(stack, 0, stacks_supply)
+					pause_frames(15)
+					stack_add_card(stack_discard, c)
+					pause_frames(15)
+					
+					local lowest = true
+					while lowest do
+						lowest = nil
+						local l = #stack.cards
+						for s in all(stacks_supply) do
+							local l2 = #s.cards
+							if s != stack and l2 < l then
+								lowest = s
+								l = l2
+							end
+						end
+						if lowest then
+							stack_add_card(lowest, rnd(stack.cards))
+						end
+						pause_frames(3)
+					end
+					
+					pause_frames(15)
+					
+					for s in all(stacks_prepare) do
+						local c = get_top_card(s)
+						if c.a_to == 0 then
+							c.a_to = 0.5
+							reveal_spark(s)
+							pause_frames(15)
+						end
+					end	
+			
+				end)
+			end
+			effect_wait = true
+			action_effect_check = false
 		end
 		
-		if game_overload_check and not scored then
-			game_overload_check = false
-			
-			local overloaded = {}
-			for i, s in pairs(stacks_supply) do
-				if #s.cards > game_card_limit then
-					add(overloaded, {i, s})
+		-- if a bonus card is needing to take effect, the wait until after the animations
+		if not effect_wait then
+			if action_count_up then
+				action_count_up = false
+				
+				if not scored then
+					apply_combo_decay()
 				end
+				
+				reveal_next_card()
 			end
-			if #overloaded > 0 then
-				game_over_anim(overloaded)
+			
+			if game_overload_check and not scored then
+				game_overload_check = false
+				
+				local overloaded = {}
+				for i, s in pairs(stacks_supply) do
+					if #s.cards > game_card_limit then
+						add(overloaded, {i, s})
+					end
+				end
+				if #overloaded > 0 then
+					game_over_anim(overloaded)
+				end
 			end
 		end
 	end
 end
 
 function game_over_anim(stacks)
-	-- TODO, add animation of explosions on stacks
 	cards_api_coroutine_add(function()
 
 		cards_api_set_frozen(true)
@@ -449,7 +535,9 @@ function game_over_anim(stacks)
 			game_exploded_meters[s[1]] = true
 			
 			local s = s[2]
-			new_explode_particle(s.x_to + s.width\2, s.y_to - 17)
+			local sx, sy = s.x_to + s.width\2, s.y_to - 17
+			new_explode_particle(sx, sy)
+			new_particles(sx, sy, 35, 2.5)
 			pause_frames(40)
 		end
 		

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-14 13:20:12",revision=22589]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-16 06:37:29",revision=22972]]
 --[[
 
 == ANY update before release ==	
@@ -51,8 +51,12 @@ double check and fill out documentation for
 	suite
 	cards api
 	
-	
-	
+== 0.3.0 ==	
+
+add proper sound effects and music manager
+
+pull sound effects from pull request
+	https://github.com/Werxzy/solitaire_suite.p64/pull/3
 	
 == 0.?.0 ==
 

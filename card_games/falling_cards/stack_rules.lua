@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-07-10 09:33:48",revision=1149]]
+--[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-07-16 06:37:29",revision=4076]]
 
 -- if the cards are connected by rank or one is wild
 -- r1 on top of r2
@@ -19,8 +19,8 @@ function stack_can_rule(stack, stack2)
 	local c1 = stack.cards[#stack.cards].rank
 	local c2 = stack2.cards[1].rank
 	
-	-- 1 rank below or wild
-	return is_stackable_rank(c1, c2)
+	-- 1 rank below or wild, or placed card is bomb
+	return is_stackable_rank(c1, c2) or c2 == "bomb" or c2 == "shuffle"
 end
 
 
@@ -46,23 +46,25 @@ function unstack_rule_decending(card)
 end
 
 -- wraps the resolve function
-function wrap_stack_resolve(stack)
-	stack.old_resolve_stack = stack.resolve_stack
-	stack.resolve_stack = resolve_check_change
+function wrap_stack_resolve(stack, check_effect)
+	local old_resolve_stack = stack.resolve_stack
+	
+	stack.resolve_stack = function(s, held)
+		local changed = s ~= held.old_stack
+		
+		old_resolve_stack(s, held)
+		
+		if changed then
+			if check_effect then
+				action_effect_check = s
+			end
+	
+			action_count_up = true
+		end
+	end
 end
 
 -- checks if the card placement has changed
-function resolve_check_change(s, held)
-	local changed = s ~= held.old_stack
-	
-	s:old_resolve_stack(held)
-	
-	if changed then
-		-- TODO: check if card is special and should activate an effect	
-
-		action_count_up = true
-	end
-end
 
 function can_stack_only_one(stack, held)
 	return #stack.cards == 0 and #held.cards == 1
@@ -85,7 +87,9 @@ function count_cards()
 	for s in all(stacks_supply) do
 		for c in all(s.cards) do
 			local n = cards[c.rank]
-			cards[c.rank] += 1
+			if n then
+				cards[c.rank] += 1
+			end
 		end
 	end
 	return cards

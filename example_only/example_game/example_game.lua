@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-01 20:18:47",revision=10549]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-09 22:47:06",revision=10603]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
@@ -229,6 +229,8 @@ end
 function game_reset_anim()
 	-- takes cards from stack_supply and hand_stack into deck_stack 
 	stack_collecting_anim(deck_stack, stacks_supply, hand_stack, stack_goals)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
 	
 	-- plays the setup coroutine
 	game_setup_anim()

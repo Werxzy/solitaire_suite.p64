@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-06-29 20:55:11",revision=3049]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-14 06:21:21",revision=3091]]
 
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
@@ -163,6 +163,8 @@ end
 -- places all the cards back onto the main deck
 function game_reset_anim()
 	stack_collecting_anim(deck_stack, stacks_supply, stack_goals, deck_playable)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
 	
 	game_setup_anim()
 end

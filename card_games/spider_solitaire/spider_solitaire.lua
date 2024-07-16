@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-06-29 21:02:07",revision=4638]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-07-09 21:55:56",revision=4676]]
 
 
 include "suite_scripts/confetti.lua"
@@ -121,6 +121,8 @@ end
 -- places all the cards back onto the main deck
 function game_reset_anim()
 	stack_collecting_anim(deck_stack, stacks_supply, stack_goal)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
 	
 	local op = {1,2,3,4,5}
 	del(op, current_suit)

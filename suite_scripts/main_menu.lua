@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-05 07:13:01",revision=22462]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-14 11:36:55",revision=22860]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -427,7 +427,7 @@ function game_setup()
 		{"Manage Mods", 16, suite_open_mod_manager},
 --#end
 		{"Settings", 27, suite_open_settings},
-		{"Exit Game", 25, exit},
+		{"Exit Game", 25, stop},
 	}
 	for i, d in pairs(cb) do
 		local f = d[3]
