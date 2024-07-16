@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-06-28 00:42:34",revision=4977]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-07-16 09:07:43",revision=5156]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -230,7 +230,7 @@ function suite_menuitem_rules(width, height)
 		text = "Rules", 
 		pages = {
 			width = width or 175,
-			height = height or 75,
+			height = height or 80,
 			content = game_info().rules,
 		},
 		always_active = true

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-07-16 06:37:29",revision=4076]]
+--[[pod_format="raw",created="2024-06-28 02:31:21",modified="2024-07-16 09:08:04",revision=4153]]
 
 -- if the cards are connected by rank or one is wild
 -- r1 on top of r2
@@ -80,7 +80,9 @@ function count_cards()
 	for s in all(stack_storage) do
 		for c in all(s.cards) do
 			local n = cards[c.rank]
-			cards[c.rank] += 1
+			if n then
+				cards[c.rank] += 1
+			end
 		end
 	end
 	
@@ -95,7 +97,6 @@ function count_cards()
 	return cards
 end
 
--- TODO determine ranks and bonus cards
 function random_least(n)
 	local counts = count_cards()
 	local added = {}

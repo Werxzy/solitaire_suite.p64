@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-16 06:37:29",revision=22972]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-16 09:15:35",revision=23143]]
 --[[
 
 == ANY update before release ==	
@@ -22,30 +22,21 @@ message zep about using fetch to gather carts
 
 == 0.2.0 ==
 
-custom games
-	card falling game
-		5-7 columns
-		moving a card from one stack to another will increase a counter
-			after a counter is maxxed, it resets and every column gets a new card on bottom
-				cards can be face down
-			(or maybe when getting a new card from the deck)
 
-		create straights of (5?) cards to remove them
-			probably allow king to go to ace
-		uses highscore instead of win count
-			
-	roguelite of some sort?
-
-
-adjust how card options are ordered
+adjust how card boxes are ordered
 figure out a better way to save cardback ids
 fix menubar to have an adjustable size (mostly for the scores)
 better custom shadow for custom sprites?
 	define a number/sprite inside game_info() to give a shadow
 
+fix errors occuring on getting game info
+
 fix scroll buttons on menu manager resetting when pressed
 	probably just store their t value as a global
 
+second custom game?
+	roguelite of some sort?
+	
 double check and fill out documentation for 
 	the example game
 	suite

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-16 06:37:29",revision=14636]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-16 09:15:35",revision=14831]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -9,8 +9,7 @@ include "game/stack_rules.lua"
 include "game/particles.lua"
 
 --[[
-
-new card box sprite
+maybe later?
 
 ? bonus suit that awards x2 points, multiple cards with the bonus suit increases the bonus exponentially
 ]]
@@ -32,7 +31,7 @@ function game_values_reset()
 	game_overload_check = false
 	game_card_limit = 10
 	game_over = false
-	game_prepare_bonus = true
+	game_prepare_bonus = false
 	game_super_bonus = false
 	new_highscore_found = false
 	
@@ -48,7 +47,7 @@ function game_setup()
 	game_save = suite_load_save() or {
 		highscore = 0 -- default save data, can store game settings here
 	}	
-		
+			
 	-- stack that will contain all the cards
 	deck_stack = stack_new(
 		{1+256},
@@ -393,7 +392,6 @@ function game_action_resolved()
 			for i = 1, 5, 1 do
 				local c = s.cards[#s.cards-i+1]
 				
-				-- TODO rewrite if allowing wild as 0 or 6
 				if c and (c.rank == r or c.rank == "wild") then
 					r += 1
 				else
@@ -491,8 +489,9 @@ function game_action_resolved()
 					end	
 			
 				end)
+				effect_wait = true
 			end
-			effect_wait = true
+			
 			action_effect_check = false
 		end
 		

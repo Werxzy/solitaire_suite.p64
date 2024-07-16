@@ -1,14 +1,19 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-07-10 09:33:48",revision=1893]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-07-16 09:15:35",revision=4940]]
 
 function game_info()
 	return {
 --		sprite = can be userdata
-		name = "Falling Cards",
+		name = "Falling Solitaire",
 		author = "Werxzy",
-		description = "Example project to be used as a base.",
+		description = "A point based solitaire game, where if a stack gets too tall, it's gameover",
 		rules = {
-			"Rules Text",
-			"Page 2 test"
+			"Score points by creating stacks of cards going from 5 to 1. Build your combo meter to score more points.",
+			"Cards can only be placed on an empty space or another card that's 1 rank higher. Up to 3 individual cards can be placed in storage on ther right side.",
+			"Moving a card or pressing the 'DROP' button will reveal a card on the top row. When a card is moved while all 5 cards are revealed, all cards will drop to the stacks below them and 5 new cards will be dealt.",
+			"Every 4 stacks will increase the level and will reveal a number of cards equal to the current level, rounded down.",
+			"If a card is placed on a stack, during a card reveal, when there are 10 or more cards on that stack, then it will be gameover.",
+			"Three bonus cards can be placed onto another stack to activate their ability or placed in storage to use later. Every level, one of the next cards will be replaced with a bonus card.",
+			"Bomb - Clears an entire stack.\nWild - Acts as any number card.\nShuffle - Shuffles and evenly distributes all cards, then hides all revealed cards."
 		},
 		desc_score = {
 			format = "Highscore : %i",
