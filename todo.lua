@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 08:05:03",revision=23705]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 08:58:48",revision=23889]]
 --[[
 
 == ANY update before release ==	
@@ -21,14 +21,7 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-	
-add consistency in param for stuff like stack, cards, etc
-	take in single table parameter and loop through keys to set properties
-	
-adjust how card boxes are ordered
-figure out a better way to save cardback ids
-fix menubar to have an adjustable size (mostly for the scores)
-
+		
 second custom game?
 	roguelite of some sort?
 	
@@ -54,6 +47,8 @@ allow for recursive menuing?
 	
 more functionality for card_gen
 	
+?fix menubar to have an adjustable size (mostly for the scores)
+
 == 0.?.0 ==
 
 generate once card back sprites

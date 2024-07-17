@@ -1,11 +1,10 @@
---[[pod_format="raw",created="2024-03-26 07:03:01",modified="2024-06-24 16:28:07",revision=572]]
+--[[pod_format="raw",created="2024-03-26 07:03:01",modified="2024-07-17 08:58:48",revision=577]]
 
 function get_info()
 	return {
 		{ 
 			sprite = --[[pod_type="gfx"]]unpod("b64:bHo0ALYBAADlAQAAwHB4dQBDIGRkBP8V-wEA8Rc2jxj-FUjvGP8VQ-8YA-8VP-8YB-8VPP8YAD8VTxj-FTr-GABCDwsAUjj-GABiCwDwXzb-GAFiDxVfGP8VNP8YAmIPFW8Y-xUy-xgEUg8Vfxj-FTH-GAVCjv8VMP4HEr79L-4V-S7_Ew0u-S0uAv4PAi79Lf4X-SwuAi49-g79K14NMg3_Df0rAj5iDf4M-SsSLmINLj3_Bf0rAg4CHnIeHwDwCAT9KxIOAh5SHg1SDf4D-SsiDgIeMi5iDABELCKeYhQA8AyeUv4E-S0SvjLeHU79LAINEv4GLS4NEg0u-S4NAPAdBA0iDR4iDS79MCL_AzINLhIuAv0vAg0CDgL_AkJ_-TFCDgIN7iJ_Av0yIg4VAKAK-TQiDgL_C-01BwBiCAL9NQINGgAxBf05CQACAgBTrgIO-TkbAAsCAGUi-T1SDgICAPIGQv0-Ag0CDXIOUv1CAg0CLaL9SAINAgAxEv1NCQAQ-ZgB8iE5Gv1RAhkC-VAKFAr9TwIJFwkC-U4KBBcECv1NAgkHEgcJAv1NBAYVBgT9TgIFHQU2AHD-------_1"),
 			artist = "LouieChapm",
-			id = 10,
 			lore = "Kalikan, from Kalikan"
 		}
 	}

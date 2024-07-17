@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-02 18:26:11",revision=3235]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-17 08:58:48",revision=3388]]
 
 
 -- NOTE, make your own .lua file along side this one instead of modifying this one.
@@ -15,45 +15,43 @@ function get_info()
 			sprite = 113, 
 			-- obviously the artist
 			artist = "Werxzy",
-			-- unique identifier, should not match any other card
-			id = 1,
 			-- extra info about the card art
 			lore = "Picotron Icon"
 		},
 		{ 
-			sprite = 119, artist = "Werxzy", id = 2,
+			sprite = 119, artist = "Werxzy",
 			lore = "(And technically Zep) \nZep's Jelpi from Pico-8"
 		},
 		{ 
-			sprite = 114, artist = "Werxzy", id = 3,
+			sprite = 114, artist = "Werxzy",
 			lore = "Box from SokoCode by Werxzy"
 		},
 		{ 
-			sprite = 112, artist = "Werxzy", id = 4,
+			sprite = 112, artist = "Werxzy",
 			lore = "The first card back!"
 		},
 		{ 
-			sprite = 116, artist = "Werxzy", id = 5,
+			sprite = 116, artist = "Werxzy",
 			lore = "Card back created from there being too many blue card backs."
 		},
 		{ 
-			sprite = 120, artist = "Werxzy", id = 6,
+			sprite = 120, artist = "Werxzy",
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 118, artist = "Werxzy", id = 7,
+			sprite = 118, artist = "Werxzy",
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 115, artist = "Werxzy", id = 8,
+			sprite = 115, artist = "Werxzy",
 			lore = "Pico-8 Icon"
 		},
 		{
-			sprite = camera_card_back, artist = "You", id = 9,
+			sprite = camera_card_back, artist = "You",
 			lore = "Ever feel like you're being watched?"
 		},
 		{ 
-			sprite = 117, artist = "Werxzy", id = "vox",
+			sprite = 117, artist = "Werxzy",
 			lore = "Voxatron Icon"
 		},
 	}

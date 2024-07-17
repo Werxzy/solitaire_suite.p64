@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-07-16 09:15:35",revision=4940]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-07-17 08:48:22",revision=5118]]
 
 function game_info()
 	return {
@@ -20,6 +20,6 @@ function game_info()
 			param = {"highscore"}
 		},
 		api_version = 2,
-		order = 1
+		order = 9999
 	}
 end

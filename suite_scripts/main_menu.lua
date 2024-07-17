@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 08:02:54",revision=23268]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 08:57:42",revision=23495]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -32,12 +32,16 @@ function update_all_assets()
 	--[[#else
 		local trav = folder_traversal("card_games")
 	--#end]]
-	
+		
 		for p in trav do
 			-- find any game info files
 			if trav("find", "game_info.lua") then
-				local op = add(game_list, {p:dirname(), p:basename()})
-				trav"exit" -- don't allow 
+				local op = add(game_list, {
+					p:dirname(), p:basename(), 
+					loc == "card_games" and " ." or split(p, "/", false)[5]
+					-- expects /appdata/solitaire_suite/card_games/ *mod folder* / *game folder* /
+				})
+				trav"exit" -- don't allow recursive games
 			end
 		end
 		
@@ -67,10 +71,11 @@ function update_all_assets()
 						cards_api_display_error(err1, err2)
 					
 					elseif e.get_info then
-						for info in all(e.get_info()) do
+						for i, info in pairs(e.get_info()) do
 							if type(info.sprite) == "function" then
 								card_back_animated(info)
 							end
+							info.id = loc .. ":" .. i
 							
 							add(all_card_back_info, info)
 						end
@@ -99,10 +104,10 @@ function update_game_options()
 	game_mode_buttons = {}
 	local bx = 2
 	
-	local all_info = {}
+	local unsorted_info = {}
 	
 	for game in all(game_list) do
-		local p, n = unpack(game)
+		local p, n, group = unpack(game)
 		
 		local info_path = p .. "/" .. n .. "/game_info.lua"
 		local info, err1, err2 = get_game_info(info_path)
@@ -113,15 +118,33 @@ function update_game_options()
 		else
 			info = info()
 			if info.api_version == api_version_expected then
-				local op = add(all_info, info)	
-				op.order = op.order or 999999
+			
+				unsorted_info[group] = unsorted_info[group] or {}	
+				local op = add(unsorted_info[group], info)
+				
+				op.order = op.order or 999
 				op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
 				op.info_path = info_path
 			end
 		end
 	end
 	
-	quicksort(all_info, "order")
+	-- sorts the individual games in the groups
+	local sortable_group = {} 
+	for k,v in pairs(unsorted_info) do
+		quicksort(v, "order")
+		add(sortable_group, {k, v})
+	end
+	-- sorts the groups themselves
+	quicksort(sortable_group, 1)
+
+	-- creates the whole list of groups
+	local all_info = {}
+	for group in all(sortable_group) do
+		for game in all(group[2]) do
+			add(all_info, game)
+		end
+	end
 	
 	for info in all(all_info) do
 		
@@ -431,7 +454,7 @@ function game_setup()
 		{"Manage Mods", 16, suite_open_mod_manager},
 --#end
 		{"Settings", 27, suite_open_settings},
-		{"Exit Game", 25, stop},
+		{"Exit Game", 25, exit}, -- TODO, what does this actually need to be?
 	}
 	for i, d in pairs(cb) do
 		local f = d[3]
