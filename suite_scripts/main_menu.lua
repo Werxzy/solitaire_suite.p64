@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 08:57:42",revision=23495]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 09:34:15",revision=23536]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -26,19 +26,23 @@ function update_all_assets()
 	
 	-- initializes the list of game variant folders
 	game_list = {}
-	--#if not example
+--#if not example
 	for loc in all{"card_games", suite_save_folder .. "/card_games"} do
 		local trav = folder_traversal(loc)
-	--[[#else
+--[[#else
 		local trav = folder_traversal("card_games")
-	--#end]]
+--#end]]
 		
 		for p in trav do
 			-- find any game info files
 			if trav("find", "game_info.lua") then
 				local op = add(game_list, {
 					p:dirname(), p:basename(), 
+--#if not example
 					loc == "card_games" and " ." or split(p, "/", false)[5]
+--[[#else
+					"game"
+--#end]]
 					-- expects /appdata/solitaire_suite/card_games/ *mod folder* / *game folder* /
 				})
 				trav"exit" -- don't allow recursive games

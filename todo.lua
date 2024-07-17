@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 08:58:48",revision=23889]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 09:34:15",revision=23925]]
 --[[
 
 == ANY update before release ==	
@@ -22,13 +22,13 @@ message zep about using fetch to gather carts
 
 == 0.2.0 ==
 		
-second custom game?
-	roguelite of some sort?
-	
 double check and fill out documentation for 
 	the example game
 	suite
 	cards api
+	
+second custom game?
+	roguelite of some sort?
 	
 == 0.3.0 ==	
 
