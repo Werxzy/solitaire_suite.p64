@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-14 11:36:55",revision=22860]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 06:55:57",revision=23208]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -105,16 +105,19 @@ function update_game_options()
 		local p, n = unpack(game)
 		
 		local info_path = p .. "/" .. n .. "/game_info.lua"
-		local info, err1, err2 = get_game_info(info_path)()
+		local info, err1, err2 = get_game_info(info_path)
 		
 		if not info then
 			cards_api_display_error(err1, err2)
 	
-		elseif info.api_version == api_version_expected then
-			local op = add(all_info, info)	
-			op.order = op.order or 999999
-			op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
-			op.info_path = info_path
+		else
+			info = info()
+			if info.api_version == api_version_expected then
+				local op = add(all_info, info)	
+				op.order = op.order or 999999
+				op.game = p .. "/" .. n .. "/" .. n .. ".lua"	
+				op.info_path = info_path
+			end
 		end
 	end
 	

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-05 07:13:01",revision=12579]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-17 07:02:09",revision=12809]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
@@ -43,6 +43,7 @@ game_transition_draw
 game_transition_update
 
 game_settings_opened
+game_settings_closed
 
 game_count_win
 game_win_condition
@@ -96,6 +97,7 @@ end
 
 function suite_load_game(game_path)
 	cards_api_clear()
+	suite_clear_copied_env()
 	
 	cards_api_coroutine_add(function()
 	-- example "card_games/solitaire_basic.lua"
@@ -251,6 +253,12 @@ function get_game_info(path)
 		return false, err1, err2
 	end
 	return new_env.game_info
+end
+
+function suite_clear_copied_env()
+	for c in all(copied_env) do
+		_ENV[c] = nil
+	end
 end
 
 function cap_env()

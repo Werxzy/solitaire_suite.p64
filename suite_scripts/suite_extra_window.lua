@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-03 21:59:03",revision=2850]]
+--[[pod_format="raw",created="2024-06-24 16:28:42",modified="2024-07-17 06:55:57",revision=3010]]
 
 suite_window_to = -0.1
 suite_window_t = smooth_val(0, 0.87, 0.02, 0.00003)
@@ -274,7 +274,7 @@ function suite_window_add_range(name, func, format, t0, t1, inc, current, inc_wi
 			
 			for i = 0,i1-1 do
 				local x = i*inc_width + left
-				rectfill(x, y+4, x+inc_width-2, y+16, current >= (i+1)*inc and 1 or 32)
+				rectfill(x, y+4, x+inc_width-2, y+16, current-t0 >= (i+1)*inc and 1 or 32)
 			end
 		end)
 		
@@ -283,7 +283,7 @@ function suite_window_add_range(name, func, format, t0, t1, inc, current, inc_wi
 			-- draw marks
 			for i = 0,i1-1 do
 				local x = i*inc_width + left
-				color(current >= (i+1)*inc and 1 or 32)
+				color(current-t0 >= (i+1)*inc and 1 or 32)
 				rectfill(x+1, y+4, x+inc_width-3, y+16)
 				rectfill(x, y+5, x+inc_width-2, y+15)
 			end

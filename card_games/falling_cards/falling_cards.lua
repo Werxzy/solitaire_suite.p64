@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-16 09:15:35",revision=14831]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 05:34:13",revision=14912]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -340,7 +340,7 @@ end
 function game_shuffle_discard()
 	stack_collecting_anim(deck_stack, stack_discard)
 	pause_frames(35)
-	stack_standard_shuffle_anim(deck_stack)
+	stack_shuffle_anim(deck_stack)
 end
 
 -- coroutine that places all the cards back onto the main deck
@@ -742,7 +742,9 @@ function inc_levelup(n)
 		new_text_particle(50, 215, 285)
 		sparks_on_change(71, 235, a, game_level)
 		
-		game_prepare_bonus = true
+		if game_level % 2 == 0 then
+			game_prepare_bonus = true
+		end
 		
 		-- increase difficulty by increasing the starting amount of revealed cards
 		if game_level == 15 

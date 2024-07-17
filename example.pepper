@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-03 04:41:34",revision=1015]]
+--[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-16 09:48:23",revision=1042]]
 
 def example true
 
@@ -13,6 +13,7 @@ remove card_games/louie_chapman/
 remove card_games/solitaire_normal/
 remove card_games/solitaire_too/
 remove card_games/spider_solitaire/
+remove card_games/falling_cards/
 rename example_only/example_game/ card_games/example_game/
 
 remove card_backs/card_backs_louie_chapman.lua

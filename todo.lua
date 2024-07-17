@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-16 09:15:35",revision=23143]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 07:00:37",revision=23470]]
 --[[
 
 == ANY update before release ==	
@@ -21,18 +21,13 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-
-
+	
+add consistency in param for stuff like stack, cards, etc
+	take in single table parameter and loop through keys to set properties
+	
 adjust how card boxes are ordered
 figure out a better way to save cardback ids
 fix menubar to have an adjustable size (mostly for the scores)
-better custom shadow for custom sprites?
-	define a number/sprite inside game_info() to give a shadow
-
-fix errors occuring on getting game info
-
-fix scroll buttons on menu manager resetting when pressed
-	probably just store their t value as a global
 
 second custom game?
 	roguelite of some sort?
@@ -44,10 +39,18 @@ double check and fill out documentation for
 	
 == 0.3.0 ==	
 
+better custom shadow for custom sprites?
+	define a number/sprite inside game_info() to give a shadow
+	
 add proper sound effects and music manager
 
 pull sound effects from pull request
 	https://github.com/Werxzy/solitaire_suite.p64/pull/3
+	
+allow for recursive menuing?
+	would require a bit of work to make it easy to work with
+	
+	or just make a menuing system that allows unpacking subsets of games
 	
 == 0.?.0 ==
 

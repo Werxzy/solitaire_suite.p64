@@ -1,6 +1,7 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-03 22:04:57",revision=2958]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-17 06:34:50",revision=3222]]
 
 local game_list_buttons = {}
+local game_list_scroll_buttons = {}
 local game_list_y_start = 0
 local game_list_width = 150
 local game_list_scroll = 0
@@ -152,6 +153,13 @@ local function remove_game(id)
 	rm(suite_save_folder .. "/card_backs/" .. true_name)	
 end
 
+local function destroy_button_list(list)
+	for b in all(list) do
+		b:destroy()
+		del(list, b)
+		del(suite_window_buttons)
+	end
+end
 
 function suite_open_mod_manager()
 	game_list_all = fetch("/appdata/solitaire_suite/mod_list.pod") or {}
@@ -161,7 +169,12 @@ function suite_open_mod_manager()
 	
 	game_sel_desc = ""
 	game_sel_desc_shadow = ""
+	
+	destroy_button_list(game_list_buttons)
+	destroy_button_list(game_list_scroll_buttons)
+	
 	game_list_buttons = {}
+	game_list_scroll_buttons = {}
 	game_sel_buttons = {}
 	game_sel_current = nil
 	
@@ -172,14 +185,6 @@ function suite_open_mod_manager()
 	suite_window_footer("Exit Mod Manager")
 end
 
-	
-local function destroy_button_list(list)
-	for b in all(list) do
-		b:destroy()
-		del(list, b)
-		del(suite_window_buttons)
-	end
-end
 
 local function game_list_button_draw(b)
 	b.t = max(b.t - 0.1)
@@ -348,29 +353,40 @@ function update_game_list()
 		end
 	end
 	
-	local x = 10
-	local y = game_list_y_start + 1 + h * 6
-	for b2 in all({
-		{"<-", 20, function(b) b.t = 1 scroll_game_list(-1) 	update_game_list() end},
-		{"->", 20, function(b) b.t = 1 scroll_game_list(1) update_game_list() end},
-		{(game_list_scroll + 1) .. " / " .. #game_list_all, game_list_width - 42},
-	}) do
-		local b = button_new({
-			x = x,
-			y = y,
-			width = b2[2], height = 18,
-			draw = game_list_button_draw,
-			on_click = b2[3],
-			group = 3,
-			always_active = true
-		})
-		b.text = b2[1]
-		b.t = 0
+	update_game_list_scroll_buttons(y, h)
+end
+
+function update_game_list_scroll_buttons(y, h)
+	if #game_list_scroll_buttons == 0 then
+		local x = 10
+		local y = game_list_y_start + 1 + h * 6
+
+		for b2 in all({
+			{"<-", 20, function(b) b.t = 1 scroll_game_list(-1) 	update_game_list() end},
+			{"->", 20, function(b) b.t = 1 scroll_game_list(1) update_game_list() end},
+			{(game_list_scroll + 1) .. " / " .. #game_list_all, game_list_width - 42},
+		}) do
+			local b = button_new({
+				x = x,
+				y = y,
+				width = b2[2], height = 18,
+				draw = game_list_button_draw,
+				on_click = b2[3],
+				group = 3,
+				always_active = true
+			})
+			b.text = b2[1]
+			b.t = 0
+			
+			x += b.width+1
 		
-		x += b.width+1
-	
-		suite_window_button_add(b)
-		add(game_list_buttons, b)
+			suite_window_button_add(b)
+			add(game_list_scroll_buttons, b)
+		end
+		
+	else
+		local b = game_list_scroll_buttons[3]
+		b.text = (game_list_scroll + 1) .. " / " .. #game_list_all
 	end
 end
 	
