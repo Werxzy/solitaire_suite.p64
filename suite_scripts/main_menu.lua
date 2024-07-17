@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 06:55:57",revision=23208]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 08:02:54",revision=23268]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -140,21 +140,21 @@ function update_game_options()
 			info.sprite = get_spr(info.sprite)
 		end
 		
-		local b = add(game_mode_buttons, 
+		add(game_mode_buttons, 
 			button_new({
 				x = bx, y = 100 - info.sprite:height() + 78, 
 				width = info.sprite:width(), 
 				height = info.sprite:height(),
 				draw = button_deckbox_draw, 
-				on_click = button_deckbox_click
+				on_click = button_deckbox_click,
+				
+				sprite = info.sprite,
+				game = info.game,
+				info_path = info.info_path,
+				info = info,
+				x_old = bx,
 			})
 		)
-			
-		b.sprite = info.sprite
-		b.game = info.game
-		b.info_path = info.info_path
-		b.info = info
-		b.x_old = bx
 		
 		bx += info.sprite:width() + 10
 	end
@@ -393,17 +393,18 @@ local function card_button_draw(button)
 end
 
 local function card_button_new(str, col, y, on_click, offset)
-	local b = button_new({
+	button_new({
 		x = 205, y = y, 
 		width = 65, height = 13, 
 		draw = card_button_draw, 
-		on_click = on_click
+		on_click = on_click,
+		
+		str = str,
+		col = col,
+		x2 = 205 + (65 - print_size(str)) \ 2,
+		t = 0,
+		off = offset or 0,
 	})
-	b.str = str
-	b.col = col
-	b.x2 = b.x + (b.width - print_size(str)) \ 2
-	b.t = 0
-	b.off = offset or 0
 end
 
 
@@ -471,23 +472,24 @@ function game_setup()
 		sspr(b.highlight and 4 or 3, 0, 0, 21, h, b.x, b.y-y, 21, h, b.fl)
 	end
 
-	local b = button_new({
+	button_new({
 		x = 215, y = 335, 
 		width = 20, height = 21, 
 		draw = draw_button, 
-		on_click = scroll(120)
+		on_click = scroll(120),
+		
+		t = 0,
+		fl = true,
 	})
-	b.t = 0
-	b.fl = true
 	
-	local b = button_new({
+	button_new({
 		x = 245, y = 335, 
 		width = 20, height = 21, 
 		draw = draw_button, 
-		on_click = scroll(-120)
-	})
-	b.t = 0
-	
+		on_click = scroll(-120),
+		
+		t = 0
+	})	
 
 	update_all_assets()
 	

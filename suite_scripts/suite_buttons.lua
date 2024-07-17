@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-07-16 09:07:43",revision=5156]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-07-17 08:02:54",revision=5276]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -146,14 +146,14 @@ local function suite_pages_button(param)
 		end,
 		bottom = true,
 		group = 2,
-		always_active = true
+		always_active = true,
+		
+		t = 0,
+		text = text,
+		colors = {4, 20, 21},
+		left = param.left or 0,
+		on_destroy = suite_pages_on_destory
 	})
-	
-	b.t = 0
-	b.text = text
-	b.colors = {4, 20, 21}
-	b.left = param.left or 0
-	b.on_destroy = suite_pages_on_destory
 	
 	if not text or #tostr(text) == 0 then
 		b.width -= 4
@@ -279,11 +279,11 @@ function suite_button_simple(param)
 			end
 		end,
 		group = param.group,
-		always_active = param.always_active
+		always_active = param.always_active,
+		col = param.colors or {27,3,19},
+		ct = 0,
+		text = text
 	})
-	b.col = param.colors or {27,3,19}
-	b.ct = 0	
-	b.text = text
 	
 	local cx, cy = camera()
 

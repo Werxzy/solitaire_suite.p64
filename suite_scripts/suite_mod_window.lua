@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-17 06:34:50",revision=3222]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-17 08:02:54",revision=3243]]
 
 local game_list_buttons = {}
 local game_list_scroll_buttons = {}
@@ -246,13 +246,12 @@ local function game_list_button_on_click(b)
 				notify("copied to clipboard: " .. from) 
 			end,
 			group = 3,
-			always_active = true
+			always_active = true,
+			
+			text = "\-9\|e".. print_cutoff(from, 105),
+			info = {icon = 26},
+			t = 0,
 		})
-		
-		
-		b2.text = "\-9\|e".. print_cutoff(from, 105)
-		b2.info = {icon = 26}
-		b2.t = 0
 		
 		suite_window_button_add(b2)
 		add(game_sel_buttons, b2)
@@ -339,13 +338,13 @@ function update_game_list()
 				draw = game_list_button_draw,
 				on_click = game_list_button_on_click,
 				group = 3,
-				always_active = true
+				always_active = true,
+				
+				text = print_cutoff(g.name, game_list_width - 22),
+				info = g,
+				t = 0,
 			})
 			
-			
-			b.text = print_cutoff(g.name, game_list_width - 22)
-			b.info = g
-			b.t = 0
 			y += h
 			
 			suite_window_button_add(b)
@@ -373,10 +372,11 @@ function update_game_list_scroll_buttons(y, h)
 				draw = game_list_button_draw,
 				on_click = b2[3],
 				group = 3,
-				always_active = true
+				always_active = true,
+				
+				text = b2[1],
+				t = 0,
 			})
-			b.text = b2[1]
-			b.t = 0
 			
 			x += b.width+1
 		

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 07:25:18",revision=14988]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 08:05:03",revision=15066]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -147,7 +147,7 @@ function game_setup()
 
 	init_menus()
 	
-	local b = button_new({ 
+	button_new({ 
 		x = 30, y = 163,
 		width = 41, height = 13,
 		on_click = function(b)
@@ -171,9 +171,10 @@ function game_setup()
 			rectfill(b.x, b.y, b.x+b.width, b.y+b.height, 5)
 			spr(b.highlight and not game_over and 262 or 263, b.x, b.y-click_y)
 			spr(279, b.x-3, b.y-2)
-		end
+		end,
+		t = 0
 	})
-	b.t = 0
+	
 	
 		
 	-- adds a coroutine that sets up the game and prevents interaction with any of the cards

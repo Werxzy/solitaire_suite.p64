@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 07:00:37",revision=23470]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 08:05:03",revision=23705]]
 --[[
 
 == ANY update before release ==	
@@ -51,6 +51,8 @@ allow for recursive menuing?
 	would require a bit of work to make it easy to work with
 	
 	or just make a menuing system that allows unpacking subsets of games
+	
+more functionality for card_gen
 	
 == 0.?.0 ==
 
