@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-07-09 21:55:56",revision=4676]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-07-17 07:25:18",revision=4709]]
 
 
 include "suite_scripts/confetti.lua"
@@ -39,14 +39,14 @@ function game_setup()
 
 	for sets = 1,total_sets do
 		for rank = 1,total_ranks do		
-			local c = card_new({
+			card_new({
 				sprite = current_card_sprites[current_suit][rank], 
 				back_sprite = card_back,
 				stack = deck_stack,
-				a = 0.5
+				a = 0.5,
+				suit = 1,
+				rank = rank,
 			})
-			c.suit = 1
-			c.rank = rank
 		end
 	end
 	

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-09 22:47:06",revision=10603]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 07:25:18",revision=10611]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
@@ -50,7 +50,7 @@ function game_setup()
 	-- generates cards with the given suits and ranks
 	for suit = 1,suit_count do
 		for rank = 1,rank_count do		
-			local c = card_new({
+			card_new({
 				 -- front sprite
 				sprite = card_sprites[suit][rank],
 				-- backs sprite
@@ -58,12 +58,14 @@ function game_setup()
 				-- stack first assigned to
 				stack = deck_stack,
 				-- starts face down
-				a = 0.5
+				a = 0.5,
+				
+				-- assigns the card it's suit and rank
+				suit = suit,
+				rank = rank,
+				
+				-- any other properties can be assigned here
 			})
-			
-			-- assigns the card it's suit and rank
-			c.suit = suit
-			c.rank = rank
 		end
 	end
 	

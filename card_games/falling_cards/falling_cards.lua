@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 05:34:13",revision=14912]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 07:25:18",revision=14988]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -80,16 +80,16 @@ function game_setup()
 	
 	for i = 1,12 do
 		for rank = 1,5 do
-			local c = card_new({
+			card_new({
 				sprite = card_sprites[1][rank],
 				back_sprite = card_back,
 				stack = deck_stack,
-				a = 0.5
+				a = 0.5,
+				
+				-- assign the card it's rank and suit
+				suit = 1,
+				rank = rank,
 			})
-			
-			-- assigns the card it's suit and rank
-			c.suit = 1
-			c.rank = rank
 		end
 	end
 	
