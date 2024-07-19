@@ -26,6 +26,8 @@ function suite_window_add_button(button)
 	add(suite_window_buttons, button)
 end
 
+-- initializes a window with the given title and width
+-- height is entirely dependant on the contents
 function suite_window_init(name, width)
 	-- clear old buttons and draw elements
 	for b in all(suite_window_buttons) do
@@ -45,20 +47,26 @@ function suite_window_init(name, width)
 		draw = function() end, 
 		group = 3
 	})
+
+	suite_window_is_settings = name == "Settings"
 end
 
+-- creates an exit button for the window
+-- exit_text is a string that is by default "Exit"
 function suite_window_footer(exit_text)
 	if #suite_window_buttons > 0 or #suite_window_elements > 0 then
 		suite_window_add_divider(5, 6)
 	end
 
 	-- forced-ish exit button
-	suite_window_add_buttons({{exit_text or "Exit", suite_close_settings}}, true)
+	suite_window_add_buttons({{exit_text or "Exit", suite_close_window}}, true)
 
 	-- change height of settings menu to fit the buttons
 	suite_window_height = suite_window_layout_y + 7
 end
 
+-- draw function for the window
+-- already handled by the suite
 function suite_window_draw(layer)
 	local sett_x, sett_y = (480 - suite_window_width) / 2, (270 - suite_window_height) / 2 + 20
 		
@@ -117,6 +125,7 @@ function suite_window_draw(layer)
 	end
 end
 
+
 function suite_open_settings()
 	suite_window_init("Settings")
 	
@@ -139,13 +148,14 @@ function suite_open_settings()
 	suite_window_footer("Exit Settings")
 end
 
-function suite_close_settings()
-	
+-- closes the current window
+function suite_close_window()
 	suite_window_to = -0.1
 	suite_window_blocker:destroy()
 	suite_window_blocker = nil
 	
-	if(game_settings_closed) game_settings_closed()
+	-- only call function for the settings
+	if(suite_window_is_settings and game_settings_closed) game_settings_closed()
 end
 
 -- adds a button to the list of settings buttons

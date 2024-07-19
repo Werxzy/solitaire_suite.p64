@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 09:34:15",revision=23536]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 09:42:49",revision=23543]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -19,9 +19,10 @@ else
 	original_display_palette = {peek(0x5000, 0x400)}
 end
 
-
+-- x position of all the card boxes
 local x_offset = smooth_val(0, 0.5, 0.1)
 
+-- updates all of the tables containing modable data
 function update_all_assets()
 	
 	-- initializes the list of game variant folders
@@ -97,6 +98,7 @@ function update_all_assets()
 	update_card_back_options()
 end
 
+-- creates list of card box options
 function update_game_options()
 	-- cleanup
 	main_menu_selected = nil
@@ -197,6 +199,7 @@ function update_game_options()
 	button_deckbox_click()
 end
 
+-- creates list of card back options
 function update_card_back_options()
 	-- cleanup step
 	
@@ -306,10 +309,9 @@ function update_card_back_options()
 	end
 end
 
-
+-- draw shadows, based on the the boxes size
+-- 32 is the shadow applying color
 function box_shadow(x1, y1, x2, y2)
-	-- draw shadows, based on the the boxes size
-	-- 32 is the shadow applying color
 	fillp(0xa5a5a5a5)
 	rect(x1,y1,x2,y2, 32)
 	rect(x1+1,y1+1,x2-1,y2-1)
@@ -318,6 +320,7 @@ function box_shadow(x1, y1, x2, y2)
 	rectfill(x1+2,y1+2,x2-2,y2-2)
 end
 
+-- draw function for the card boxes
 function button_deckbox_draw(b)
 	box_shadow(b.x-3, b.y+10, b.x+b.width+2, b.y+b.height+2)
 	
@@ -327,6 +330,7 @@ function button_deckbox_draw(b)
 	spr(b.sprite, b.x, b.y - (b.y2 + 0.5)\1)
 end
 
+-- on_click function for the card boxes
 function button_deckbox_click(b)
 	main_menu_selected = b
 	--rule_cards.info = b.info
@@ -389,7 +393,7 @@ function button_deckbox_click(b)
 	camera(old_x, old_y)	
 end
 
-
+-- sets the card back and saves the setting
 function set_card_back(info)
 	card_back = info
 	assert(info)
@@ -412,6 +416,7 @@ function set_card_back(info)
 	suite_store_save(settings_data)
 end
 
+-- draw function for the current cardback slot
 local function card_button_draw(button)
 	local left = button.highlight and 6 or 0
 	button.t = lerp(button.t, left, 0.2)
@@ -419,6 +424,7 @@ local function card_button_draw(button)
 	double_print(button.str, button.x2 + button.t, button.y+3, button.col)
 end
 
+-- draw function for the current cardback slot
 local function card_button_new(str, col, y, on_click, offset)
 	button_new({
 		x = 205, y = y, 
@@ -436,7 +442,7 @@ end
 
 
 function game_setup()
-
+	-- loads the main settings
 	settings_data = suite_load_save() or {
 		card_back_id = 1
 	}
@@ -490,7 +496,7 @@ function game_setup()
 			card_back_scroll_to = mid(120, card_back_scroll_to + x, card_back_scroll_max)
 		end
 	end
-	
+	-- scrolling button draw function
 	local function draw_button(b)
 		b.t = max(b.t - 0.07)
 		local y = ((b.t*2-1)^2 * 2.5 - 1.5) \ 1
@@ -499,6 +505,7 @@ function game_setup()
 		sspr(b.highlight and 4 or 3, 0, 0, 21, h, b.x, b.y-y, 21, h, b.fl)
 	end
 
+	-- card back scrolling buttons
 	button_new({
 		x = 215, y = 335, 
 		width = 20, height = 21, 
@@ -508,7 +515,6 @@ function game_setup()
 		t = 0,
 		fl = true,
 	})
-	
 	button_new({
 		x = 245, y = 335, 
 		width = 20, height = 21, 

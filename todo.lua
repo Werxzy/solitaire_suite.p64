@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 09:34:15",revision=23925]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 14:56:47",revision=23996]]
 --[[
 
 == ANY update before release ==	
@@ -21,14 +21,19 @@ message zep about using fetch to gather carts
 	change will be inside suite_mod_window.lua
 
 == 0.2.0 ==
-		
-double check and fill out documentation for 
-	the example game
-	suite
-	cards api
+
+add better identifier for compatible game files
+	don't allow including main suite cart	
+
+double check
+	example cart readme
+	main_menu.lua info on what to keep
+
+
+double check game works in 0.1.0h
 	
-second custom game?
-	roguelite of some sort?
+	
+
 	
 == 0.3.0 ==	
 
@@ -50,6 +55,17 @@ more functionality for card_gen
 ?fix menubar to have an adjustable size (mostly for the scores)
 
 == 0.?.0 ==
+
+
+fix saves to be in better locations
+	probably change them to be organized like their mods folders
+		saves/pss_example_game/example_game.pod
+	though this would mean that mods wouldn't be able to transfer their save from their original cart
+
+install mod button on the main screen of the mod carts to 
+
+use collectgarbage?
+	not sure if this is needed
 
 generate once card back sprites
 	sprites that change a bit based on their size, but only need to be generated once
@@ -90,6 +106,8 @@ drag and drop cart and add it to the mods while the manager is open
 
 == maybe ?? ==
 
+roguelite variant of some sort?
+
 stack sprite optimization???
 	when a card is on top of a stack and isn't moving
 	cut out the center rectangle of the stack
@@ -116,8 +134,6 @@ transition draw mode?
 double click for instantly starting the game.
 	
 better clearing of some objects
-	stack:destroy()
-	card:destroy()
 	something for clearing unused animated card backs from the main list
 				
 update the list of games only when exiting the mod manager			

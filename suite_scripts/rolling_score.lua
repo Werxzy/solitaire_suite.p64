@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-06-04 04:53:33",revision=780]]
+--[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-07-16 09:07:43",revision=872]]
 
 function rolling_score_update(s)
 	local val = s.value or 0

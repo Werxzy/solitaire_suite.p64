@@ -22,20 +22,30 @@ rank_count = 13
 -- name must match
 function game_setup()
 
-	-- save data is based on lua file's name
+	-- save data is based on lua file's name and location
 	game_save = suite_load_save() or {
 		wins = 0 -- default save data, can store game settings here
 	}	
 		
 	-- stack that will contain all the cards
 	deck_stack = stack_new(
+		-- sprites that the stack will use when being drawn
+		-- can be integers or userdata
 		{5,7},
+
+		-- position of the stack (x, y)
 		card_gap, card_gap,
+
 		{
 			-- stack_repose_static: much more stiff in the card repositioning
 			-- -0.16 packs the cards more tightly like a normal stack of cards
 			reposition = stack_repose_static(-0.16),
+			
+			-- event for when a card in the stack is clicked
+			-- this function is defined inside stack_rules.lua, in the same folder as example_game.lua
 			on_click = stack_on_click_reveal,
+
+			-- any other properties can be assigned here
 		})
 	
 	-- get the card back sprite that the player wants to use
@@ -69,6 +79,7 @@ function game_setup()
 		end
 	end
 	
+	-- instantly randomize the order of the cards
 	stack_quick_shuffle(deck_stack)	
 	
 	-- creates 7 stacks evenly spaced out 
@@ -119,13 +130,17 @@ function game_setup()
 		{hand_stack_sprite},
 		150, 180,
 		{
+			-- max pixel width of the hand
 			hand_width = w,
+			-- max seperation between cards
 			hand_max_delta = 30,
 			-- any card can be stacked, as long as there are 5 or less
 			can_stack = hand_can_stack,
 			on_double = function(card)
 				stack_on_double_goal(card, true)
 			end,
+
+			-- adjust the drawing offset of the stack's sprite
 			x_off = -b\2,
 			y_off = -b\2,
 		})
@@ -269,7 +284,7 @@ function game_win_condition()
 end
 
 -- called when the game's win condition is fulfilled
--- (yes, it's important that this is separate)
+-- (yes, it's important that this is separate from game_win_condition)
 function game_count_win()
 	-- increase the win count
 	game_save.wins += 1
@@ -292,7 +307,7 @@ function game_win_anim()
 end
 
 -- primary draw function, called multiple times with layers being from 0 to 3
--- don't forget to check layer number
+-- !!! don't forget to check layer number
 -- name must match
 function game_draw(layer)
 	-- layer 0 is below everything, screen needs to be reset here
@@ -311,7 +326,7 @@ function game_draw(layer)
 	-- layer 3 and 4 are mostly reserved and are drawn above everything else 
 end
 
--- primay update function
+-- primary update function
 -- name must match
 function game_update()
 	confetti_update()

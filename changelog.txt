@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-04-01 01:16:06",revision=343]]
+--[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-07-04 22:14:14",revision=345]]
 
 Picotron Solitaire Suite
 By Werxzy
@@ -13,15 +13,33 @@ By Werxzy
 |   /__\   |
  \        /
   """"""""
+
+=== version 0.2.0 ===
+
+- Added game, Falling Solitaire
+- Added mod manager
+- Added settings window and menu bar
+- Updated main menu graphics
+- Added ENV encapsulation
+- Added transitions between the game and the main menu
+- Changed card back sprites to be generated instead of premade
+- Removed game_load() function requirement
+
+= api changes =
+- Added hand stack
+- Added card draw occlusion
+- Added a card generation function
+- Added hover events for stacks
+
 === version 0.1.1 ===
 
-- Fixed grammar and wording of some rules text.
-- Fixed new game in trapdoor solitaire sometimes not dealing the cards.
-- Fixed double clicking aces in spider solitaire getting stuck.
-- Fixed huntsman card positioning when shuffling for a new game after emptying the deck.
-- Fixed buttons being pressable while shuffling or any animations were playing.
+- Fixed grammar and wording of some rules text
+- Fixed new game in trapdoor solitaire sometimes not dealing the cards
+- Fixed double clicking aces in spider solitaire getting stuck
+- Fixed huntsman card positioning when shuffling for a new game after emptying the deck
+- Fixed buttons being pressable while shuffling or any animations were playing
 
 = api changes = 
-- Updated stack dropping to search a slightly wider area for which stack to place the cards on.
-- Added stack_collecting_anim and stack_shuffle_anim functions to simplify the reset process.
-- Updated shuffling a bit to better randomize the cards.
+- Updated stack dropping to search a slightly wider area for which stack to place the cards on
+- Added stack_collecting_anim and stack_shuffle_anim functions to simplify the reset process
+- Updated shuffling a bit to better randomize the cards

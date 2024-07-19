@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-17 07:02:09",revision=12809]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-17 09:52:27",revision=12835]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
@@ -13,19 +13,38 @@ mkdir(suite_save_folder .. "/card_games")
 mkdir(suite_save_folder .. "/card_backs")
 mkdir(suite_save_folder .. "/saves")
 
-banned_env =	split([[
+--[[
+probably fine leaving out
+
+cd
+ls
+]]
+-- list of functions that won't be copied over to games
+banned_env = split([[
+cp
+rm
+mk_dir
+mv
+create_process
+env
+window
+
 store
 include
 fetch
-get_game_info
 
-cap_load
-cap_include
-cap_fetch
-
+suite_get_game_name
 correct_path
 suite_function_wrapper
 suite_load_game
+suite_card_back_set
+get_game_info
+
+suite_clear_copied_env
+cap_env
+cap_load
+cap_include
+cap_fetch
 
 game_on_error
 
@@ -47,16 +66,16 @@ game_settings_closed
 
 game_count_win
 game_win_condition
-game_win_anim
+
+subgame_on_error
 
 ]], "\n", false)
 
 first_load = true
 
+-- gets the games specific name from a given path to it's lua file
 function suite_get_game_name(game_path)
-	local path = split(game_path, "/")
-	path = path[#path]
-	path = split(path, ".")
+	local path = split(game_path:basename(), ".")
 	
 	assert(path[2] == "lua")
 	
@@ -95,6 +114,7 @@ local function suite_function_wrapper()
 	end
 end
 
+-- loads and sets up a game with the given lua file.
 function suite_load_game(game_path)
 	cards_api_clear()
 	suite_clear_copied_env()
@@ -234,6 +254,7 @@ function suite_card_back(width, height)
 	return cb
 end
 
+-- sets the default card sprite and prepares the card back cache table
 function suite_card_back_set(sprite)
 	card_back_sprite = sprite
 	for c in all(card_back_sprites) do
@@ -244,8 +265,7 @@ function suite_card_back_set(sprite)
 	card_back_sprites = {}
 end
 
-
-
+-- loads the game info script/table
 function get_game_info(path)
 	local new_env = {}
 	local ok, err1, err2 = cap_load(path, new_env)
@@ -255,12 +275,14 @@ function get_game_info(path)
 	return new_env.game_info
 end
 
+-- clears the copied functions from the current ENV to prevent cross contamination
 function suite_clear_copied_env()
 	for c in all(copied_env) do
 		_ENV[c] = nil
 	end
 end
 
+-- creates a ENV table with all the functions in the current table, except without the banned functions
 function cap_env()
 	local new_env = {}
 	for k,v in pairs(_ENV) do
@@ -279,6 +301,7 @@ function cap_env()
 	return new_env
 end
 
+-- loads a script with a given environment table and calls it
 function cap_load(path, env)
 	--local func,err = load(src, "@"..filename, "t", _ENV)
 	local func, err = load(fetch(path), "@".. fullpath(path), "t", env)
@@ -294,7 +317,9 @@ function cap_load(path, env)
 	return true
 end
 
--- copied from include
+-- replaces the original include function for the loaded game
+-- places the new data into the game ENV instead of the whole suite's
+-- also changes the path to be relative to the main game file if /game/ is added to the start of the path
 function cap_include(base, new_env)
 	return function(filename)
 		local filename = fullpath(correct_path(base, filename))
@@ -332,12 +357,15 @@ function cap_include(base, new_env)
 	end
 end
 
+-- replaces the original fetch function for the loaded game
+-- also changes the path to be relative to the main game file if /game/ is added to the start of the path
 function cap_fetch(base)
 	return function(str)
 		return fetch(fullpath(correct_path(base, str)))
 	end
 end
 
+-- includes the correct path if /game/ is added at the start
 function correct_path(base, path)
 	local cut = sub(path, 1, 6) == "/game/" and 6 
 		or sub(path, 1, 5) == "game/" and 5 

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-07-17 08:02:54",revision=5276]]
+--[[pod_format="raw",created="2024-06-12 07:48:24",modified="2024-07-17 08:08:32",revision=5284]]
 
 local menuitems = {}
 local pages_buttons = {}
@@ -22,8 +22,6 @@ local function suite_button_draw(button)
 	local w = button.width
 	local l = button.left
 	
-	
-
 	local ox, oy = camera(-x, -y)
 	color(button.colors[2])
 	
@@ -76,10 +74,23 @@ function suite_button_set_value(button, value)
 	-- TODO update layout to fit the new string
 end
 
---function suite_menuitem(text, colors, on_click, value)
-function suite_menuitem(param, too_many)
-	assert(not too_many, "instead use a single table as the first parameter")
-	
+--[[
+creates a button for the menu bar
+
+param is a table with the following possible values
+
+text = text displayed on the button
+on_click = function called when the button is clicked
+value = extra info displayed next to the text that can be updated, like a win counter
+	can be left nil
+pages = table of information that be displayed on a seperate window when the button is clicked
+	note that this will replace the on_click call
+	needs to have the following
+	width, height = size of display area
+	content = table of strings or userdata to be displayed
+colors = table of color values to draw the button with
+]]
+function suite_menuitem(param)
 	local text = param.text or ""
 	local on_click = param.on_click
 	local value = param.value
@@ -166,6 +177,7 @@ function suite_menuitem_update_sizes()
 	-- TODO
 end
 
+-- creates most of the menu bar at the bottom of the screen. Very important to call or add something similar
 function suite_menuitem_init()
 	local clock = suite_menuitem({
 		colors = {27,3,19}, 
@@ -225,6 +237,7 @@ function suite_menuitem_init()
 end
 
 -- quick way of getting a rules page done
+-- width and height are the size of the display area of the rules text
 function suite_menuitem_rules(width, height)
 	return suite_menuitem({
 		text = "Rules", 
@@ -259,7 +272,19 @@ local function suite_button_simple_draw(b)
 	pal(1, 1)	
 end
 
---function suite_button_simple(t, x, y, on_click, colors, group)
+--[[
+creates a simple button
+
+param is a table with the following possible values
+
+x, y = position of the button
+text = text displayed on the button, also controlling the size
+on_click = function called when the button is clicked
+group = drawing group the button belongs to, defaults to 1
+always_active = if true, then the button can be clicked even if an animation is playing
+colors = table of colors that the button is drawn with
+
+]]
 function suite_button_simple(param)
 	local text = param.text or " "
 	local w, h = print_size(text)
@@ -376,8 +401,8 @@ function suite_menuitem_draw_pages()
 	camera(oldx, oldy)
 end
 
+-- displays the information on the pages window
 function suite_menuitem_display_pages(button)
-	
 	if button == suite_openned_pages then
 		suite_pages_t = 1 - suite_pages_t
 	else

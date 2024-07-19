@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 08:05:03",revision=15066]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 08:08:32",revision=15070]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
