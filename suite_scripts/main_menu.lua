@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-17 09:42:49",revision=23543]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-19 19:06:57",revision=23594]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -464,7 +464,7 @@ function game_setup()
 		{"Manage Mods", 16, suite_open_mod_manager},
 --#end
 		{"Settings", 27, suite_open_settings},
-		{"Exit Game", 25, exit}, -- TODO, what does this actually need to be?
+		{"Exit Game", 25, stop}, -- TODO, what does this actually need to be?
 	}
 	for i, d in pairs(cb) do
 		local f = d[3]
@@ -638,8 +638,7 @@ function game_draw(layer)
 		
 --[[#if example
 	-- but please keep this in some fashion
-	print("Made with Picotron", 390, 230)
-	print("Solitaire Suite", 399, 240)
+	spr(56, 390, 200)
 --#end]]
 		print("Mostly by Werxzy", 399, 261)
 		

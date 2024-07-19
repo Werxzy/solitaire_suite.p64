@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-17 08:08:32",revision=3251]]
+--[[pod_format="raw",created="2024-07-01 20:21:05",modified="2024-07-19 19:06:57",revision=3260]]
 
 local game_list_buttons = {}
 local game_list_scroll_buttons = {}
@@ -89,10 +89,11 @@ local function attempt_add_game(id)
 		end
 	end
 	
-	-- TODO check game is valid
-	-- be careful of loading own games from #solitaire_suite
-	
-	
+	local valid = fetch"ram/mod_cart/pss_mod.pod"
+	if not valid or not valid.value or valid.value ~= 13579 then
+		notify"invalid cart"
+		return
+	end
 
 	-- TODO only add folder if the game has those things
 	-- reverse /card_games/true_name/ to /true_name/card_games/ ?

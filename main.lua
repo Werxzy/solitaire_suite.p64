@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-07-17 14:56:47",revision=23775]]
+--[[pod_format="raw",created="2024-03-14 21:14:09",modified="2024-07-19 19:06:57",revision=23815]]
 include"suite_scripts/suite_util.lua"
 
 function _init()
@@ -36,21 +36,3 @@ function _draw()
 --	set_clipboard(tostr(stat_up2) .. " / " .. tostr(stat_up + stat_up2))
 --	?stat(7)
 end
-
---[[ performance measurements for card occlusion
-
-before : 
-main menu : 0.27928975037551 / 0.33896359344825
-normal : 0.40319361991274 / 0.52898576639725
-spider : 0.44932765896574 / 0.60144839424934
-
-after (full occlusion only) :
-main menu : 0.29728560188828 / 0.35700951291038
-normal  :0.37964022602103 / 0.50543237250554
-spider : 0.410603676418 / 0.56269580144482 
-
-after (remove draw only) :
-main menu : 0.29679922752307 / 0.35648022316
-normal : 0.29320864029755 / 0.41899363421787
-spider : 0.30183105643373 / 0.45371575709892
-]]

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-17 14:56:47",revision=23996]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-19 19:06:57",revision=24039]]
 --[[
 
 == ANY update before release ==	
@@ -23,16 +23,14 @@ message zep about using fetch to gather carts
 == 0.2.0 ==
 
 add better identifier for compatible game files
-	don't allow including main suite cart	
+	added, need to test
+	
 
 double check
 	example cart readme
 	main_menu.lua info on what to keep
 
-
 double check game works in 0.1.0h
-	
-	
 
 	
 == 0.3.0 ==	
