@@ -20,10 +20,11 @@ By Werxzy
 - Added mod manager
 - Added settings window and menu bar
 - Updated main menu graphics
-- Added ENV encapsulation
+- Added ENV encapsulation for the solitaire variants
 - Added transitions between the game and the main menu
 - Changed card back sprites to be generated instead of premade
 - Removed game_load() function requirement
+- Added 2/4 suit color setting for normal solitaire
 
 = api changes =
 - Added hand stack

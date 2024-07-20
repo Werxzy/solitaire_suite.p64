@@ -2,7 +2,9 @@
 
 function game_info()
 	return {
---		sprite = can be userdata
+--		sprite = userdata
+			-- sprite used to represent the game on the main menu.
+			-- defaults to sprite 0 in the neighboring file, 1.gfx
 		name = "Example Project",
 		author = "Your Name Here",
 		description = "Example project to be used as a base.",
@@ -10,11 +12,11 @@ function game_info()
 			"Rules Text",
 			"Page 2 test"
 		},
-		desc_score = {
-			format = "Wins : %i",
-			param = {"wins"}
+		desc_score = {-- extra information about the player's save
+			format = "Wins : %i", -- ran through string.format
+			param = {"wins"} -- keys indexing the game save
 		},
-		api_version = 2,
-		order = 1
+		api_version = 2, -- must match the current api version to ensure compatability, there could be breaking changes in the future
+		-- order = 1 -- display order of games in the mod
 	}
 end

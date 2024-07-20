@@ -464,7 +464,14 @@ function game_setup()
 		{"Manage Mods", 16, suite_open_mod_manager},
 --#end
 		{"Settings", 27, suite_open_settings},
-		{"Exit Game", 25, stop}, -- TODO, what does this actually need to be?
+
+-- TODO, what does this actually need to be?
+--#if false
+		{"Exit Game", 25, stop},
+--[[#else
+		{"Exit Game", 25, exit},
+--#end]]	
+		 
 	}
 	for i, d in pairs(cb) do
 		local f = d[3]
@@ -631,7 +638,8 @@ function game_draw(layer)
 	
 		local cy = main_menu_y() * 260.5
 		camera(0, cy)	
-		spr(22, 121, 2) -- feel free to replae this this
+		-- EDIT THIS (make your own little logo for your mod package)
+		spr(22, 121, 2)
 	
 		-- keep this, it's based on the suite version
 		print("Version " .. game_version, 1, 262, 19)
