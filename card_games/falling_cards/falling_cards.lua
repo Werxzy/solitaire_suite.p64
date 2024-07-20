@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 08:08:32",revision=15070]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-20 15:22:10",revision=15185]]
 
 -- built-in card sprite generation script
 include "cards_api/card_gen.lua"
@@ -271,8 +271,15 @@ function game_dealout_anim()
 	elseif game_prepare_bonus then
 		game_prepare_bonus = false
 		
-		adding = random_least(4)
-		add(adding, rnd(bonus_card_ranks))
+		local rank = rnd(bonus_card_ranks)
+		if rank == "wild" then -- two wild cards seem more balanced
+			adding = random_least(3)
+			add(adding, rank)
+			add(adding, rank)
+		else
+			adding = random_least(4)
+			add(adding, rank)
+		end
 	
 	else
 		adding = random_least(5)
@@ -414,12 +421,13 @@ function game_action_resolved()
 					
 					local b = game_combo
 					local sx, sy = s2.x_to + s2.width\2, s2.y_to + s2.height\2
-					
+					local points = game_combo + game_level-1
+				
 					if game_combo_decay == 7 then
 						new_text_particle(sx, sy - 13, 284)
-						game_add_score(game_combo * 2, sx, sy)
+						game_add_score(points * 2, sx, sy)
 					else
-						game_add_score(game_combo, sx, sy)
+						game_add_score(points, sx, sy)
 					end
 					
 					game_combo = min(game_combo + 1, 99)
@@ -748,15 +756,17 @@ function inc_levelup(n)
 		end
 		
 		-- increase difficulty by increasing the starting amount of revealed cards
+		--[[ seems a bit unbalanced, difficulty skyrockets
 		if game_level == 15 
 		or game_level == 30
 		or game_level == 45
 		or game_level == 60 then
 			dealout_flip_count += 1
 		end
+		--]]
 		
 		-- reveal cards on level up, half the previous level rounded up
-		local flip_n = min(game_level\2, 5)
+		local flip_n = game_level\2 + 1
 		local function add_next()
 			if flip_n > 0 then
 				flip_n -= 1

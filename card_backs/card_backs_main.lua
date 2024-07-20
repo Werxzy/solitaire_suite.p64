@@ -1,7 +1,7 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-17 09:22:13",revision=3410]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-20 17:45:04",revision=3510]]
 
 
--- NOTE, make your own .lua file along side this one instead of modifying this one.
+-- !!! NOTE, make your own .lua file along side this one instead of modifying this one.
 -- this file is ignored when loading it as a Mod inside Picotron Solitaire Suite
 
 -- sprite can be a number or userdata
@@ -54,6 +54,12 @@ function get_info()
 			sprite = 117, artist = "Werxzy",
 			lore = "Voxatron Icon"
 		},
+		{ 
+			sprite = 121, artist = "Werxzy",
+			lore = "Falling Solitaire"
+		},
+		-- don't just add to the end of this list, as the cardback won't be added to your mode
+		-- instead, create your own lua file next to this one.
 	}
 end
 

@@ -1,4 +1,5 @@
---[[pod_format="raw",created="2024-06-29 22:17:58",modified="2024-07-04 05:30:07",revision=171]]
+--[[pod_format="raw",created="2024-06-29 22:17:58",modified="2024-07-20 17:52:25",revision=177]]
+
 
 IN YOUR VERSIONS
 ONLY MAKE CHANGES TO THE FOLLOWING:
@@ -9,6 +10,8 @@ ONLY MAKE CHANGES TO THE FOLLOWING:
 
 I labeled some things in `main_menu.lua` that you would might like to change with `EDIT THIS`.
 Due to how mods are added to the main cart, changes outside of the card_games and card_backs will not transfer over.
+The file pss_mod.pod is required to identify mod carts.
+Without it, the main cart doesn't accept the mod carts.
 
 While using `include` or `fetch` are fine, you will need to start the path with exactly `/game/` in order to fetch you're game's files.
 This is because your game will either be accessed while being stored in either `/appdata/...` or `/card_games/...`

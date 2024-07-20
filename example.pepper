@@ -1,11 +1,12 @@
---[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-16 09:48:23",revision=1042]]
+--[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-20 14:37:42",revision=1044]]
+
 
 def example true
 
 execute example_only/example_prep.lua
 
 remove todo.lua
-remove changeloc.txt
+remove changelog.txt
 remove 0_SUITE_READMEFIRST.md
 
 remove card_games/golf_solitaire/

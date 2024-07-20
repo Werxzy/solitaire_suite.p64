@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-19 19:06:57",revision=24039]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-20 18:26:02",revision=24195]]
 --[[
 
 == ANY update before release ==	
@@ -19,19 +19,7 @@ message zep about using fetch to gather carts
 	responded saying that it should work fine for now
 	"bbs://" with be a separate protocol for handles caching and sandboxing etc.
 	change will be inside suite_mod_window.lua
-
-== 0.2.0 ==
-
-add better identifier for compatible game files
-	added, need to test
 	
-
-double check
-	example cart readme
-	main_menu.lua info on what to keep
-
-double check game works in 0.1.0h
-
 	
 == 0.3.0 ==	
 
