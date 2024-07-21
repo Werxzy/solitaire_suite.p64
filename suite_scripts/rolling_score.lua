@@ -1,7 +1,7 @@
---[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-03-19 14:34:11",revision=698]]
+--[[pod_format="raw",created="2024-03-18 21:28:46",modified="2024-07-16 09:07:43",revision=872]]
 
 function rolling_score_update(s)
-	local val = s.value
+	local val = s.value or 0
 	
 	for i = #s.digits, 1, -1 do
 		local v = val%10

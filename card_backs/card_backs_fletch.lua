@@ -1,8 +1,8 @@
---[[pod_format="raw",created="2024-03-29 08:45:43",modified="2024-03-31 23:44:47",revision=117]]
+--[[pod_format="raw",created="2024-03-29 08:45:43",modified="2024-07-17 09:22:18",revision=549]]
 function get_info()
     return {
         {
-            sprite = card_back_art, artist = "Fletch", id = 333, -- consistent, but unique id
+            sprite = card_back_art, artist = "Fletch",
             lore = "This duck has somewhere to be!",
             -- animation table
             step=0,
@@ -18,7 +18,7 @@ function get_info()
     }
 end
 
-function card_back_art(init, data)
+function card_back_art(data, width, height)
 	local anim_width, anim_height = 13,14
 
     -- check if we're updating the displayed frame on this call
@@ -31,15 +31,12 @@ function card_back_art(init, data)
     end
 
     -- center the animation inside of the card
-    local draw_x = card_art_width \ 2 - anim_width \ 2
-    local draw_y = card_art_height \ 2 - anim_height \ 2
+    local draw_x = width \ 2 - anim_width \ 2
+    local draw_y = height \ 2 - anim_height \ 2
 
     -- draw a blue background... should this be cls(1) instead?
-    rectfill(0,0,card_art_width,card_art_height,19)
+    rectfill(0,0,width,height,19)
 	
     -- draw the animation frame
     spr(data.frames[data.current_frame], draw_x, draw_y)
-
-    -- return true if the card art has been updated (this adds the card border)
-    return true
 end

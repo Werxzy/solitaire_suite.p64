@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-25 02:14:11",modified="2024-04-01 00:15:46",revision=652]]
+--[[pod_format="raw",created="2024-03-25 02:14:11",modified="2024-06-24 19:58:31",revision=727]]
 
 function game_info()
 	return {
-		sprite = 56,
 		name = "Spider Solitaire",
 		author = "Werxzy",
 		description = "Create stacks from King to Ace.",
@@ -12,6 +11,10 @@ function game_info()
 			"\tClick on the deck to place a card on top of each stack of the 8 columns.",
 			"\tStack cards from ranks King to Ace to transfer them to the goal stack.\n\tWin by transfering all cards to the goal stack."
 		},
-		api_version = 1
+		desc_score = {
+			format = "Wins : %i",
+			param = {"wins"}
+		},
+		api_version = 2
 	}
 end

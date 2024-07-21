@@ -1,14 +1,10 @@
---[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-03-31 23:51:44",revision=2657]]
+--[[pod_format="raw",created="2024-03-20 14:39:52",modified="2024-07-20 17:45:04",revision=3510]]
 
 
--- todo, fetch cards in folder in appdata
+-- !!! NOTE, make your own .lua file along side this one instead of modifying this one.
+-- this file is ignored when loading it as a Mod inside Picotron Solitaire Suite
 
 -- sprite can be a number or userdata
---[[ !!! warning !!! 
-While sprite card backs are usually 45x60,
-They will likely become 100x100 sprites without the card boarder.
-This is so that a card back can be generated for most card sizes
-]]
 
 -- id can be a number or string, just make sure it doesn't match any other card's
 -- used to save card back selected
@@ -16,50 +12,54 @@ function get_info()
 	return {
 		{ 
 			-- either a number for the sprite id in the spritesheet, or userdata
-			sprite = 10, 
+			sprite = 113, 
 			-- obviously the artist
 			artist = "Werxzy",
-			-- unique identifier, should not match any other card
-			id = 1,
 			-- extra info about the card art
 			lore = "Picotron Icon"
 		},
 		{ 
-			sprite = 18, artist = "Werxzy", id = 2,
+			sprite = 119, artist = "Werxzy",
 			lore = "(And technically Zep) \nZep's Jelpi from Pico-8"
 		},
 		{ 
-			sprite = 19, artist = "Werxzy", id = 3,
+			sprite = 114, artist = "Werxzy",
 			lore = "Box from SokoCode by Werxzy"
 		},
 		{ 
-			sprite = 1, artist = "Werxzy", id = 4,
+			sprite = 112, artist = "Werxzy",
 			lore = "The first card back!"
 		},
 		{ 
-			sprite = 35, artist = "Werxzy", id = 5,
+			sprite = 116, artist = "Werxzy",
 			lore = "Card back created from there being too many blue card backs."
 		},
 		{ 
-			sprite = 36, artist = "Werxzy", id = 6,
+			sprite = 120, artist = "Werxzy",
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 21, artist = "Werxzy", id = 7,
+			sprite = 118, artist = "Werxzy",
 			lore = "Referenced from Window's original solitaire card back."
 		},
 		{ 
-			sprite = 26, artist = "Werxzy", id = 8,
+			sprite = 115, artist = "Werxzy",
 			lore = "Pico-8 Icon"
 		},
 		{
-			sprite = camera_card_back, artist = "You", id = 9,
+			sprite = camera_card_back, artist = "You",
 			lore = "Ever feel like you're being watched?"
 		},
 		{ 
-			sprite = 11, artist = "Werxzy", id = "vox",
+			sprite = 117, artist = "Werxzy",
 			lore = "Voxatron Icon"
 		},
+		{ 
+			sprite = 121, artist = "Werxzy",
+			lore = "Falling Solitaire"
+		},
+		-- don't just add to the end of this list, as the cardback won't be added to your mode
+		-- instead, create your own lua file next to this one.
 	}
 end
 
@@ -67,39 +67,39 @@ end
 -- card_art_width and card_art_height are given to help know the art's bounds
 -- camera and clip are used around this function, so be careful
 -- data is the card back sprite info
-function camera_card_back(init, data)
+function camera_card_back(data, width, height)
 	-- get mouse position
 	local mx, my = mouse()
-	mx = mid(mx - card_width\2+1, 480-card_width)
-	my = mid(my - card_height\2+2, 270-card_height)
+	mx = mid(mx - width\2+1, 480-width) -- technically also use - left or -top
+	my = mid(my - height\2+2, 270-height)
 	
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 1) -- base (prevent transparent pixels
-	sspr(get_display(), mx, my, card_art_width, card_art_height, 0, 0) -- screen
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 32) -- darken
+	rectfill(0, 0, width-1, height-1, 1) -- base (prevent transparent pixels
+	sspr(get_display(), mx, my, width, height, 0, 0) -- screen
+	rectfill(0, 0, width-1, height-1, 32) -- darken
 	if(time() % 1.5 < 0.75) circfill(5, 5, 2, 8) circ(5, 5, 2, 32) -- red dot
 	
 	-- scanlines
 	fillp(0xf0f0f0f0f0f0f0f0)	
-	rectfill(0, 0, card_art_width-1, card_art_height-1, 32)
+	rectfill(0, 0, width-1, height-1, 32)
 	fillp()
 	
 	-- returns if the art has been updated (here is always true)
 	return true
 end
 
-function random_card_back(init, data)
+function random_card_back(data, width, height)
 	if init then
-		rectfill(0, 0, card_art_width-1, card_art_height-1, 5)
+		rectfill(0, 0, width-1, height-1, 5)
 		color(32)
 	--[[
 		for i = 1,40 do
-			line(rnd(card_art_width)/2, rnd(card_art_height)/2)
+			line(rnd(width)/2, rnd(height)/2)
 		end
-		local w, h = card_art_width\2, card_art_height\2
+		local w, h = width\2, height\2
 		sspr(data.sprite, 0, 0, w, h+3, w-1, -2, w, h+3, true, false)
-		sspr(data.sprite, 0, 0, card_width, h, -2, h-1, card_width, h, false, true)
+		sspr(data.sprite, 0, 0, width, h, -2, h-1, height, h, false, true)
 	]]
-		local w, h = card_art_width/2, card_art_height/2
+		local w, h = width/2, height/2
 		local r = w * 0.6
 		local ph = rnd(10)+2
 		for i = 1,140 do
@@ -125,15 +125,14 @@ function get_info()
     }
 end
 
-function card_back_art(init, data)
+function card_back_art(data, width, height)
   -- if you only need to generate the art once, use init
   -- data has the table returned by get_info(), just in case you need to get the sprite itself or if you want to store extra data
   
   -- camera, clip, and set_render_target() are used outside of this function to help simplify the process
   
-  -- card_art_width and _height are created to help you know the exact size of your art
-  -- this is different from card_width/height
-  circfill(card_art_width/2, card_art_height/2, card_art_width/2, 10)
+  -- width and height are created to help you know the exact size of your art
+  circfill(width/2, height/2, width/2, 10)
   
   -- color 32 is special, and can be used for darkening colors (for stuff like shadows)
 

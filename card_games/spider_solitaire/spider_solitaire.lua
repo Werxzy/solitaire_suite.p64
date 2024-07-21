@@ -1,9 +1,6 @@
---[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-03-31 23:07:38",revision=3814]]
+--[[pod_format="raw",created="2024-03-17 19:21:13",modified="2024-07-17 07:25:18",revision=4709]]
 
-function game_load() -- !!! start of game load function
-	-- this is to prevent overwriting of game modes
 
-include "suite_scripts/rolling_score.lua"
 include "suite_scripts/confetti.lua"
 include "cards_api/card_gen.lua"
 
@@ -17,33 +14,44 @@ total_ranks = 13 -- king
 
 available_columns = 8
 
-	
-cards_api_clear()
-cards_api_shadows_enable(true)
-
 function game_setup()
 	
 	game_save = suite_load_save() or {
 		wins = 0
 	}	
+		
+	local card_gap = 4
 	
-	-- just one suit for now
-	current_card_sprites = card_gen_standard(5)
-	local s = rnd(5)\1 + 1
+	deck_stack = stack_new(
+		{5,257},
+		card_gap, card_gap,
+		{
+			reposition = stack_repose_static(-0.16),
+			on_click = stack_on_click_reveal
+		})
+		
+	local card_back = suite_card_back()
+	current_card_sprites = card_gen_standard({
+		suits = 5
+	})
+	
+	current_suit = rnd({1,2,3,4,5})
+
 	for sets = 1,total_sets do
 		for rank = 1,total_ranks do		
-			local c = card_new(current_card_sprites[s][rank], 240,100)
-			c.suit = 1
-			c.rank = rank
+			card_new({
+				sprite = current_card_sprites[current_suit][rank], 
+				back_sprite = card_back,
+				stack = deck_stack,
+				a = 0.5,
+				suit = 1,
+				rank = rank,
+			})
 		end
 	end
 	
-	local card_gap = 4
 	
-	local unstacked_cards = {}
-	for c in all(cards_all) do
-		add(unstacked_cards, c)
-	end
+	stack_quick_shuffle(deck_stack)	
 	
 	
 	stacks_supply = {}
@@ -51,60 +59,44 @@ function game_setup()
 		add(stacks_supply, stack_new(
 			{5},
 			i*(card_width + card_gap*2) + card_gap, card_gap, 
-			stack_repose_normal(),
-			true, stack_can_rule, 
-			stack_on_click_unstack(unstack_rule_decending)))	
+			{
+				reposition = stack_repose_normal(),
+				can_stack = stack_can_rule, 
+				on_click = stack_on_click_unstack(unstack_rule_decending, unstack_rule_face_up)
+			}))	
 	end
 	
-	
-	deck_stack = stack_new(
-		{5,31},
-		card_gap, card_gap,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_on_click_reveal)
-		
 	stack_goal = stack_new(
-		{5,31},
+		{5,257},
 		card_gap, card_gap * 3 + card_height,
-		stack_repose_static(-0.16),
-		true, stack_cant, stack_cant
-		)
+		{
+			reposition = stack_repose_static(-0.16),
+		})
 
-	while #unstacked_cards > 0 do
-		local c = rnd(unstacked_cards)
-		stack_add_card(deck_stack, c, unstacked_cards)
-		c.a_to = 0.5
-	end
+	suite_menuitem_init()
+	suite_menuitem({
+		text = "New Game",
+		colors = {12, 16, 1}, 
+		on_click = function()
+			cards_api_coroutine_add(game_reset_anim)
+		end
+	})
 	
-	button_simple_text("New Game", 40, 248, function()
-		cards_coroutine = cocreate(game_reset_anim)
-	end)
+	suite_menuitem_rules()
 	
-	button_simple_text("Exit", 6, 248, suite_exit_game).always_active = true
-
-	-- rules cards 
-	rule_cards = rule_cards_new(135, 192, game_info(), "right")
-	rule_cards.y_smooth = smooth_val(270, 0.8, 0.09, 0.0001)
-	rule_cards.on_off = false
-	local old_update = rule_cards.update
-	rule_cards.update = function(rc)
-		rc.y = rc.y_smooth(rc.on_off and 192.5 or 280.5)
-		old_update(rc)
-	end
+	wins_button = suite_menuitem({
+		text = "Wins", 
+		value = "0000"
+	})
+	wins_button.update_val = function(b)
+		local s = "\fc"..tostr(game_save.wins)
+		while(#s < 6) s = "0".. s
+		b:set_value(s)
+	end	
+	wins_button:update_val()
 	
-	button_simple_text("Rules", 97, 248, function()
-		rule_cards.on_off = not rule_cards.on_off
-	end).always_active = true
-	cards_coroutine = cocreate(game_setup_anim)
-
-	game_score = rolling_score_new(6, 220, 3, 3, 21, 16, 16, 4, 49, function(s, x, y)
-			-- shadows
-			spr(52, x, y)
-			spr(51, x, y) -- a bit overkill, could use sspr or rectfill
-			-- case
-			spr(50, x, y)
-	end)
-	game_score.value = game_save.wins
+	cards_api_coroutine_add(game_setup_anim)
+	card_position_reset_all()
 end
 
 -- deals the cards out
@@ -129,6 +121,16 @@ end
 -- places all the cards back onto the main deck
 function game_reset_anim()
 	stack_collecting_anim(deck_stack, stacks_supply, stack_goal)
+	pause_frames(35)
+	stack_standard_shuffle_anim(deck_stack)
+	
+	local op = {1,2,3,4,5}
+	del(op, current_suit)
+	current_suit = rnd(op)
+	
+	for c in all(deck_stack.cards) do
+		c.sprite =  current_card_sprites[current_suit][c.rank]
+	end
 	
 	game_setup_anim()
 end
@@ -136,7 +138,7 @@ end
 -- determines if stack2 can be placed on stack
 -- for solitaire rules like decending ranks and alternating suits
 function stack_can_rule(stack, stack2)
-	if s == held_stack then
+	if s == get_held_stack() then
 		return false
 	end
 	if #stack.cards == 0 then
@@ -155,7 +157,7 @@ end
 
 function stack_on_click_reveal(card)
 	if #deck_stack.cards>0 then
-		cards_coroutine = cocreate(deck_draw_anim)
+		cards_api_coroutine_add(deck_draw_anim)
 	end
 end
 
@@ -221,18 +223,12 @@ end
 function game_draw(layer)
 	if layer == 0 then
 		cls(3)
-	elseif layer == 1 then
-		spr(58, 7, 207) -- wins label
-		game_score:draw()
-		rule_cards:draw()
 	elseif layer == 2 then
 		confetti_draw()
 	end
 end
 
 function game_update()
-	game_score:update()
-	rule_cards:update()
 	confetti_update()
 end
 
@@ -260,7 +256,7 @@ function game_action_resolved()
 			-- if all the ranks found
 			if r > total_ranks then
 				i += 1
-				cards_coroutine = cocreate(function()
+				cards_api_coroutine_add(function()
 					pause_frames(15)
 					while stack.cards[i] do
 						stack_cards(stack_goal, unstack_cards(stack.cards[#stack.cards]))
@@ -270,7 +266,7 @@ function game_action_resolved()
 				
 			end
 		end
-		if card and not held_stack then
+		if card and not get_held_stack() then
 			card.a_to = 0
 		end
 	end
@@ -284,14 +280,13 @@ function game_win_anim()
 end
 
 function game_win_condition()
+	local cards_all = get_all_cards()
 	return #cards_all == #stack_goal.cards
 end
 
 function game_count_win()
-	game_score.value += 1
 	game_save.wins += 1
+	wins_button:update_val()
 	suite_store_save(game_save)
-	cards_coroutine = cocreate(game_win_anim)
-end
-
+	cards_api_coroutine_add(game_win_anim)
 end

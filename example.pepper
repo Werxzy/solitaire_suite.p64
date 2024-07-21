@@ -1,0 +1,29 @@
+--[[pod_format="raw",created="2024-05-30 00:26:25",modified="2024-07-20 14:37:42",revision=1044]]
+
+
+def example true
+
+execute example_only/example_prep.lua
+
+remove todo.lua
+remove changelog.txt
+remove 0_SUITE_READMEFIRST.md
+
+remove card_games/golf_solitaire/
+remove card_games/louie_chapman/
+remove card_games/solitaire_normal/
+remove card_games/solitaire_too/
+remove card_games/spider_solitaire/
+remove card_games/falling_cards/
+rename example_only/example_game/ card_games/example_game/
+
+remove card_backs/card_backs_louie_chapman.lua
+remove card_backs/card_backs_fletch.lua
+
+remove suite_scripts/suite_mod_window.lua
+
+rename label_example.png label.png
+
+remove main.pepper
+remove example.pepper
+remove example_only/

@@ -1,8 +1,7 @@
---[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-04-01 00:15:46",revision=218]]
+--[[pod_format="raw",created="2024-03-25 02:12:03",modified="2024-06-24 19:55:31",revision=224]]
 
 function game_info()
 	return {
-		sprite = 24,
 		name = "Solitaire",
 		author = "Werxzy",
 		description = "The game you know and love/hate.",
@@ -14,7 +13,11 @@ function game_info()
 			"\tWhen the deck is out of cards, click the refresh button in the top left to move all the revealed cards back.",
 			"\tIf you believe you have reached a state in which you cannot progress further, you will have to start a new game."
 		},
-		api_version = 1,
+		desc_score = {
+			format = "Wins : %i",
+			param = {"wins"}
+		},
+		api_version = 2,
 		order = 1
 	}
 end
