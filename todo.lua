@@ -1,10 +1,11 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-20 18:26:02",revision=24195]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-21 13:21:50",revision=24211]]
 --[[
 
 == ANY update before release ==	
 
 update label with new solitaire variants (credit pixelDub)
 	specifically when a 0.X.0 version is released
+	maybe
 	
 update .p64 version number
 force update for all subrepository files

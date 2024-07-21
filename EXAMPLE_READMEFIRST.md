@@ -20,3 +20,5 @@ Make sure when you're done with the game, edit the file info of the cart.
 This information (including the icon) will be displayed in the mod manager.
 Also don't forget to make a fancy new label, no need to keep the style of the old one or even mention Picotron Solitaire Suite there.
 Though please keep the sprite of Picotron Solitaire Suite mod somewhere in the main menu.
+
+When you upload your mod to the bbs, make sure to add the tag #solitaire_suite_mod to the post and link the cart as a fork of the example cart #pss_example_project. These will be help people find mods for the game and be useful in the future when splore is released.

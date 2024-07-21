@@ -1,11 +1,11 @@
---[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-17 09:52:27",revision=12835]]
+--[[pod_format="raw",created="2024-03-29 03:13:35",modified="2024-07-21 13:21:50",revision=12851]]
 include"cards_api/cards_base.lua"
 include"suite_scripts/suite_buttons.lua"
 include"suite_scripts/suite_extra_window.lua"
 include"suite_scripts/suite_transition.lua"
 
 suite_save_folder = "/appdata/solitaire_suite"
-game_version = "0.2.0 DEV"
+game_version = "0.2.0"
 api_version_expected = 2
 
 mkdir(suite_save_folder)

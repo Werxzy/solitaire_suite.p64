@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-19 19:06:57",revision=23594]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-21 13:21:50",revision=23613]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -648,8 +648,13 @@ function game_draw(layer)
 	-- but please keep this in some fashion
 	spr(56, 390, 200)
 --#end]]
+
+--#if not example
 		print("Mostly by Werxzy", 399, 261)
-		
+--[[#else
+		print("Suite mostly by Werxzy", 370, 261)
+--#end
+
 --#if not example
 
 --[[#else

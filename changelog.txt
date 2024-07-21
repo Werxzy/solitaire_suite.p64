@@ -25,6 +25,7 @@ By Werxzy
 - Changed card back sprites to be generated instead of premade
 - Removed game_load() function requirement
 - Added 2/4 suit color setting for normal solitaire
+- Fixed a bunch of bugs
 
 = api changes =
 - Added hand stack
