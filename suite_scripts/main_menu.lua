@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2024-07-21 13:21:50",revision=23613]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2025-02-19 04:55:07",revision=23655]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -418,7 +418,7 @@ end
 
 -- draw function for the current cardback slot
 local function card_button_draw(button)
-	local left = button.highlight and 6 or 0
+	local left = button.highlight and 5.9 or 0
 	button.t = lerp(button.t, left, 0.2)
 	nine_slice(8, button.x + button.t, button.y + button.off, button.width, 45)
 	double_print(button.str, button.x2 + button.t, button.y+3, button.col)

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2024-07-21 13:21:50",revision=24211]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2025-02-19 04:55:07",revision=24247]]
 --[[
 
 == ANY update before release ==	
@@ -24,6 +24,15 @@ message zep about using fetch to gather carts
 	
 == 0.3.0 ==	
 
+add secret confetti interaction if one still exists
+	probably move confetti coroutine
+	if #confetti_all > 0 then
+		force color to all be the same
+
+fix usage of debug
+	it's not going to be allowed in sandbox
+	if debug then  ... debug.traceback ...
+
 better custom shadow for custom sprites?
 	define a number/sprite inside game_info() to give a shadow
 	
@@ -38,7 +47,14 @@ allow for recursive menuing?
 	or just make a menuing system that allows unpacking subsets of games
 	
 more functionality for card_gen
+
+better way to prevent overlapping save data
+	would need to potentially need to transfer the data
+	include mod card name?	
+
+?save data export
 	
+
 ?fix menubar to have an adjustable size (mostly for the scores)
 
 == 0.?.0 ==
