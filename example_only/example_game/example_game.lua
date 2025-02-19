@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-22 19:08:40",modified="2024-07-17 07:25:18",revision=10611]]
+--[[pod_format="raw",created="2024-03-22 19:08:40",modified="2025-02-19 04:55:07",revision=10643]]
 
 -- built-in confetti script
 include "suite_scripts/confetti.lua"
@@ -98,7 +98,7 @@ function game_setup()
 				reposition = stack_repose_normal(),
 				
 				-- function for if a card can be stacked on top of the stack of cards
-				-- stack_can_rule : custom stacking rule (see definition way below)
+				-- stack_can_rule : custom stacking rule (see definition in stack_rules.lua)
 				can_stack = stack_can_rule, 
 				
 				-- event for when a card in the stack is clicked, 
