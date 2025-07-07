@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-21 03:40:46",modified="2025-02-19 04:55:07",revision=24247]]
+--[[pod_format="raw",created="2024-03-21 03:40:46",modified="2025-07-07 07:49:33",revision=24268]]
 --[[
 
 == ANY update before release ==	
@@ -21,6 +21,9 @@ message zep about using fetch to gather carts
 	"bbs://" with be a separate protocol for handles caching and sandboxing etc.
 	change will be inside suite_mod_window.lua
 	
+figure out stop() or exit() with binaries?
+	(not to make a binary, but to make exiting correct)
+
 	
 == 0.3.0 ==	
 

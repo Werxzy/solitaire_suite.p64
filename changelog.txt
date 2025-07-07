@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-31 21:22:36",modified="2024-07-04 22:14:14",revision=345]]
+--[[pod_format="raw",created="2024-03-31 21:22:36",modified="2025-07-07 07:53:57",revision=346]]
 
 Picotron Solitaire Suite
 By Werxzy
@@ -13,6 +13,11 @@ By Werxzy
 |   /__\   |
  \        /
   """"""""
+
+=== version 0.2.1 ===
+
+- Fixed freeze when launching game
+- Fixed bug where certain cardbacks could not be selected
 
 === version 0.2.0 ===
 

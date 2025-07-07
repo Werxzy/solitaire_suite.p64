@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-28 02:31:21",modified="2025-02-19 04:55:07",revision=585]]
+--[[pod_format="raw",created="2024-06-28 02:31:21",modified="2025-07-07 07:49:33",revision=601]]
 
 
 -- determines if stack2 can be placed on stack

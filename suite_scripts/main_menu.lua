@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 15:14:10",modified="2025-02-19 04:55:07",revision=23655]]
+--[[pod_format="raw",created="2024-03-19 15:14:10",modified="2025-07-07 07:49:33",revision=23679]]
 
 include"cards_api/card_gen.lua"
 --#if not example
@@ -80,7 +80,7 @@ function update_all_assets()
 							if type(info.sprite) == "function" then
 								card_back_animated(info)
 							end
-							info.id = loc .. ":" .. i
+							info.id = p2 .. ":" .. i
 							
 							add(all_card_back_info, info)
 						end
